@@ -14,6 +14,7 @@
 Vue 3 + Vite + Bootstrap 5 + SCSS hackathon project. No TypeScript, no test suite.
 Design tokens flow from Figma → SCSS primitives → Bootstrap overrides → components.
 Commit messages are in Traditional Chinese (繁體中文).
+Icons: Phosphor via `@iconify/vue` — use `<Icon icon="ph:..." />`, import `{ Icon } from '@iconify/vue'` per SFC. Icon set package: `@iconify-json/ph`.
 
 ---
 
