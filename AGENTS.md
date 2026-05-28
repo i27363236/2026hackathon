@@ -1,5 +1,14 @@
 # AGENTS.md
 
+## References
+
+- **PRD (Notion)**: https://www.notion.so/PRD-355dc169a5ba80449eb7e126b3a40ad4
+- **Figma Design**: https://www.figma.com/design/DJD9NiijtkbSig1iqiincK/2026MetroHackathon?node-id=0-1
+- **Figma Slides**: https://www.figma.com/slides/yrz5u0XR5Qv8QFkpIJ58Vs
+
+---
+
+
 ## Project Context
 
 Vue 3 + Vite + Bootstrap 5 + SCSS hackathon project. No TypeScript, no test suite.
