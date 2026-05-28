@@ -1,16 +1,14 @@
 /* typography - Default */
-:root {
-  --font-family-sans-serif: Noto Sans TC;
-  --headings-font-family: Noto Sans TC;
-  --headings-font-weight: 700px;
-  --display-font-family: Inter;
-  --display-font-weight: 300px;
-  --h1-font-size: 34px;
-  --h2-font-size: 28px;
-  --h3-font-size: 22px;
-  --h4-font-size: 20px;
-  --h5-font-size: 17px;
-  --h6-font-size: 17px;
-  --Body-fontSize: 17px;
-  --Caption-fontSize: 12px;
-}
+$font-family-sans-serif: Noto Sans TC;
+$headings-font-family: Noto Sans TC;
+$headings-font-weight: 700px;
+$display-font-family: Inter;
+$display-font-weight: 300px;
+$h1-font-size: 34px;
+$h2-font-size: 28px;
+$h3-font-size: 22px;
+$h4-font-size: 20px;
+$h5-font-size: 17px;
+$h6-font-size: 17px;
+$Body-fontSize: 17px;
+$Caption-fontSize: 12px;
