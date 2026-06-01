@@ -16,6 +16,7 @@ import ShoppingView from '../views/use/ShoppingView.vue'
 import ProductView from '../views/use/ProductView.vue'
 import GiftSetupView from '../views/use/GiftSetupView.vue'
 import GiftPreviewView from '../views/use/GiftPreviewView.vue'
+import GiftReceivedView from '../views/use/GiftReceivedView.vue'
 import UseCouponsView from '../views/use/UseCouponsView.vue'
 import RedeemMapView from '../views/use/RedeemMapView.vue'
 import MallView from '../views/use/MallView.vue'
@@ -39,7 +40,7 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', name: 'home', component: HomeView },
+      { path: '', name: 'home', component: HomeView, meta: { title: '首頁', showSidebar: true } },
 
       { path: 'points', name: 'points', component: PointsView },
 
@@ -50,8 +51,9 @@ const routes = [
 
       { path: 'use/shopping', name: 'use-shopping', component: ShoppingView },
       { path: 'use/product', name: 'use-product', component: ProductView },
-      { path: 'use/gift/setup', name: 'use-gift-setup', component: GiftSetupView },
-      { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView },
+      { path: 'use/gift/setup', name: 'use-gift-setup', component: GiftSetupView, meta: { title: '編輯卡片', back: true } },
+      { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
+      { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '', back: true } },
       { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView },
       { path: 'use/map', name: 'use-redeem-map', component: RedeemMapView },
       { path: 'use/mall', name: 'use-mall', component: MallView },
