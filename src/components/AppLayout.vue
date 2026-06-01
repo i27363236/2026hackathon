@@ -12,7 +12,7 @@ const sidebarOpen = ref(true)
 </script>
 
 <template>
-  <div class="app-shell vh-100 d-flex flex-column overflow-hidden">
+  <div class="app-shell vh-100 d-flex flex-column overflow-hidden bg-body-secondary">
     <TopToolbar
       :title="meta.title"
       :show-toggle="!!meta.showSidebar"

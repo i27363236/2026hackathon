@@ -103,28 +103,53 @@ const deals = [
     </section>
 
     <!-- Points summary -->
-    <section class="card border-0 shadow-sm rounded-4">
-      <div class="p-6">
-        <div class="row g-0">
-          <div class="col">
-            <div class="display-6 lh-1">15</div>
-            <div class="mt-2">
-              捷點
+    <section>
+      <div class="row g-3">
+        <div class="col-6">
+          <RouterLink :to="{ name: 'use-convert' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+            <div class="card-body px-5 py-4">
+              <div class="d-flex align-items-start mb-2">
+                <span class="summary-num me-auto">15</span>
+                <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <Icon icon="ph:train-simple" width="21" height="21" class="summary-metro-icon" />
+                <span class="fw-bold summary-label">捷運點</span>
+              </div>
+              <p class="mb-0 caption-2">4點將於5/15到期</p>
             </div>
-          </div>
-          <div class="col">
-            <div class="display-6 lh-1">3</div>
-            <div class="mt-2">
-              優惠券
-            </div>
-          </div>
+          </RouterLink>
         </div>
-        <div class="mt-5">
-          <div class="d-flex justify-content-between small text-body-secondary mb-2">
-            <span>累積進度</span><span>15 / 50</span>
-          </div>
-          <div class="progress rounded-pill" style="height: 8px">
-            <div class="progress-bar bg-primary" style="width: 30%" />
+        <div class="col-6">
+          <RouterLink :to="{ name: 'use-coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+            <div class="card-body px-5 py-4">
+              <div class="d-flex align-items-start mb-2">
+                <span class="summary-num me-auto">3</span>
+                <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+              </div>
+              <span class="fw-bold summary-label d-block mb-1">優惠券</span>
+              <p class="mb-0 caption-2">1張將於5/15到期</p>
+            </div>
+          </RouterLink>
+        </div>
+        <div class="col-12">
+          <div class="card border-0 rounded-4">
+            <div class="card-body px-5 pt-4 summary-goal-body">
+              <div class="d-flex gap-3 align-items-stretch">
+                <div class="flex-grow-1">
+                  <div class="summary-goal-num mb-1">15/50</div>
+                  <p class="mb-0 caption-2">誠品書店50元折價券</p>
+                  <div class="mt-3">
+                    <div class="progress rounded-pill summary-progress-track" style="height: 4px;">
+                      <div class="progress-bar rounded-pill summary-progress-fill" style="width: 30%;" />
+                    </div>
+                  </div>
+                </div>
+                <div class="summary-reward-img rounded-3 flex-shrink-0 d-flex align-items-center justify-content-center overflow-hidden bg-secondary">
+                  <Icon icon="ph:ticket" width="28" height="28" class="text-white opacity-75" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -256,5 +281,40 @@ const deals = [
 .action-tile,
 .tile-wide {
   border: none;
+}
+.summary-num {
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  line-height: 41px;
+}
+.summary-caret {
+  margin-top: 5px;
+}
+.summary-metro-icon {
+  opacity: 0.8;
+}
+.summary-label {
+  font-size: 20px;
+  letter-spacing: 0.45px;
+  line-height: 26px;
+}
+.summary-goal-body {
+  padding-bottom: 15px;
+}
+.summary-goal-num {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.45px;
+  line-height: 28px;
+}
+.summary-progress-track {
+  background: #fff0b2;
+}
+.summary-progress-fill {
+  background: #eeb740;
+}
+.summary-reward-img {
+  width: 72px;
 }
 </style>

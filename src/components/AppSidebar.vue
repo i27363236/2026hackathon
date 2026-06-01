@@ -29,7 +29,7 @@ const pointNav = [
 
 <template>
   <nav
-    class="app-sidebar flex-column flex-shrink-0 bg-light py-5 m-5 border rounded-4"
+    class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary py-5 m-5 mt-0 border rounded-4"
     :class="{ 'is-open': open }"
   >
     <ul class="nav nav-pills flex-column px-4 gap-1">

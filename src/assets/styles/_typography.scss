@@ -12,3 +12,10 @@ $h5-font-size: 17px;
 $h6-font-size: 17px;
 $Body-fontSize: 17px;
 $Caption-fontSize: 12px;
+
+.caption-2 {
+  font-size: 11px;
+  line-height: 13px;
+  letter-spacing: 0.06px;
+  color: var(--bs-secondary-color);
+}
