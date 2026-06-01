@@ -12,7 +12,7 @@ defineEmits(['toggle', 'back'])
 </script>
 
 <template>
-  <header class="top-toolbar bg-body border-bottom">
+  <header class="top-toolbar">
     <div class="d-flex align-items-center gap-4 px-5 py-4">
       <!-- Tablet+: sidebar toggle -->
       <ToolbarButton
@@ -30,7 +30,7 @@ defineEmits(['toggle', 'back'])
         @click="$emit('back')"
       />
 
-      <h1 v-if="title" class="h4 fw-bold mb-0 text-truncate">{{ title }}</h1>
+      <h1 v-if="title" class="h4 mb-0 text-truncate">{{ title }}</h1>
 
       <div class="ms-auto d-flex align-items-center gap-3">
         <slot name="actions" />
