@@ -82,10 +82,10 @@ const deals = [
           </div>
         </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev d-none" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" />
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <button class="carousel-control-next d-none" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
           <span class="carousel-control-next-icon" />
         </button>
 
