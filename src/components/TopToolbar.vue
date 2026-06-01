@@ -4,6 +4,7 @@ import ToolbarButton from './ToolbarButton.vue'
 defineProps({
   title: { type: String, default: '' },
   showToggle: { type: Boolean, default: false },
+  sidebarOpen: { type: Boolean, default: true },
   showBack: { type: Boolean, default: false },
 })
 
@@ -17,7 +18,7 @@ defineEmits(['toggle', 'back'])
       <ToolbarButton
         v-if="showToggle"
         class="d-none d-md-inline-flex"
-        icon="ph:sidebar-simple"
+        :icon="sidebarOpen ? 'ph:sidebar-simple-fill' : 'ph:sidebar-simple'"
         aria-label="切換側邊欄"
         @click="$emit('toggle')"
       />

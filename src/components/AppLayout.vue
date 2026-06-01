@@ -16,6 +16,7 @@ const sidebarOpen = ref(true)
     <TopToolbar
       :title="meta.title"
       :show-toggle="!!meta.showSidebar"
+      :sidebar-open="sidebarOpen"
       :show-back="!!meta.back"
       @toggle="sidebarOpen = !sidebarOpen"
       @back="router.back()"

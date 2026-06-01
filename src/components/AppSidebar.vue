@@ -29,8 +29,8 @@ const pointNav = [
 
 <template>
   <nav
-    v-show="open"
-    class="app-sidebar d-none d-md-flex flex-column flex-shrink-0 bg-body border-end overflow-auto py-5"
+    class="app-sidebar flex-column flex-shrink-0 bg-light py-5 m-5 border rounded-4"
+    :class="{ 'is-open': open }"
   >
     <ul class="nav nav-pills flex-column px-4 gap-1">
       <li v-for="item in mainNav" :key="item.label" class="nav-item">
@@ -65,7 +65,31 @@ const pointNav = [
 
 <style scoped>
 .app-sidebar {
+  display: none;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: width 0.25s ease, opacity 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .app-sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.app-sidebar.is-open {
   width: 240px;
+  overflow-y: auto;
+  opacity: 1;
+}
+.nav-link {
+  white-space: nowrap;
+}
+.nav-link:hover:not(.router-link-active) {
+  background-color: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary) !important;
 }
 .nav-link.router-link-active {
   background-color: var(--bs-primary);
