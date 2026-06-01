@@ -1,6 +1,30 @@
 <script setup>
 import { Icon } from '@iconify/vue'
 
+const heroSlides = [
+  {
+    eyebrow: '2026 捷運黑客松',
+    title: '尋找黑捷客',
+    subtitle: '玩點生活 · 智慧黑客松',
+    date: '05.15 — 13.5',
+    gradient: 'linear-gradient(135deg, #0a1f3c, #12365e)',
+  },
+  {
+    eyebrow: '本週活動',
+    title: '捷運到日市集',
+    subtitle: '中山站 · 限時優惠',
+    date: '06.07 — 06.08',
+    gradient: 'linear-gradient(135deg, #1a3a2c, #2a5e42)',
+  },
+  {
+    eyebrow: '點數快訊',
+    title: '夏日加倍回饋',
+    subtitle: '搭乘即享雙倍捷點',
+    date: '06.01 — 06.30',
+    gradient: 'linear-gradient(135deg, #3a1a2c, #5e2a42)',
+  },
+]
+
 const actions = [
   { label: '購物', icon: 'ph:shopping-bag', to: { name: 'use-shopping' } },
   { label: '送禮', icon: 'ph:gift', to: { name: 'use-gift-setup' } },
@@ -28,38 +52,70 @@ const deals = [
 
 <template>
   <div class="home mx-auto p-5 d-flex flex-column gap-8">
-    <!-- Hero banner -->
+    <!-- Hero banner carousel -->
     <section>
-      <div class="hero rounded-4 text-white p-7 position-relative overflow-hidden">
-        <div class="position-relative">
-          <p class="small mb-1 opacity-75">2026 捷運黑客松</p>
-          <h2 class="fw-bold mb-2">尋找黑捷客</h2>
-          <p class="mb-3 opacity-75">玩點生活 · 智慧黑客松</p>
-          <p class="h4 fw-bold mb-0">05.15 — 13.5</p>
+      <div
+        id="heroCarousel"
+        class="carousel slide"
+        data-bs-ride="carousel"
+        data-bs-interval="3000"
+      >
+        <div class="carousel-inner">
+          <div
+            v-for="(slide, i) in heroSlides"
+            :key="i"
+            class="carousel-item"
+            :class="{ active: i === 0 }"
+          >
+            <div
+              class="hero rounded-4 text-white p-7 position-relative overflow-hidden"
+              :style="{ background: slide.gradient }"
+            >
+              <div class="position-relative">
+                <p class="small mb-1 opacity-75">{{ slide.eyebrow }}</p>
+                <h2 class="fw-bold mb-2">{{ slide.title }}</h2>
+                <p class="mb-3 opacity-75">{{ slide.subtitle }}</p>
+                <p class="h4 fw-bold mb-0">{{ slide.date }}</p>
+              </div>
+              <Icon icon="ph:coin" class="hero-coin position-absolute opacity-50" width="160" height="160" />
+            </div>
+          </div>
         </div>
-        <Icon icon="ph:coin" class="hero-coin position-absolute opacity-50" width="160" height="160" />
-      </div>
-      <div class="d-flex justify-content-center gap-2 mt-4">
-        <span class="dot active" />
-        <span class="dot" />
-        <span class="dot" />
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" />
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" />
+        </button>
+
+        <div class="carousel-indicators hero-indicators">
+          <button
+            v-for="(_, i) in heroSlides"
+            :key="i"
+            type="button"
+            data-bs-target="#heroCarousel"
+            :data-bs-slide-to="i"
+            :class="{ active: i === 0 }"
+          />
+        </div>
       </div>
     </section>
 
     <!-- Points summary -->
     <section class="card border-0 shadow-sm rounded-4">
-      <div class="card-body p-6">
-        <div class="row text-center g-0">
-          <div class="col border-end">
-            <div class="display-6 fw-bold text-primary lh-1">15</div>
-            <div class="text-body-secondary small mt-2">
-              <Icon icon="ph:coin" class="me-1" /> 捷點
+      <div class="p-6">
+        <div class="row g-0">
+          <div class="col">
+            <div class="display-6 lh-1">15</div>
+            <div class="mt-2">
+              捷點
             </div>
           </div>
           <div class="col">
-            <div class="display-6 fw-bold text-warning lh-1">3</div>
-            <div class="text-body-secondary small mt-2">
-              <Icon icon="ph:ticket" class="me-1" /> 優惠券
+            <div class="display-6 lh-1">3</div>
+            <div class="mt-2">
+              優惠券
             </div>
           </div>
         </div>
@@ -77,7 +133,7 @@ const deals = [
     <!-- Smart recommendation -->
     <section>
       <h3 class="h5 fw-bold mb-4">智慧推薦</h3>
-      <div class="card border-0 shadow-sm rounded-4">
+      <div class="card border-0 shadow-lg rounded-4">
         <div class="card-body d-flex align-items-center gap-5 p-5">
           <div class="flex-grow-1">
             <p class="fw-bold mb-1">在 4 號出口兌換咖啡</p>
@@ -160,13 +216,28 @@ const deals = [
   right: -20px;
   bottom: -20px;
 }
-.dot {
+.hero-indicators {
+  position: static;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.hero-indicators [data-bs-target] {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--bs-gray-300);
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+  text-indent: -9999px;
+  transition: width 0.3s ease, border-radius 0.3s ease, background 0.3s ease;
+  opacity: 1;
 }
-.dot.active {
+.hero-indicators [data-bs-target].active {
   width: 20px;
   border-radius: 800px;
   background: var(--bs-primary);
