@@ -30,7 +30,7 @@ const pointNav = [
 <template>
   <nav
     class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary py-5 border rounded-4"
-    :class="{ 'is-open': open }"
+    :class="{ 'is-open': open }" style="margin-top: 3.5rem;"
   >
     <ul class="nav nav-pills flex-column px-4 gap-1">
       <li v-for="item in mainNav" :key="item.label" class="nav-item">
