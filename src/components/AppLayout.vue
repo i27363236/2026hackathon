@@ -15,7 +15,7 @@ const sidebarOpen = ref(true)
 <template>
   <div class="app-shell vh-100 d-flex overflow-hidden bg-body-secondary">
     <AppSidebar v-if="meta.showSidebar" :open="sidebarOpen" />
-    <main class="flex-grow-1 overflow-auto position-relative" style="min-width: 0">
+    <main class="flex-grow-1 d-flex flex-column overflow-hidden position-relative" style="min-width: 0">
       <TopToolbar
         :title="meta.title"
         :show-toggle="!!meta.showSidebar"
@@ -30,7 +30,9 @@ const sidebarOpen = ref(true)
           <ToolbarButton :size="32" variant="ghost" icon="ph:qr-code" aria-label="QR碼" />
         </template>
       </TopToolbar>
-      <RouterView />
+      <div class="flex-grow-1 overflow-auto" style="min-height: 0">
+        <RouterView />
+      </div>
     </main>
   </div>
 </template>

@@ -14,10 +14,10 @@ function goPreview() {
 
 <template>
   <div class="gift-setup d-flex flex-column h-100">
-    <div class="content flex-grow-1 overflow-auto p-5">
-      <div class="row g-6 justify-content-center mx-auto" style="max-width: 880px">
+    <div class="content flex-grow-1 overflow-hidden p-5">
+      <div class="row g-6 justify-content-center align-items-start h-100 mx-auto my-auto" style="max-width: 880px">
         <!-- Card preview -->
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 my-auto">
           <GiftCard :message="message" :signature="signature" />
         </div>
 
