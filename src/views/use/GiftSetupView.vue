@@ -22,7 +22,7 @@ function goPreview() {
         </div>
 
         <!-- Text editor -->
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mt-0">
           <label class="form-label fw-bold" for="cardText">卡片內文</label>
           <textarea
             id="cardText"
