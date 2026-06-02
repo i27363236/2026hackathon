@@ -158,14 +158,14 @@ const deals = [
     <!-- Smart recommendation -->
     <section>
       <h3 class="h5 fw-bold mb-4">智慧推薦</h3>
-      <div class="card border-0 shadow-lg rounded-4">
+      <div class="card p-3 border-0 shadow-lg rounded-5">
         <div class="card-body d-flex align-items-center gap-5 p-5">
           <div class="flex-grow-1">
             <p class="fw-bold mb-1">在 4 號出口兌換咖啡</p>
             <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
           </div>
-          <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
-            <Icon icon="ph:coffee" width="32" height="32" class="text-body-secondary" />
+          <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
+            <Icon icon="ph:coffee" width="32" height="32" class="text-body" />
           </div>
         </div>
       </div>
@@ -270,7 +270,7 @@ const deals = [
 .rec-thumb {
   width: 56px;
   height: 56px;
-  background: var(--bs-body-secondary-bg);
+  rotate: 4deg;
 }
 .event-card {
   width: 160px;

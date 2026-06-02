@@ -40,7 +40,7 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', name: 'home', component: HomeView, meta: { title: '首頁', showSidebar: true } },
+      { path: '', name: 'home', component: HomeView, meta: { title: '捷運點', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
 
       { path: 'points', name: 'points', component: PointsView },
 

@@ -29,7 +29,7 @@ const pointNav = [
 
 <template>
   <nav
-    class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary py-5 m-5 mt-0 border rounded-4"
+    class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary py-5 border rounded-4"
     :class="{ 'is-open': open }"
   >
     <ul class="nav nav-pills flex-column px-4 gap-1">
@@ -67,9 +67,10 @@ const pointNav = [
 .app-sidebar {
   display: none;
   width: 0;
+  margin: 0;
   overflow: hidden;
   opacity: 0;
-  transition: width 0.25s ease, opacity 0.2s ease;
+  transition: width 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
 }
 
 @media (min-width: 768px) {
@@ -81,6 +82,7 @@ const pointNav = [
 
 .app-sidebar.is-open {
   width: 240px;
+  margin: 16px;
   overflow-y: auto;
   opacity: 1;
 }

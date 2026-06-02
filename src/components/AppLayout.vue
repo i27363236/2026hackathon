@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TopToolbar from './TopToolbar.vue'
 import AppSidebar from './AppSidebar.vue'
+import ToolbarButton from './ToolbarButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,22 +13,25 @@ const sidebarOpen = ref(true)
 </script>
 
 <template>
-  <div class="app-shell vh-100 d-flex flex-column overflow-hidden bg-body-secondary">
-    <TopToolbar
-      :title="meta.title"
-      :show-toggle="!!meta.showSidebar"
-      :sidebar-open="sidebarOpen"
-      :show-back="!!meta.back"
-      @toggle="sidebarOpen = !sidebarOpen"
-      @back="router.back()"
-    />
-
-    <div class="d-flex flex-grow-1 overflow-hidden">
-      <AppSidebar v-if="meta.showSidebar" :open="sidebarOpen" />
-      <main class="flex-grow-1 overflow-auto" style="min-width: 0">
-        <RouterView />
-      </main>
-    </div>
+  <div class="app-shell vh-100 d-flex overflow-hidden bg-body-secondary">
+    <AppSidebar v-if="meta.showSidebar" :open="sidebarOpen" />
+    <main class="flex-grow-1 overflow-auto position-relative" style="min-width: 0">
+      <TopToolbar
+        :title="meta.title"
+        :show-toggle="!!meta.showSidebar"
+        :sidebar-open="sidebarOpen"
+        :show-back="!!meta.back"
+        :show-profile="!!meta.showProfile"
+        @toggle="sidebarOpen = !sidebarOpen"
+        @back="router.back()"
+      >
+        <template v-if="meta.showHomeActions" #actions>
+          <ToolbarButton :size="32" variant="ghost" icon="ph:scan" aria-label="掃描" />
+          <ToolbarButton :size="32" variant="ghost" icon="ph:qr-code" aria-label="QR碼" />
+        </template>
+      </TopToolbar>
+      <RouterView />
+    </main>
   </div>
 </template>
 

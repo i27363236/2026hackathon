@@ -14,7 +14,7 @@ defineEmits(['click'])
 <template>
   <button
     type="button"
-    class="toolbar-btn btn btn-light rounded-circle d-inline-flex align-items-center justify-content-center p-0"
+    class="toolbar-btn btn rounded-circle d-inline-flex align-items-center justify-content-center p-0"
     :class="`btn-${variant}`"
     :style="{ width: `${size}px`, height: `${size}px` }"
     :aria-label="ariaLabel"
@@ -28,5 +28,13 @@ defineEmits(['click'])
 .toolbar-btn {
   flex: 0 0 auto;
   border: none;
+}
+.btn-ghost {
+  background: transparent;
+  color: inherit;
+}
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  background: var(--bs-gray-200);
 }
 </style>
