@@ -64,7 +64,12 @@ defineEmits(['toggle', 'back'])
   position: sticky;
   top: 0;
   z-index: 1020;
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(48px) saturate(180%) brightness(1.06);
+  -webkit-backdrop-filter: blur(48px) saturate(180%) brightness(1.06);
+  /* specular inner highlight mimicking glass edge */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
+              inset 0 -1px 0 rgba(255, 255, 255, 0.18);
 }
 .toolbar-inner {
   min-height: 40px;
