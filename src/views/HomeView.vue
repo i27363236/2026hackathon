@@ -1,5 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue'
+import ActionTile from '../components/ActionTile.vue'
 
 const heroSlides = [
   {
@@ -171,36 +172,38 @@ const deals = [
       </div>
     </section>
 
-    <!-- Quick tiles -->
-    <section class="row g-4">
-      <div class="col-6">
-        <RouterLink :to="{ name: 'earn-events' }" class="tile-wide btn btn-info w-100 text-white d-flex align-items-center gap-3 p-5 rounded-4">
-          <Icon icon="ph:calendar-star" width="24" height="24" /> 累積活動
-        </RouterLink>
-      </div>
-      <div class="col-6">
-        <RouterLink :to="{ name: 'earn-map' }" class="tile-wide btn btn-primary w-100 text-white d-flex align-items-center gap-3 p-5 rounded-4">
-          <Icon icon="ph:map-trifold" width="24" height="24" /> 累積地圖
-        </RouterLink>
-      </div>
-    </section>
-
-    <!-- Action grid -->
+    <!-- Tiles section -->
     <section>
-      <h3 class="h5 fw-bold mb-4">使用捷運點</h3>
-      <div class="row g-4">
-        <div v-for="a in actions" :key="a.label" class="col-4 col-md-3">
-          <RouterLink :to="a.to" class="action-tile btn btn-success w-100 text-white d-flex flex-column align-items-center justify-content-center gap-2 rounded-4 py-5">
-            <Icon :icon="a.icon" width="28" height="28" />
-            <span class="small">{{ a.label }}</span>
-          </RouterLink>
+      <!-- md+: single horizontal scrollable row -->
+      <div class="tiles-row d-none d-md-flex overflow-x-auto pb-2">
+        <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" />
+        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'earn-map' }" variant="blue" />
+        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
+      </div>
+
+      <!-- mobile: two separate grid groups -->
+      <div class="d-md-none d-flex flex-column gap-8">
+        <div>
+          <h3 class="mb-4">累積捷運點</h3>
+          <div class="row g-4">
+            <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" /></div>
+            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'earn-map' }" variant="blue" /></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="mb-4">使用捷運點</h3>
+          <div class="row g-4">
+            <div v-for="a in actions" :key="a.label" class="col-6">
+              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Joined events -->
     <section>
-      <h3 class="h5 fw-bold mb-4">大家都參加</h3>
+      <h3 class="mb-4">大家都參加</h3>
       <div class="d-flex gap-4 overflow-auto pb-2">
         <div v-for="e in joinedEvents" :key="e.title" class="event-card card border-0 shadow-sm rounded-4 flex-shrink-0">
           <div class="event-img rounded-top-4" :style="{ background: e.img }" />
@@ -278,10 +281,6 @@ const deals = [
 .event-img {
   height: 90px;
 }
-.action-tile,
-.tile-wide {
-  border: none;
-}
 .summary-num {
   font-size: 34px;
   font-weight: 300;
@@ -316,5 +315,12 @@ const deals = [
 }
 .summary-reward-img {
   width: 72px;
+}
+.tiles-row {
+  gap: 8px;
+}
+.tiles-row :deep(.action-tile) {
+  width: 185px;
+  flex-shrink: 0;
 }
 </style>
