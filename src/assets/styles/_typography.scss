@@ -13,9 +13,13 @@ $h6-font-size: 17px;
 $Body-fontSize: 17px;
 $Caption-fontSize: 12px;
 
+.caption-1 {
+  size: .75rem;
+  line-height: 1rem;
+}
+
 .caption-2 {
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
-  color: var(--bs-secondary-color);
+  font-size: .6875rem;
+  line-height: .8125rem;
+  letter-spacing: .0037rem;
 }
