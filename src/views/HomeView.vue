@@ -103,41 +103,40 @@ const deals = [
       </div>
     </section>
 
-    <!-- Points summary -->
-    <section>
-      <div class="row g-3">
-        <div class="col-6">
-          <RouterLink :to="{ name: 'use-convert' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
-            <div class="card-body px-5 py-4">
-              <div class="d-flex align-items-start mb-2">
-                <span class="summary-num me-auto">15</span>
-                <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+    <!-- Points summary + Smart recommendation: stacked on mobile, side-by-side on tablet+ -->
+    <div class="d-flex flex-column flex-md-row gap-5 align-items-md-start">
+      <section class="summary-col">
+        <div class="row g-3">
+          <div class="col-6 col-md-4">
+            <RouterLink :to="{ name: 'use-convert' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+              <div class="card-body px-5 py-4">
+                <div class="d-flex align-items-start">
+                  <span class="summary-num display-3 me-auto">15</span>
+                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold summary-label">捷運點</span>
+                </div>
+                <div class="mt-4 caption-2">4點將於5/15到期</div>
               </div>
-              <div class="d-flex align-items-center gap-2 mb-1">
-                <Icon icon="ph:train-simple" width="21" height="21" class="summary-metro-icon" />
-                <span class="fw-bold summary-label">捷運點</span>
+            </RouterLink>
+          </div>
+          <div class="col-6 col-md-4">
+            <RouterLink :to="{ name: 'use-coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+              <div class="card-body px-5 py-4">
+                <div class="d-flex align-items-start">
+                  <span class="summary-num display-3 me-auto">3</span>
+                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                </div>
+                <span class="fw-bold summary-label d-block">優惠券</span>
+                <div class="mt-4 caption-2">1張將於5/15到期</div>
               </div>
-              <p class="mb-0 caption-2">4點將於5/15到期</p>
-            </div>
-          </RouterLink>
-        </div>
-        <div class="col-6">
-          <RouterLink :to="{ name: 'use-coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
-            <div class="card-body px-5 py-4">
-              <div class="d-flex align-items-start mb-2">
-                <span class="summary-num me-auto">3</span>
-                <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
-              </div>
-              <span class="fw-bold summary-label d-block mb-1">優惠券</span>
-              <p class="mb-0 caption-2">1張將於5/15到期</p>
-            </div>
-          </RouterLink>
-        </div>
-        <div class="col-12">
-          <div class="card border-0 rounded-4">
-            <div class="card-body px-5 pt-4 summary-goal-body">
-              <div class="d-flex gap-3 align-items-stretch">
-                <div class="flex-grow-1">
+            </RouterLink>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card border-0 rounded-4 h-100 overflow-hidden">
+              <div class="card-body p-0 d-flex">
+                <div class="flex-grow-1 px-5 pt-4 summary-goal-body d-flex flex-column justify-content-end">
                   <div class="summary-goal-num mb-1">15/50</div>
                   <p class="mb-0 caption-2">誠品書店50元折價券</p>
                   <div class="mt-3">
@@ -146,36 +145,36 @@ const deals = [
                     </div>
                   </div>
                 </div>
-                <div class="summary-reward-img rounded-3 flex-shrink-0 d-flex align-items-center justify-content-center overflow-hidden bg-secondary">
+                <div class="summary-reward-img flex-shrink-0 d-flex align-items-center justify-content-center bg-secondary">
                   <Icon icon="ph:ticket" width="28" height="28" class="text-white opacity-75" />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Smart recommendation -->
-    <section>
-      <h3 class="h5 fw-bold mb-4">智慧推薦</h3>
-      <div class="card p-3 border-0 shadow-lg rounded-5">
-        <div class="card-body d-flex align-items-center gap-5 p-5">
-          <div class="flex-grow-1">
-            <p class="fw-bold mb-1">在 4 號出口兌換咖啡</p>
-            <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
-          </div>
-          <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
-            <Icon icon="ph:coffee" width="32" height="32" class="text-body" />
+      <!-- Smart recommendation -->
+      <section class="rec-col">
+        <h3 class="mb-md-7 d-md-none">智慧推薦</h3>
+        <div class="card p-3 border-0 shadow-lg rounded-5">
+          <div class="card-body d-flex align-items-center gap-5 p-5">
+            <div class="flex-grow-1">
+              <p class="fw-bold mb-1">在 4 號出口兌換咖啡</p>
+              <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
+            </div>
+            <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
+              <Icon icon="ph:coffee" width="32" height="32" class="text-body" />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Tiles section -->
     <section>
-      <!-- md+: single horizontal scrollable row -->
-      <div class="tiles-row d-none d-md-flex overflow-x-auto pb-2">
+      <!-- md+: single horizontal wrapping row -->
+      <div class="tiles-row d-none d-md-flex pb-2">
         <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" />
         <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'earn-map' }" variant="blue" />
         <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
@@ -237,6 +236,11 @@ const deals = [
 .home {
   max-width: 720px;
 }
+@media (min-width: 768px) {
+  .home {
+    max-width: 100%;
+  }
+}
 .hero {
   background: linear-gradient(135deg, #0a1f3c, #12365e);
 }
@@ -281,12 +285,6 @@ const deals = [
 .event-img {
   height: 90px;
 }
-.summary-num {
-  font-size: 34px;
-  font-weight: 300;
-  letter-spacing: 0.4px;
-  line-height: 41px;
-}
 .summary-caret {
   margin-top: 5px;
 }
@@ -318,6 +316,15 @@ const deals = [
 }
 .tiles-row {
   gap: 8px;
+  overflow: scroll;
+}
+.summary-col {
+  flex: 3 1 0;
+  min-width: 0;
+}
+.rec-col {
+  flex: 1 1 0;
+  min-width: 0;
 }
 .tiles-row :deep(.action-tile) {
   width: 185px;

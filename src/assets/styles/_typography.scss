@@ -13,6 +13,16 @@ $h6-font-size: 17px;
 $Body-fontSize: 17px;
 $Caption-fontSize: 12px;
 
+$display-font-sizes: (
+  1: 5rem,
+  2: 4.5rem,
+  3: 2.125rem,
+  4: 1.75rem,
+  5: 1.375rem,
+  6: 1.0625rem
+);
+
+
 .caption-1 {
   size: .75rem;
   line-height: 1rem;
