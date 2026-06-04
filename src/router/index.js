@@ -14,7 +14,7 @@ import EarnMapView from '../views/earn/EarnMapView.vue'
 
 import ShoppingView from '../views/use/ShoppingView.vue'
 import ProductView from '../views/use/ProductView.vue'
-import GiftSetupView from '../views/use/GiftSetupView.vue'
+// GiftSetupView is the Konva canvas editor — lazy-loaded so Konva stays out of the Home bundle.
 import GiftPreviewView from '../views/use/GiftPreviewView.vue'
 import GiftReceivedView from '../views/use/GiftReceivedView.vue'
 import UseCouponsView from '../views/use/UseCouponsView.vue'
@@ -51,7 +51,7 @@ const routes = [
 
       { path: 'use/shopping', name: 'use-shopping', component: ShoppingView },
       { path: 'use/product', name: 'use-product', component: ProductView },
-      { path: 'use/gift/setup', name: 'use-gift-setup', component: GiftSetupView, meta: { title: '編輯卡片', back: true } },
+      { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
       { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '', back: true } },
       { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView },

@@ -3,13 +3,19 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import FlipCard from '../../components/gift/FlipCard.vue'
-import CouponCard from '../../components/gift/CouponCard.vue'
-import GiftCard from '../../components/gift/GiftCard.vue'
+import QrFace from '../../components/gift/QrFace.vue'
+import ProductFace from '../../components/gift/ProductFace.vue'
+import { useGiftsStore } from '../../stores/gifts.js'
 
 const route = useRoute()
-const message = computed(() => route.query.msg ?? '')
-const signature = computed(() => route.query.sign ?? '')
-const sender = computed(() => route.query.sign || '小捷')
+const gifts = useGiftsStore()
+
+// Load the sent gift by id; fall back to the most recently sent gift.
+const gift = computed(() => {
+  const byId = route.query.id ? gifts.getGiftById(route.query.id) : null
+  return byId ?? gifts.gifts[gifts.gifts.length - 1] ?? null
+})
+const sender = computed(() => gift.value?.signature || '小捷')
 
 const actions = [
   { label: '搜尋附近可使用店家', icon: 'ph:magnifying-glass' },
@@ -28,10 +34,28 @@ const actions = [
         <div class="card-wrap mx-auto w-100">
           <FlipCard>
             <template #front>
-              <CouponCard title="誠品生活｜100元優惠券" expiry="2 個月 · 2026/6/30 到期" :value="100" />
+              <QrFace
+                :name="gift?.name"
+                :price="gift?.price"
+                :img="gift?.img"
+                :expired-date="gift?.expiredDate"
+              />
             </template>
             <template #back>
-              <GiftCard :message="message" :signature="signature" />
+              <img
+                v-if="gift?.cardImage"
+                :src="gift.cardImage"
+                class="rounded-4 w-100 h-100"
+                style="object-fit: cover; aspect-ratio: 3 / 4"
+                alt="禮物卡片"
+              />
+              <ProductFace
+                v-else
+                :name="gift?.name"
+                :price="gift?.price"
+                :img="gift?.img"
+                :expired-date="gift?.expiredDate"
+              />
             </template>
           </FlipCard>
           <p class="text-center text-body-secondary small mt-4 mb-0">點擊以查看卡片</p>

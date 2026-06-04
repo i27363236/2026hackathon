@@ -1,6 +1,15 @@
 <script setup>
 import { Icon } from '@iconify/vue'
 import ActionTile from '../components/ActionTile.vue'
+import RowCard from '../components/home/RowCard.vue'
+import GiftRowCard from '../components/home/GiftRowCard.vue'
+import { getEvents } from '../data/events.js'
+import { getCoupons } from '../data/coupons.js'
+import { getShelves } from '../data/catalog.js'
+
+const joinedEvents = getEvents()
+const coupons = getCoupons()
+const giftProducts = getShelves()[0].products
 
 const heroSlides = [
   {
@@ -36,19 +45,6 @@ const actions = [
   { label: '點數傳愛', icon: 'ph:heart', to: { name: 'use-donate' } },
 ]
 
-const joinedEvents = [
-  { title: '捷運到日市集', tag: '中山', img: '#cfe8c8' },
-  { title: '信義計畫區音樂會', tag: '台北捷運', img: '#cfe1e8' },
-  { title: '淡水老街美食探索', tag: '淡水', img: '#e8dfc8' },
-  { title: '士林夜市市集', tag: '士林', img: '#e8cfd8' },
-]
-
-const deals = [
-  { title: '台北捷運', point: 50, sub: '50元電子乘車金' },
-  { title: '東森購物', point: 50, sub: '50元折價券' },
-  { title: '全家便利商店', point: 50, sub: '50元折價券' },
-  { title: '誠品生活', point: 50, sub: '50元抵用券' },
-]
 </script>
 
 <template>
@@ -203,30 +199,48 @@ const deals = [
     <!-- Joined events -->
     <section>
       <h3 class="mb-4">大家都參加</h3>
-      <div class="d-flex gap-4 overflow-auto pb-2">
-        <div v-for="e in joinedEvents" :key="e.title" class="event-card card border-0 shadow-sm rounded-4 flex-shrink-0">
-          <div class="event-img rounded-top-4" :style="{ background: e.img }" />
-          <div class="card-body p-4">
-            <span class="badge text-bg-light mb-2">{{ e.tag }}</span>
-            <p class="small fw-bold mb-0">{{ e.title }}</p>
-          </div>
-        </div>
+      <div class="card-row d-flex gap-4 pb-2">
+        <RowCard
+          v-for="e in joinedEvents"
+          :key="e.id"
+          :subtitle="e.tag"
+          :title="e.title"
+          :img="e.img"
+          :color-key="e.colorKey"
+        />
       </div>
     </section>
 
-    <!-- Best deals -->
+    <!-- Coupon exchange deals -->
     <section>
       <h3 class="h5 fw-bold mb-4">這樣換，最划算</h3>
-      <div class="row g-4">
-        <div v-for="d in deals" :key="d.title" class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body text-center p-4">
-              <div class="h3 fw-bold text-danger mb-0">{{ d.point }}<span class="fs-6">元</span></div>
-              <p class="small fw-bold mb-1">{{ d.title }}</p>
-              <p class="text-body-secondary mb-0" style="font-size: 12px">{{ d.sub }}</p>
-            </div>
-          </div>
-        </div>
+      <div class="card-row d-flex gap-4 pb-2">
+        <RowCard
+          v-for="c in coupons"
+          :key="c.id"
+          :subtitle="c.point + ' 點'"
+          :title="c.title"
+          :detail="c.sub"
+          :color-key="c.colorKey"
+        />
+      </div>
+    </section>
+
+    <!-- Gift cards -->
+    <section>
+      <h3 class="mb-4">最新主打</h3>
+      <div class="card-row d-flex gap-4 pb-2">
+        <GiftRowCard
+          v-for="p in giftProducts"
+          :key="p.id"
+          :id="p.id"
+          :name="p.name"
+          :detail="p.desc"
+          :price="p.price"
+          :size-label="p.sizeLabel"
+          :img="p.img"
+          :color-key="p.colorKey"
+        />
       </div>
     </section>
   </div>
@@ -279,11 +293,17 @@ const deals = [
   height: 56px;
   rotate: 4deg;
 }
-.event-card {
-  width: 160px;
+.card-row {
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-.event-img {
-  height: 90px;
+.card-row::-webkit-scrollbar {
+  display: none;
+}
+.card-row > * {
+  scroll-snap-align: start;
 }
 .summary-caret {
   margin-top: 5px;
