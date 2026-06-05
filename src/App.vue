@@ -1,5 +1,5 @@
 <script setup>
-// TEMP: remove before ship — see docs/plan.md Phase 5.
+// // TEMP: remove before ship — see docs/plan.md Phase 5.
 // Lets us test the editor → preview → send flow without the (teammate-owned) ProductView
 // and PurchaseCheckoutView. Seeds a purchased draft, then opens the editor.
 import { useRouter } from 'vue-router'
@@ -13,6 +13,7 @@ function launchEditor() {
   gifts.purchaseDraft()
   router.push({ name: 'use-gift-setup' })
 }
+import Portfolio from './components/Portfolio.vue';
 </script>
 
 <template>
