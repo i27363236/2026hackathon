@@ -5,8 +5,6 @@
 <template>
   <div class="tablet-bg">
     <div class="main-content-container">
-      
-      <div class="sidebar-placeholder"></div>
 
       <div class="left-column">
         
@@ -130,54 +128,38 @@
 </template>
 
 <style scoped>
-/* 全域與平板背景 */
-:global(body) {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
+/* 平板背景 */
 .tablet-bg {
   width: 100%;
-  max-width: 1193px; 
-  padding: 40px 24px;
+  padding: 16px;
   box-sizing: border-box;
 }
 
-/* 佈局總容器 */
+/* 佈局總容器：窄螢幕單欄堆疊，寬螢幕可換行並排 */
 .main-content-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 24px;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   width: 100%;
-}
-
-/* 側邊欄佔位塊 */
-.sidebar-placeholder {
-  width: 280px;
-  flex-shrink: 0;
 }
 
 /* 左側欄位 */
 .left-column {
-  width: 515px;
+  flex: 1 1 320px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  flex-shrink: 0;
 }
 
 /* 右側欄位 */
 .right-column {
-  width: 350px;
+  flex: 1 1 280px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  flex-shrink: 0;
 }
 
 /* 標題與帶圓底箭頭列 */
@@ -271,8 +253,8 @@
   flex-direction: column;  
   gap: 12px;              
   align-items: flex-start;
-  margin-left: 45px;       
-  padding-left: 40px;      
+  margin-left: 24px;
+  padding-left: 24px;
 }
 
 .stat-item {

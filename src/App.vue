@@ -13,7 +13,6 @@ function launchEditor() {
   gifts.purchaseDraft()
   router.push({ name: 'use-gift-setup' })
 }
-import Portfolio from './components/Portfolio.vue';
 </script>
 
 <template>
