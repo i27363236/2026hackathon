@@ -34,7 +34,7 @@ const usePointNav = [
 <template>
   <nav
     class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary border rounded-4"
-    :class="{ 'is-open': open }" style="margin-top: 3.5rem;"
+    :class="{ 'is-open': open }"
   >
     <ul class="nav nav-pills flex-column p-4">
       <li v-for="item in mainNav" :key="item.label" class="nav-item">

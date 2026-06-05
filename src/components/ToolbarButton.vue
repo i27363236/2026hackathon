@@ -5,7 +5,7 @@ defineProps({
   icon: { type: String, required: true },
   ariaLabel: { type: String, required: true },
   variant: { type: String, default: 'light' },
-  size: { type: Number, default: 40 },
+  size: { type: Number, default: 44 },
 })
 
 defineEmits(['click'])
