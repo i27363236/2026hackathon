@@ -213,7 +213,7 @@ const actions = [
 
     <!-- Coupon exchange deals -->
     <section>
-      <h3 class="h5 fw-bold mb-4">這樣換，最划算</h3>
+      <h3 class="mb-4">這樣換，最划算</h3>
       <div class="card-row d-flex gap-4 pb-2">
         <RowCard
           v-for="c in coupons"
