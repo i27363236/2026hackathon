@@ -68,3 +68,8 @@ $box-shadow-lg: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
 $px-phone:          16px;
 $px-tablet-tools:   10px;
 $px-tablet-content: 24px;
+
+:root {
+  --px-phone:          #{$px-phone};
+  --px-tablet-content: #{$px-tablet-content};
+}

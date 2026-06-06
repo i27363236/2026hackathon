@@ -48,7 +48,7 @@ const actions = [
 </script>
 
 <template>
-  <div class="home mx-auto p-5 d-flex flex-column gap-8">
+  <div class="home mx-auto d-flex flex-column gap-8">
     <!-- Hero banner carousel -->
     <section>
       <div
@@ -246,13 +246,13 @@ const actions = [
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .home {
   max-width: 720px;
-}
-@media (min-width: 768px) {
-  .home {
+  padding: var(--px-phone);
+  @media (min-width: 768px) {
     max-width: 100%;
+    padding: var(--px-tablet-content);
   }
 }
 .hero {
@@ -295,9 +295,15 @@ const actions = [
 }
 .card-row {
   overflow-x: auto;
-  scroll-snap-type: x proximity;
+  scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--px-phone));
+  padding-inline-end: var(--px-phone);
+  @media (min-width: 768px) {
+    margin-inline-end: calc(-1 * var(--px-tablet-content));
+    padding-inline-end: var(--px-tablet-content);
+  }
 }
 .card-row::-webkit-scrollbar {
   display: none;
@@ -336,7 +342,15 @@ const actions = [
 }
 .tiles-row {
   gap: 8px;
-  overflow: scroll;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--px-tablet-content));
+  padding-inline-end: var(--px-tablet-content);
+}
+.tiles-row::-webkit-scrollbar {
+  display: none;
 }
 .summary-col {
   flex: 3 1 0;
@@ -349,5 +363,6 @@ const actions = [
 .tiles-row :deep(.action-tile) {
   width: 185px;
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 </style>
