@@ -16,6 +16,17 @@ Design tokens flow from Figma → SCSS primitives → Bootstrap overrides → co
 Commit messages are in Traditional Chinese (繁體中文).
 Icons: Phosphor via `@iconify/vue` — use `<Icon icon="ph:..." />`, import `{ Icon } from '@iconify/vue'` per SFC. Icon set package: `@iconify-json/ph`.
 
+### Icon Conventions
+- UI icons: always use `-light` weight variant — `ph:icon-name-light` (e.g. `ph:house-light`)
+- Default size: `width="24" height="24"` on every `<Icon>` for UI icons
+- Navigation icons (nav.js / AppSidebar): use `-duotone` suffix — separate convention, do not change
+- Exemptions: ActionTile.vue (64px decorative bg), GiftCard.vue (fill doodles), hero background icons (≥100px), QR display icons
+
+### Layout Padding
+- Phone horizontal padding: `$px-phone` (16 px)
+- Tablet tools / sidebar padding: `$px-tablet-tools` (10 px)
+- Tablet main content padding: `$px-tablet-content` (24 px)
+
 ---
 
 ## Working Rules

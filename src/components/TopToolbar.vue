@@ -18,15 +18,14 @@ defineEmits(['back'])
       <div class="d-flex align-items-center flex-grow-1">
         <ToolbarButton
           v-if="showBack"
-          :size="32"
           variant="ghost"
-          icon="ph:caret-left"
+          icon="ph:caret-left-light"
           aria-label="返回"
           @click="$emit('back')"
         />
       </div>
 
-      <h1 v-if="title" class="toolbar-title h5 fw-bold mb-0 position-absolute start-50 translate-middle-x text-truncate">
+      <h1 v-if="title" class="toolbar-title h5 mb-0 position-absolute start-50 top-50 translate-middle-x text-truncate">
         {{ title }}
       </h1>
 
@@ -55,7 +54,7 @@ defineEmits(['back'])
   min-height: 40px;
 }
 .toolbar-title {
-  top: 5px;
+  translate: 0 calc(-50% - 4px);
   pointer-events: none;
   max-width: 50%;
 }

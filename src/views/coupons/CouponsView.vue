@@ -22,7 +22,7 @@ const goBack = () => router.back()
     <!-- Header -->
     <header class="sticky-top bg-white border-bottom p-3 d-flex align-items-center">
       <button class="btn btn-link p-0 text-dark me-3" @click="goBack">
-        <Icon icon="ph:caret-left-bold" width="24" height="24" />
+        <Icon icon="ph:caret-left-light" width="24" height="24" />
       </button>
       <h1 class="h5 mb-0 fw-bold">我的優惠券</h1>
     </header>
@@ -58,11 +58,11 @@ const goBack = () => router.back()
           </div>
           <h2 class="h6 mb-1 text-truncate fw-bold">{{ coupon.title }}</h2>
           <div class="d-flex align-items-center text-secondary small">
-            <Icon icon="ph:coins-fill" class="me-1 text-warning" />
+            <Icon icon="ph:coins-light" class="me-1 text-warning" width="24" height="24" />
             <span>{{ coupon.point }} 點數兌換</span>
           </div>
         </div>
-        <Icon icon="ph:caret-right-bold" class="text-secondary opacity-50 ms-2" />
+        <Icon icon="ph:caret-right-light" class="text-secondary opacity-50 ms-2" width="24" height="24" />
       </div>
     </div>
 

@@ -18,7 +18,7 @@ defineEmits(['close'])
     <!-- Close button -->
     <div class="d-flex justify-content-end px-3 pt-3">
       <ToolbarButton
-        :size="32"
+        :size="44"
         variant="ghost"
         icon="ph:device-tablet-speaker-thin"
         aria-label="關閉側邊欄"
@@ -33,7 +33,7 @@ defineEmits(['close'])
           :to="item.to"
           :href="item.to ? undefined : '#'"
           class="nav-link d-flex align-items-center gap-4 text-body"
-          style="height: 2.75rem"
+          style="height: 2.5rem"
         >
           <Icon :icon="item.icon" width="24" class="text-body-secondary" />
           <span>{{ item.label }}</span>

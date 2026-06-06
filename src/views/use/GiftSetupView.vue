@@ -428,30 +428,30 @@ async function done() {
     <div class="toolbar border-top bg-white d-flex align-items-center justify-content-between px-3 py-2 flex-shrink-0">
       <div class="d-flex align-items-center gap-1">
         <button type="button" class="tool btn btn-sm" :class="tool === 'select' ? 'btn-primary' : 'btn-light'" @click="setTool('select')" title="選取">
-          <Icon icon="ph:cursor" width="20" height="20" />
+          <Icon icon="ph:cursor-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm" :class="tool === 'pen' ? 'btn-primary' : 'btn-light'" @click="setTool('pen')" title="手寫">
-          <Icon icon="ph:pencil-simple" width="20" height="20" />
+          <Icon icon="ph:pencil-simple-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'sticker' }" @click="togglePanel('sticker')" title="貼紙">
-          <Icon icon="ph:sticker" width="20" height="20" />
+          <Icon icon="ph:sticker-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'photo' }" @click="togglePanel('photo')" title="車站照片">
-          <Icon icon="ph:image" width="20" height="20" />
+          <Icon icon="ph:image-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'stamp' }" @click="togglePanel('stamp')" title="印章">
-          <Icon icon="ph:seal" width="20" height="20" />
+          <Icon icon="ph:seal-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'bg' }" @click="togglePanel('bg')" title="背景">
-          <Icon icon="ph:paint-bucket" width="20" height="20" />
+          <Icon icon="ph:paint-bucket-light" width="20" height="20" />
         </button>
       </div>
       <div class="d-flex align-items-center gap-1">
         <button type="button" class="tool btn btn-sm btn-light" :disabled="!history.length" @click="undo" title="復原">
-          <Icon icon="ph:arrow-counter-clockwise" width="20" height="20" />
+          <Icon icon="ph:arrow-counter-clockwise-light" width="20" height="20" />
         </button>
         <button type="button" class="tool btn btn-sm btn-light text-danger" :disabled="!selectedId" @click="removeSelected" title="刪除">
-          <Icon icon="ph:trash" width="20" height="20" />
+          <Icon icon="ph:trash-light" width="20" height="20" />
         </button>
       </div>
     </div>

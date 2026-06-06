@@ -13,7 +13,7 @@ defineEmits(['open'])
       aria-label="開啟側邊欄"
       @click="$emit('open')"
     >
-      <Icon icon="ph:sidebar-simple" width="24"/>
+      <Icon icon="ph:sidebar-simple-light" width="24" height="24"/>
     </button>
 
     <div class="pill-divider" />

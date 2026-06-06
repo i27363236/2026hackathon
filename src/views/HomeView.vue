@@ -108,7 +108,7 @@ const actions = [
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
                   <span class="summary-num display-3 me-auto">15</span>
-                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="fw-bold summary-label">捷運點</span>
@@ -122,7 +122,7 @@ const actions = [
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
                   <span class="summary-num display-3 me-auto">3</span>
-                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <span class="fw-bold summary-label d-block">優惠券</span>
                 <div class="mt-4 caption-2">1張將於5/15到期</div>
@@ -142,7 +142,7 @@ const actions = [
                   </div>
                 </div>
                 <div class="summary-reward-img flex-shrink-0 d-flex align-items-center justify-content-center bg-secondary">
-                  <Icon icon="ph:ticket" width="28" height="28" class="text-white opacity-75" />
+                  <Icon icon="ph:ticket-light" width="28" height="28" class="text-white opacity-75" />
                 </div>
               </div>
             </div>
@@ -160,7 +160,7 @@ const actions = [
               <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
             </div>
             <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
-              <Icon icon="ph:coffee" width="32" height="32" class="text-body" />
+              <Icon icon="ph:coffee-light" width="32" height="32" class="text-body" />
             </div>
           </div>
         </div>

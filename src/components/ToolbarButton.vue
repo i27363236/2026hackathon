@@ -20,7 +20,7 @@ defineEmits(['click'])
     :aria-label="ariaLabel"
     @click="$emit('click', $event)"
   >
-    <Icon :icon="icon" :width="size * 0.55" :height="size * 0.55" />
+    <Icon :icon="icon" :width="24" />
   </button>
 </template>
 
