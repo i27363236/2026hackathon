@@ -45,8 +45,11 @@ defineEmits(['back'])
 
 <style scoped>
 .top-toolbar {
-  position: sticky;
+  position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1020;
   background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0% ,rgba(255,255,255,0) 100%) !important;
 }

@@ -16,14 +16,10 @@ defineEmits(['close'])
     :class="{ 'is-open': open }"
   >
     <!-- Close button -->
-    <div class="d-flex justify-content-end px-3 pt-3">
-      <ToolbarButton
-        :size="44"
-        variant="ghost"
-        icon="ph:device-tablet-speaker-thin"
-        aria-label="關閉側邊欄"
-        @click="$emit('close')"
-      />
+    <div class="d-flex justify-content-end px-4">
+      <div class="close-sidebar-button px-2 py-1 rounded-pill">
+        <Icon width="24" icon="ph:device-tablet-speaker-thin" @click="$emit('close')" />
+      </div>
     </div>
 
     <ul class="nav nav-pills flex-column p-4 pt-2">
@@ -94,6 +90,7 @@ defineEmits(['close'])
 .app-sidebar.is-open {
   width: 240px;
   margin: 16px;
+  margin-top: 0;
   overflow-y: auto;
   opacity: 1;
 }
@@ -108,5 +105,14 @@ defineEmits(['close'])
 .nav-link.router-link-active {
   background-color: var(--bs-primary);
   color: var(--bs-white) !important;
+}
+
+.close-sidebar-button {
+  margin-top: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--bs-primary-bg-subtle);
+  }
 }
 </style>

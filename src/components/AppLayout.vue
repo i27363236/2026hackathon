@@ -21,7 +21,7 @@ const sidebarOpen = ref(true)
       @close="sidebarOpen = false"
     />
 
-    <div class="right-col flex-grow-1 d-flex flex-column overflow-hidden" style="min-width: 0">
+    <div class="right-col flex-grow-1 d-flex flex-column overflow-hidden position-relative" style="min-width: 0">
       <TopToolbar
         :title="meta.title"
         :show-back="!!meta.back"
@@ -34,7 +34,7 @@ const sidebarOpen = ref(true)
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto" style="min-height: 0">
+      <main class="flex-grow-1 overflow-auto" style="min-height: 0; padding-top: 40px">
         <RouterView />
       </main>
 
