@@ -4,31 +4,18 @@ import ToolbarButton from './ToolbarButton.vue'
 
 defineProps({
   title: { type: String, default: '' },
-  showToggle: { type: Boolean, default: false },
-  sidebarOpen: { type: Boolean, default: true },
   showBack: { type: Boolean, default: false },
   showProfile: { type: Boolean, default: false },
 })
 
-defineEmits(['toggle', 'back'])
+defineEmits(['back'])
 </script>
 
 <template>
   <header class="top-toolbar">
-    <!-- px-5=16px, pb-3=8px, pt-0 — matches Figma container padding -->
     <div class="toolbar-inner d-flex align-items-center justify-content-between px-5 pb-3 pt-0 position-relative">
 
-      <!-- Left: grows to fill space, holds back / sidebar-toggle -->
       <div class="d-flex align-items-center flex-grow-1">
-        <ToolbarButton
-          v-if="showToggle"
-          class="d-none d-md-inline-flex"
-          :size="32"
-          variant="ghost"
-          :icon="sidebarOpen ? 'ph:sidebar-simple-fill' : 'ph:sidebar-simple'"
-          aria-label="切換側邊欄"
-          @click="$emit('toggle')"
-        />
         <ToolbarButton
           v-if="showBack"
           :size="32"
@@ -39,12 +26,10 @@ defineEmits(['toggle', 'back'])
         />
       </div>
 
-      <!-- Center: absolute, left-50% translate-x(-50%), top 5px -->
       <h1 v-if="title" class="toolbar-title h5 fw-bold mb-0 position-absolute start-50 translate-middle-x text-truncate">
         {{ title }}
       </h1>
 
-      <!-- Right: buttons with no gap, then profile with 10px left padding -->
       <div class="d-flex align-items-center flex-shrink-0">
         <slot name="actions" />
         <RouterLink
@@ -63,11 +48,8 @@ defineEmits(['toggle', 'back'])
 .top-toolbar {
   position: sticky;
   top: 0;
-  width: 100dvw;
   z-index: 1020;
-  background: transparent !important;
-  backdrop-filter: blur(40px) saturate(160%);
-  -webkit-backdrop-filter: blur(40px) saturate(160%);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0% ,rgba(255,255,255,0) 100%) !important;
 }
 .toolbar-inner {
   min-height: 40px;
