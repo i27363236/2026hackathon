@@ -10,18 +10,13 @@ import PointsHistoryView from '../views/points/PointsHistoryView.vue'
 import CouponsView from '../views/coupons/CouponsView.vue'
 
 import GetPointEventsView from '../views/earn/GetPointEventsView.vue'
-import EarnMapView from '../views/earn/EarnMapView.vue'
+import InDevelopmentView from '../views/InDevelopmentView.vue'
 
-import ShoppingView from '../views/use/ShoppingView.vue'
 import ProductView from '../views/use/ProductView.vue'
 // GiftSetupView is the Konva canvas editor — lazy-loaded so Konva stays out of the Home bundle.
 import GiftPreviewView from '../views/use/GiftPreviewView.vue'
 import GiftReceivedView from '../views/use/GiftReceivedView.vue'
 import UseCouponsView from '../views/use/UseCouponsView.vue'
-import RedeemMapView from '../views/use/RedeemMapView.vue'
-import MallView from '../views/use/MallView.vue'
-import ConvertView from '../views/use/ConvertView.vue'
-import DonateView from '../views/use/DonateView.vue'
 import PurchaseCheckoutView from '../views/use/PurchaseCheckoutView.vue'
 import PurchaseSuccessView from '../views/use/PurchaseSuccessView.vue'
 
@@ -47,18 +42,14 @@ const routes = [
       { path: 'coupons', name: 'coupons', component: CouponsView },
 
       { path: 'earn/events', name: 'earn-events', component: GetPointEventsView },
-      { path: 'earn/map', name: 'earn-map', component: EarnMapView },
 
-      { path: 'use/shopping', name: 'use-shopping', component: ShoppingView },
+      { path: 'in-development', name: 'in-development', component: InDevelopmentView, meta: { title: '開發中', back: true } },
+
       { path: 'use/product', name: 'use-product', component: ProductView },
       { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
       { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '', back: true } },
       { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView },
-      { path: 'use/map', name: 'use-redeem-map', component: RedeemMapView },
-      { path: 'use/mall', name: 'use-mall', component: MallView },
-      { path: 'use/convert', name: 'use-convert', component: ConvertView },
-      { path: 'use/donate', name: 'use-donate', component: DonateView },
       { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView },
       { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView },
 
