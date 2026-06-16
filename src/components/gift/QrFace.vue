@@ -1,10 +1,10 @@
 <script setup>
 // Gift coupon face — QR code (Figma node 2415-2352).
-// Big white QR area (static placeholder for now) + a coupon stub and title/expiry below.
+// Big white QR area + a coupon stub and title/expiry below.
 // Shares the image-derived lighter gradient background with ProductFace.
 import { computed, toRef } from 'vue'
-import { Icon } from '@iconify/vue'
 import { useCardColors } from '../../utils/imageColor.js'
+import qrCodeImg from '../../img/qr-code-example.png'
 
 const props = defineProps({
   name: { type: String, default: '' },
@@ -30,9 +30,9 @@ const expiry = computed(() => {
     class="qr-face rounded-4 overflow-hidden w-100 h-100 d-flex flex-column p-5"
     :style="{ background: gradient, color: textColor }"
   >
-    <!-- QR placeholder -->
+    <!-- QR code -->
     <div class="qr-area bg-white rounded-3 d-flex align-items-center justify-content-center flex-grow-1">
-      <Icon icon="ph:qr-code" class="text-dark" width="150" height="150" />
+      <img :src="qrCodeImg" alt="QR Code" class="qr-img" />
     </div>
 
     <!-- coupon stub + info -->
@@ -56,6 +56,11 @@ const expiry = computed(() => {
 }
 .qr-area {
   min-height: 0;
+}
+.qr-img {
+  width: 80%;
+  height: auto;
+  object-fit: contain;
 }
 .min-w-0 {
   min-width: 0;

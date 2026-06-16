@@ -6,6 +6,9 @@
 - **Figma Design**: https://www.figma.com/design/DJD9NiijtkbSig1iqiincK/2026MetroHackathon?node-id=0-1
 - **Figma Slides**: https://www.figma.com/slides/yrz5u0XR5Qv8QFkpIJ58Vs
 
+### QR Code Asset
+Use `src/img/qr-code-example.png` whenever a QR code is needed in the UI. Do not generate or source a different QR image.
+
 ### When to fetch Notion docs
 If requirements, scope, or design intent are unclear — fetch the PRD before guessing.
 Use the `mcp__claude_ai_Notion__notion-fetch` tool or `WebFetch` on the URL above.
