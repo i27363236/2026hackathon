@@ -58,6 +58,13 @@ export const useGiftsStore = defineStore('gifts', () => {
     draftGift.value = createGift(product)
   }
 
+  // Ensure a draft exists. Editor entry points (e.g. the 送禮 nav link) may skip
+  // startDraft(); without this the card image would be silently dropped.
+  function ensureDraft() {
+    if (!draftGift.value) draftGift.value = createGift(null)
+    return draftGift.value
+  }
+
   function updateDraft(patch) {
     if (draftGift.value) Object.assign(draftGift.value, patch)
   }
@@ -114,6 +121,7 @@ export const useGiftsStore = defineStore('gifts', () => {
     draftGift,
     expireDuration,
     startDraft,
+    ensureDraft,
     updateDraft,
     purchaseDraft,
     attachCardImage,
