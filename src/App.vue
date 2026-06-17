@@ -5,6 +5,8 @@
 import { useRouter } from 'vue-router'
 import { useGiftsStore } from './stores/gifts.js'
 
+
+
 const router = useRouter()
 const gifts = useGiftsStore()
 
@@ -17,6 +19,7 @@ function launchEditor() {
 
 <template>
   <RouterView />
+ 
 
   <!-- TEMP launch button -->
   <button type="button" class="temp-launch btn btn-primary rounded-pill shadow" @click="launchEditor">
