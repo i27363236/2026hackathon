@@ -7,6 +7,14 @@ const expiringSoon = ref({
   amount: 320,
   date: '2026/06/30'
 })
+
+const transactions = ref([
+  { id: 1, type: 'earn', title: '搭乘捷運 - 板南線', date: '2026/05/20 08:30', amount: 5 },
+  { id: 2, type: 'redeem', title: '兌換大冰拿鐵 (中)', date: '2026/05/19 15:45', amount: -55 },
+  { id: 3, type: 'earn', title: '每日簽到獎勵', date: '2026/05/19 07:00', amount: 10 },
+  { id: 4, type: 'earn', title: '搭乘捷運 - 淡水信義線', date: '2026/05/18 18:20', amount: 5 },
+  { id: 5, type: 'redeem', title: '兌換捷運一日票', date: '2026/05/15 10:00', amount: -150 }
+])
 </script>
 
 <template>
@@ -66,6 +74,33 @@ const expiringSoon = ref({
         <Icon icon="ph:caret-right-light" class="text-muted" width="24" height="24" />
       </div>
     </div>
+
+    <!-- Transaction History Section -->
+    <div class="mt-7 px-2">
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <h3 class="h6 fw-bold mb-0">最近紀錄</h3>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-light rounded-pill px-3 py-1 dropdown-toggle border-0 small text-secondary" type="button">
+            全部
+          </button>
+        </div>
+      </div>
+
+      <div class="transaction-list">
+        <div v-for="tx in transactions" :key="tx.id" class="d-flex align-items-center py-4 border-bottom border-light">
+          <div class="flex-shrink-0 icon-box-sm rounded-circle d-flex align-items-center justify-content-center me-4" :class="tx.type === 'earn' ? 'bg-primary-subtle' : 'bg-light'">
+            <Icon :icon="tx.type === 'earn' ? 'ph:train-light' : 'ph:gift-light'" :class="tx.type === 'earn' ? 'text-primary' : 'text-secondary'" width="20" height="20" />
+          </div>
+          <div class="flex-grow-1">
+            <div class="fw-bold text-dark small mb-1">{{ tx.title }}</div>
+            <div class="text-muted smaller">{{ tx.date }}</div>
+          </div>
+          <div class="flex-shrink-0 fw-bold" :class="tx.type === 'earn' ? 'text-primary' : 'text-dark'">
+            {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount }} P
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -79,6 +114,11 @@ const expiringSoon = ref({
     height: 32px;
   }
 
+  .icon-box-sm {
+    width: 40px;
+    height: 40px;
+  }
+
   .display-4 {
     line-height: 1;
     letter-spacing: -1px;
@@ -90,6 +130,10 @@ const expiringSoon = ref({
     &:hover {
       background-color: var(--bs-light) !important;
     }
+  }
+
+  .smaller {
+    font-size: 0.75rem;
   }
 
   // Override primary color specifically for this card if needed to match Metro Blue
