@@ -2,12 +2,12 @@
 // Gift card editor — a Konva canvas (via vue-konva) for the personalized card "note" side.
 // Features: handwrite (pen), stickers, MRT station photos, custom stamps, background select.
 // On finish, the canvas is flattened to a PNG dataURL and stored on the draft gift.
-import { ref, nextTick } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { Icon } from '@iconify/vue'
 // Local vue-konva imports keep Konva in this lazy chunk (not the Home bundle).
 import { Stage, Layer, Rect, Line, Text, Image, Group, Circle, Transformer } from 'vue-konva'
 import StampBuilder from '../../components/editor/StampBuilder.vue'
+import EditToolbar from '../../components/editor/EditToolbar.vue'
 import { useGiftsStore } from '../../stores/gifts.js'
 import { stationPhotos } from '../../data/stationPhotos.js'
 import { giftBackgrounds } from '../../data/giftBackgrounds.js'
@@ -16,7 +16,7 @@ const router = useRouter()
 const gifts = useGiftsStore()
 
 const STAGE_W = 300
-const STAGE_H = 400
+const STAGE_H = 450 // 2:3, matching the Figma postcard (316×474) and the bg assets
 const STAMP_COLOR = '#0079a9'
 
 const stageRef = ref(null)
@@ -28,6 +28,7 @@ const penColor = ref('#e3002c')
 const penWidth = ref(4)
 
 const bg = ref({ type: 'color', value: '#ffffff' })
+const bgImage = ref(null) // loaded HTMLImageElement when bg.type === 'image'
 const lines = ref([]) // { id, points, stroke, strokeWidth }
 const items = ref([]) // { id, type, ... }
 const selectedId = ref('')
@@ -49,12 +50,47 @@ const BG_PRESETS = [
   ...giftBackgrounds.map((b) => ({ type: 'image', value: b.src, name: b.name })),
 ]
 
+// Toolbar config consumed by EditToolbar. 'select'/'pen' switch the drawing
+// tool; the rest toggle a contextual options panel.
+const TOOLS = [
+  { key: 'select', icon: 'ph:cursor-light', label: '選取' },
+  { key: 'pen', icon: 'ph:pencil-simple-light', label: '塗鴉' },
+  { key: 'photo', icon: 'ph:subway-light', label: '捷運回憶' },
+  { key: 'sticker', icon: 'ph:sticker-light', label: '貼紙' },
+  { key: 'stamp', icon: 'ph:seal-light', label: '印章' },
+  { key: 'bg', icon: 'ph:paint-bucket-light', label: '背景' },
+]
+
+const actions = computed(() => [
+  { key: 'undo', icon: 'ph:arrow-counter-clockwise-light', label: '復原', disabled: !history.value.length },
+  { key: 'delete', icon: 'ph:trash-light', label: '刪除', disabled: !selectedId.value, danger: true },
+])
+
+// Which toolbar key reads as active: an open panel wins, otherwise the tool.
+const activeTool = computed(() => panel.value || tool.value)
+// Show the options strip when drawing with the pen or when a panel is open.
+const showOptions = computed(() => tool.value === 'pen' || panel.value !== '')
+
 function setTool(t) {
   tool.value = t
   if (t === 'pen') selectedId.value = ''
 }
 function togglePanel(p) {
   panel.value = panel.value === p ? '' : p
+}
+
+function onToolSelect(key) {
+  if (key === 'select' || key === 'pen') {
+    panel.value = ''
+    setTool(key)
+  } else {
+    tool.value = 'select'
+    togglePanel(key)
+  }
+}
+function onAction(key) {
+  if (key === 'undo') undo()
+  else if (key === 'delete') removeSelected()
 }
 
 // ---- background config ----
@@ -70,8 +106,22 @@ function bgConfig() {
   }
   return { ...base, fill: bg.value.type === 'color' ? bg.value.value : '#ffffff' }
 }
+// Image backgrounds are drawn as a full-stage Konva Image (so they export with the card).
+function bgImageConfig() {
+  return { x: 0, y: 0, width: STAGE_W, height: STAGE_H, image: bgImage.value, name: 'bg' }
+}
 function setBg(preset) {
   bg.value = preset
+  if (preset.type === 'image') {
+    const img = new window.Image()
+    img.onload = () => {
+      // Ignore if the user has since picked a different background.
+      if (bg.value.type === 'image' && bg.value.value === preset.value) bgImage.value = img
+    }
+    img.src = preset.value
+  } else {
+    bgImage.value = null
+  }
 }
 
 // ---- adding items ----
@@ -288,6 +338,7 @@ async function done() {
   await nextTick()
   const stage = stageRef.value?.getStage()
   if (stage) {
+    gifts.ensureDraft() // editor may be opened without a seeded draft (e.g. 送禮 nav)
     const dataUrl = stage.toDataURL({ pixelRatio: 2 })
     gifts.attachCardImage(dataUrl)
     gifts.updateDraft({ background: JSON.stringify(bg.value) })
@@ -297,10 +348,23 @@ async function done() {
 </script>
 
 <template>
-  <div class="gift-editor d-flex flex-column h-100">
-    <!-- canvas -->
-    <div class="canvas-area flex-grow-1 overflow-auto d-flex align-items-center justify-content-center p-5" style="min-height: 0">
-      <div class="stage-frame rounded-4 shadow-sm overflow-hidden">
+  <div class="gift-editor d-flex flex-column h-100 position-relative">
+    <!-- stage row: tablet → [toolbar rail | canvas | detail menu]; mobile → stacked -->
+    <div class="editor-stage flex-grow-1" style="min-height: 0">
+      <div class="toolbar-col d-none d-md-flex flex-shrink-0">
+        <EditToolbar
+          orientation="vertical"
+          :tools="TOOLS"
+          :actions="actions"
+          :active="activeTool"
+          @select="onToolSelect"
+          @action="onAction"
+        />
+      </div>
+
+      <!-- canvas -->
+      <div class="canvas-area flex-grow-1 overflow-auto d-flex align-items-center justify-content-center p-5" style="min-height: 0">
+        <div class="stage-frame rounded-1 shadow-sm overflow-hidden">
         <Stage
           ref="stageRef"
           :config="{ width: STAGE_W, height: STAGE_H }"
@@ -312,7 +376,8 @@ async function done() {
           @touchend="onStageUp"
         >
           <Layer>
-            <Rect :config="bgConfig()" />
+            <Image v-if="bg.type === 'image' && bgImage" :config="bgImageConfig()" />
+            <Rect v-else :config="bgConfig()" />
 
             <Line
               v-for="l in lines"
@@ -362,13 +427,20 @@ async function done() {
             <Transformer ref="transformerRef" :config="{ rotateEnabled: true, borderStroke: '#0079a9' }" />
           </Layer>
         </Stage>
+        </div>
       </div>
+
+      <!-- detail menu: right column on tablet (full height), bottom strip on mobile -->
+      <div v-if="showOptions" class="detail-col flex-shrink-0">
+      <!-- pen options -->
+      <div v-if="tool === 'pen'" class="px-4 py-3 d-flex align-items-center gap-3">
+      <span class="small fw-bold">畫筆</span>
+      <input v-model="penColor" type="color" class="form-control form-control-color form-control-sm p-0 border-0" />
+      <input v-model.number="penWidth" type="range" min="2" max="14" class="form-range flex-grow-1" />
     </div>
 
-    <!-- bottom control stack (sticky together) -->
-    <div class="editor-controls">
     <!-- contextual panels -->
-    <div v-if="panel" class="panel border-top bg-body p-4 flex-shrink-0">
+    <div v-else class="panel p-4">
       <div v-if="panel === 'sticker'" class="d-flex gap-2 flex-wrap">
         <button
           v-for="s in STICKERS"
@@ -415,45 +487,20 @@ async function done() {
           @click="setBg(p)"
         />
       </div>
+      </div>
+      </div>
     </div>
 
-    <!-- pen options -->
-    <div v-if="tool === 'pen'" class="panel border-top bg-body px-4 py-3 d-flex align-items-center gap-3 flex-shrink-0">
-      <span class="small fw-bold">畫筆</span>
-      <input v-model="penColor" type="color" class="form-control form-control-color form-control-sm p-0 border-0" />
-      <input v-model.number="penWidth" type="range" min="2" max="14" class="form-range flex-grow-1" />
-    </div>
-
-    <!-- toolbar -->
-    <div class="toolbar border-top bg-white d-flex align-items-center justify-content-between px-3 py-2 flex-shrink-0">
-      <div class="d-flex align-items-center gap-1">
-        <button type="button" class="tool btn btn-sm" :class="tool === 'select' ? 'btn-primary' : 'btn-light'" @click="setTool('select')" title="選取">
-          <Icon icon="ph:cursor" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm" :class="tool === 'pen' ? 'btn-primary' : 'btn-light'" @click="setTool('pen')" title="手寫">
-          <Icon icon="ph:pencil-simple" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'sticker' }" @click="togglePanel('sticker')" title="貼紙">
-          <Icon icon="ph:sticker" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'photo' }" @click="togglePanel('photo')" title="車站照片">
-          <Icon icon="ph:image" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'stamp' }" @click="togglePanel('stamp')" title="印章">
-          <Icon icon="ph:seal" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm btn-light" :class="{ active: panel === 'bg' }" @click="togglePanel('bg')" title="背景">
-          <Icon icon="ph:paint-bucket" width="20" height="20" />
-        </button>
-      </div>
-      <div class="d-flex align-items-center gap-1">
-        <button type="button" class="tool btn btn-sm btn-light" :disabled="!history.length" @click="undo" title="復原">
-          <Icon icon="ph:arrow-counter-clockwise" width="20" height="20" />
-        </button>
-        <button type="button" class="tool btn btn-sm btn-light text-danger" :disabled="!selectedId" @click="removeSelected" title="刪除">
-          <Icon icon="ph:trash" width="20" height="20" />
-        </button>
-      </div>
+    <!-- mobile toolbar (bottom) -->
+    <div class="mobile-toolbar d-md-none border-top bg-white px-3 py-2 flex-shrink-0">
+      <EditToolbar
+        orientation="horizontal"
+        :tools="TOOLS"
+        :actions="actions"
+        :active="activeTool"
+        @select="onToolSelect"
+        @action="onAction"
+      />
     </div>
 
     <!-- footer -->
@@ -467,14 +514,13 @@ async function done() {
         </button>
       </div>
     </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
 .stage-frame {
   width: 300px;
-  height: 400px;
+  height: 450px;
   background: #fff;
 }
 .sticker-btn {
@@ -489,22 +535,32 @@ async function done() {
   border: 1px solid var(--bs-gray-300);
   padding: 0;
 }
-.tool.active {
-  background: var(--bs-primary-bg-subtle);
+
+/* Stage row: stacked on mobile, three columns (toolbar | canvas | detail) on tablet+. */
+.editor-stage {
+  display: flex;
+  flex-direction: column;
 }
-.footer {
-  position: static;
+.toolbar-col {
+  background: var(--bs-secondary-bg);
 }
-/* All bottom bars stick together to the scroll container's bottom, so none gets pushed
-   below the fold by AppLayout's content spacer. */
-.editor-controls {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
+/* Detail menu: a bottom strip on mobile (capped + scroll)… */
+.detail-col {
+  border-top: 1px solid var(--bs-border-color);
   background: var(--bs-body-bg);
+  max-height: 45vh;
+  overflow-y: auto;
 }
-.footer {
-  position: sticky;
-  bottom: 0;
+@media (min-width: 768px) {
+  .editor-stage {
+    flex-direction: row;
+  }
+  /* …a full-height right rail on tablet+. */
+  .detail-col {
+    width: 320px;
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid var(--bs-border-color);
+  }
 }
 </style>

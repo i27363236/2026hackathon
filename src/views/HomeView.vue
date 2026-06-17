@@ -36,19 +36,19 @@ const heroSlides = [
 ]
 
 const actions = [
-  { label: '購物', icon: 'ph:shopping-bag', to: { name: 'use-shopping' } },
+  { label: '購物', icon: 'ph:shopping-bag', to: { name: 'in-development' } },
   { label: '送禮', icon: 'ph:gift', to: { name: 'use-gift-setup' } },
   { label: '優惠券', icon: 'ph:ticket', to: { name: 'use-coupons' } },
-  { label: '銷點地圖', icon: 'ph:map-pin', to: { name: 'use-redeem-map' } },
-  { label: '捷客券商城', icon: 'ph:storefront', to: { name: 'use-mall' } },
-  { label: '轉換點數', icon: 'ph:arrows-left-right', to: { name: 'use-convert' } },
-  { label: '點數傳愛', icon: 'ph:heart', to: { name: 'use-donate' } },
+  { label: '銷點地圖', icon: 'ph:map-pin', to: { name: 'in-development' } },
+  { label: '捷客券商城', icon: 'ph:storefront', to: { name: 'in-development' } },
+  { label: '轉換點數', icon: 'ph:arrows-left-right', to: { name: 'in-development' } },
+  { label: '點數傳愛', icon: 'ph:heart', to: { name: 'in-development' } },
 ]
 
 </script>
 
 <template>
-  <div class="home mx-auto p-5 d-flex flex-column gap-8">
+  <div class="home mx-auto d-flex flex-column gap-8">
     <!-- Hero banner carousel -->
     <section>
       <div
@@ -104,25 +104,25 @@ const actions = [
       <section class="summary-col">
         <div class="row g-3">
           <div class="col-6 col-md-4">
-            <RouterLink :to="{ name: 'use-convert' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+            <div class="card border-0 rounded-4 text-decoration-none text-body h-100">
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
                   <span class="summary-num display-3 me-auto">15</span>
-                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="fw-bold summary-label">捷運點</span>
                 </div>
                 <div class="mt-4 caption-2">4點將於5/15到期</div>
               </div>
-            </RouterLink>
+            </div>
           </div>
           <div class="col-6 col-md-4">
             <RouterLink :to="{ name: 'use-coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
                   <span class="summary-num display-3 me-auto">3</span>
-                  <Icon icon="ph:caret-right" width="20" height="20" class="text-body-tertiary summary-caret" />
+                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <span class="fw-bold summary-label d-block">優惠券</span>
                 <div class="mt-4 caption-2">1張將於5/15到期</div>
@@ -142,7 +142,7 @@ const actions = [
                   </div>
                 </div>
                 <div class="summary-reward-img flex-shrink-0 d-flex align-items-center justify-content-center bg-secondary">
-                  <Icon icon="ph:ticket" width="28" height="28" class="text-white opacity-75" />
+                  <Icon icon="ph:ticket-light" width="28" height="28" class="text-white opacity-75" />
                 </div>
               </div>
             </div>
@@ -160,7 +160,7 @@ const actions = [
               <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
             </div>
             <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
-              <Icon icon="ph:coffee" width="32" height="32" class="text-body" />
+              <Icon icon="ph:coffee-light" width="32" height="32" class="text-body" />
             </div>
           </div>
         </div>
@@ -172,7 +172,7 @@ const actions = [
       <!-- md+: single horizontal wrapping row -->
       <div class="tiles-row d-none d-md-flex pb-2">
         <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" />
-        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'earn-map' }" variant="blue" />
+        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="blue" />
         <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
       </div>
 
@@ -182,7 +182,7 @@ const actions = [
           <h3 class="mb-4">累積捷運點</h3>
           <div class="row g-4">
             <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" /></div>
-            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'earn-map' }" variant="blue" /></div>
+            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="blue" /></div>
           </div>
         </div>
         <div>
@@ -213,7 +213,7 @@ const actions = [
 
     <!-- Coupon exchange deals -->
     <section>
-      <h3 class="h5 fw-bold mb-4">這樣換，最划算</h3>
+      <h3 class="mb-4">這樣換，最划算</h3>
       <div class="card-row d-flex gap-4 pb-2">
         <RowCard
           v-for="c in coupons"
@@ -246,13 +246,13 @@ const actions = [
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .home {
   max-width: 720px;
-}
-@media (min-width: 768px) {
-  .home {
+  padding: var(--px-phone);
+  @media (min-width: 768px) {
     max-width: 100%;
+    padding: var(--px-tablet-content);
   }
 }
 .hero {
@@ -295,9 +295,15 @@ const actions = [
 }
 .card-row {
   overflow-x: auto;
-  scroll-snap-type: x proximity;
+  scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--px-phone));
+  padding-inline-end: var(--px-phone);
+  @media (min-width: 768px) {
+    margin-inline-end: calc(-1 * var(--px-tablet-content));
+    padding-inline-end: var(--px-tablet-content);
+  }
 }
 .card-row::-webkit-scrollbar {
   display: none;
@@ -336,7 +342,15 @@ const actions = [
 }
 .tiles-row {
   gap: 8px;
-  overflow: scroll;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--px-tablet-content));
+  padding-inline-end: var(--px-tablet-content);
+}
+.tiles-row::-webkit-scrollbar {
+  display: none;
 }
 .summary-col {
   flex: 3 1 0;
@@ -349,5 +363,6 @@ const actions = [
 .tiles-row :deep(.action-tile) {
   width: 185px;
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 </style>

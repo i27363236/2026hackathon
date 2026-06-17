@@ -10,18 +10,13 @@ import PointsHistoryView from '../views/points/PointsHistoryView.vue'
 import CouponsView from '../views/coupons/CouponsView.vue'
 
 import GetPointEventsView from '../views/earn/GetPointEventsView.vue'
-import EarnMapView from '../views/earn/EarnMapView.vue'
+import InDevelopmentView from '../views/InDevelopmentView.vue'
 
-import ShoppingView from '../views/use/ShoppingView.vue'
 import ProductView from '../views/use/ProductView.vue'
 // GiftSetupView is the Konva canvas editor — lazy-loaded so Konva stays out of the Home bundle.
 import GiftPreviewView from '../views/use/GiftPreviewView.vue'
 import GiftReceivedView from '../views/use/GiftReceivedView.vue'
 import UseCouponsView from '../views/use/UseCouponsView.vue'
-import RedeemMapView from '../views/use/RedeemMapView.vue'
-import MallView from '../views/use/MallView.vue'
-import ConvertView from '../views/use/ConvertView.vue'
-import DonateView from '../views/use/DonateView.vue'
 import PurchaseCheckoutView from '../views/use/PurchaseCheckoutView.vue'
 import PurchaseSuccessView from '../views/use/PurchaseSuccessView.vue'
 
@@ -40,39 +35,44 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', name: 'home', component: HomeView, meta: { title: '捷運點', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
+      { path: '', name: 'home', component: HomeView, meta: { title: '首頁', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
 
-      { path: 'points', name: 'points', component: PointsView },
+      { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
 
-      { path: 'coupons', name: 'coupons', component: CouponsView },
+      { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
 
-      { path: 'earn/events', name: 'earn-events', component: GetPointEventsView },
-      { path: 'earn/map', name: 'earn-map', component: EarnMapView },
+      { path: 'earn/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '獲點活動', back: true } },
 
-      { path: 'use/shopping', name: 'use-shopping', component: ShoppingView },
-      { path: 'use/product', name: 'use-product', component: ProductView },
+      { path: 'in-development', name: 'in-development', component: InDevelopmentView, meta: { title: '開發中', back: true } },
+
+      { path: 'use/product', name: 'use-product', component: ProductView, meta: { title: '商品詳情', back: true } },
       { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
-      { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '', back: true } },
-      { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView },
-      { path: 'use/map', name: 'use-redeem-map', component: RedeemMapView },
-      { path: 'use/mall', name: 'use-mall', component: MallView },
-      { path: 'use/convert', name: 'use-convert', component: ConvertView },
-      { path: 'use/donate', name: 'use-donate', component: DonateView },
-      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView },
-      { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView },
+      { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '收到禮物', back: true } },
+      { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView, meta: { title: '使用優惠券', back: true } },
+      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView, meta: { title: '結帳', back: true } },
+      { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView, meta: { title: '購買成功' } },
 
-      { path: 'profile', name: 'profile', component: ProfileView },
-      { path: 'profile/info', name: 'profile-info', component: BasicInfoView },
-      { path: 'profile/achievements', name: 'profile-achievements', component: AchievementsView },
-      { path: 'profile/activity', name: 'profile-activity', component: ActivityView },
-      { path: 'profile/gifts', name: 'profile-gifts', component: GiftsView },
-      { path: 'profile/gifts/available', name: 'profile-gifts-available', component: GiftsAvailableView },
-      { path: 'profile/gifts/history', name: 'profile-gifts-history', component: GiftsHistoryView },
-      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', component: GiftsSentView },
-      { path: 'profile/settings', name: 'profile-settings', component: SettingsView },
+      { path: 'profile', name: 'profile', component: ProfileView, meta: { title: '個人檔案', back: true } },
+      { path: 'profile/info', name: 'profile-info', component: BasicInfoView, meta: { title: '基本資料', back: true } },
+      { path: 'profile/achievements', name: 'profile-achievements', component: AchievementsView, meta: { title: '成就', back: true } },
+      { path: 'profile/activity', name: 'profile-activity', component: ActivityView, meta: { title: '活動紀錄', back: true } },
+      { path: 'profile/gifts', name: 'profile-gifts', component: GiftsView, meta: { title: '我的禮物', back: true } },
+      { path: 'profile/gifts/available', name: 'profile-gifts-available', component: GiftsAvailableView, meta: { title: '可用禮物', back: true } },
+      { path: 'profile/gifts/history', name: 'profile-gifts-history', component: GiftsHistoryView, meta: { title: '禮物紀錄', back: true } },
+      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', component: GiftsSentView, meta: { title: '已送禮物', back: true } },
+      { path: 'profile/settings', name: 'profile-settings', component: SettingsView, meta: { title: '設定', back: true } },
     ],
   },
 ]
 
-export default createRouter({ history: createWebHashHistory(), routes })
+const SITE_NAME = '捷點大集合'
+
+const router = createRouter({ history: createWebHashHistory(), routes })
+
+router.afterEach((to) => {
+  const pageTitle = to.meta?.title
+  document.title = pageTitle ? `${pageTitle}｜${SITE_NAME}` : SITE_NAME
+})
+
+export default router

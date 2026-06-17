@@ -18,11 +18,11 @@ const gift = computed(() => {
 const sender = computed(() => gift.value?.signature || '小捷')
 
 const actions = [
-  { label: '搜尋附近可使用店家', icon: 'ph:magnifying-glass' },
-  { label: '將禮物加入 台北捷運Go', icon: 'ph:plus-circle' },
-  { label: '開啟到期提醒', icon: 'ph:bell' },
-  { label: '將到期期限加入行事曆', icon: 'ph:calendar-plus' },
-  { label: '回禮小卡', icon: 'ph:note-pencil' },
+  { label: '搜尋附近可使用店家', icon: 'ph:magnifying-glass-light' },
+  { label: '將禮物加入 台北捷運Go', icon: 'ph:plus-circle-light' },
+  { label: '開啟到期提醒', icon: 'ph:bell-light' },
+  { label: '將到期期限加入行事曆', icon: 'ph:calendar-plus-light' },
+  { label: '回禮小卡', icon: 'ph:note-pencil-light' },
 ]
 </script>
 
@@ -45,8 +45,8 @@ const actions = [
               <img
                 v-if="gift?.cardImage"
                 :src="gift.cardImage"
-                class="rounded-4 w-100 h-100"
-                style="object-fit: cover; aspect-ratio: 3 / 4"
+                class="rounded-1 w-100 h-100"
+                style="object-fit: cover; aspect-ratio: 2 / 3"
                 alt="禮物卡片"
               />
               <ProductFace
@@ -78,9 +78,9 @@ const actions = [
             type="button"
             class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-4 px-0"
           >
-            <Icon :icon="a.icon" class="text-body-secondary" width="22" height="22" />
+            <Icon :icon="a.icon" class="text-body-secondary" width="24" height="24" />
             <span class="flex-grow-1 text-start">{{ a.label }}</span>
-            <Icon icon="ph:caret-right" class="text-body-tertiary" width="18" height="18" />
+            <Icon icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24" />
           </button>
         </div>
       </div>

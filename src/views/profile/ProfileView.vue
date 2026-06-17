@@ -49,7 +49,7 @@
             <h3>參加過10次台北捷運舉辦的活動</h3>
             <p class="date">2026-04-30 達成</p>
           </div>
-          <img src="../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
+          <img src="../../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
         </div>
 
         <div class="card activity-card">
@@ -58,7 +58,7 @@
             <h3>參加過10次台北捷運舉辦的活動</h3>
             <p class="date">2026-04-30 達成</p>
           </div>
-          <img src="../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
+          <img src="../../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
         </div>
 
         <div class="section-title-bar">
@@ -74,7 +74,7 @@
             <h3>聲聲流動 捷運心動</h3>
             <p class="date">2026-04-24 參加</p>
           </div>
-          <img src="../img/mynaui_music-square.png" alt="琴聲流動紀念章" class="stamp-img-right" />
+          <img src="../../img/mynaui_music-square.png" alt="琴聲流動紀念章" class="stamp-img-right" />
         </div>
       </div>
 
@@ -92,7 +92,7 @@
             <p class="gift-title">誠品生活|100元優惠券</p>
             <p class="expiry">使用期限 2026-06-30</p>
           </div>
-          <img src="../img/Frame 116.png" alt="禮物" class="gift-img-right" />
+          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
         </div>
 
         <div class="card gift-card">
@@ -101,7 +101,7 @@
             <p class="gift-title">全家便利商店|300元購物券</p>
             <p class="expiry">使用期限 2024-11-15</p>
           </div>
-          <img src="../img/Frame 116.png" alt="禮物" class="gift-img-right" />
+          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
         </div>
 
         <div class="card gift-card">
@@ -110,7 +110,7 @@
             <p class="gift-title">星巴克|50元飲品兌換券</p>
             <p class="expiry">使用期限 2025-12-31</p>
           </div>
-          <img src="../img/Frame 116.png" alt="禮物" class="gift-img-right" />
+          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
         </div>
 
         <div class="section-title-bar setting-margin">
