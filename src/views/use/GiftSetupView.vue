@@ -343,7 +343,7 @@ async function done() {
     gifts.attachCardImage(dataUrl)
     gifts.updateDraft({ background: JSON.stringify(bg.value) })
   }
-  router.push({ name: 'use-gift-preview' })
+  // router.push({ name: 'use-gift-preview' })
 }
 </script>
 
