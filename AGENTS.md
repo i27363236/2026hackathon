@@ -1,10 +1,18 @@
 # AGENTS.md
 
 ## References
-
+- Project Home (Notion): https://app.notion.com/p/mpoints-assemble-34ddc169a5ba8088bff0cc4575d4f0a8
 - **PRD (Notion)**: https://www.notion.so/PRD-355dc169a5ba80449eb7e126b3a40ad4
 - **Figma Design**: https://www.figma.com/design/DJD9NiijtkbSig1iqiincK/2026MetroHackathon?node-id=0-1
 - **Figma Slides**: https://www.figma.com/slides/yrz5u0XR5Qv8QFkpIJ58Vs
+
+### QR Code Asset
+Use `src/img/qr-code-example.png` whenever a QR code is needed in the UI. Do not generate or source a different QR image.
+
+### When to fetch Notion docs
+If requirements, scope, or design intent are unclear — fetch the PRD before guessing.
+Use the `mcp__claude_ai_Notion__notion-fetch` tool or `WebFetch` on the URL above.
+Do this proactively rather than asking the user to re-explain what's already documented.
 
 ---
 

@@ -12,7 +12,7 @@ defineEmits(['close'])
 
 <template>
   <nav
-    class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary border rounded-4"
+    class="app-sidebar flex-column flex-shrink-0 bg-body-tertiary"
     :class="{ 'is-open': open }"
   >
     <!-- Close button -->
@@ -77,7 +77,7 @@ defineEmits(['close'])
   margin: 0;
   overflow: hidden;
   opacity: 0;
-  transition: width 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+  transition: width 0.25s ease, opacity 0.2s ease;
 }
 
 @media (min-width: 768px) {
@@ -89,8 +89,6 @@ defineEmits(['close'])
 
 .app-sidebar.is-open {
   width: 240px;
-  margin: 16px;
-  margin-top: 0;
   overflow-y: auto;
   opacity: 1;
 }

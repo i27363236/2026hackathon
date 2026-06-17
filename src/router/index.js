@@ -35,35 +35,44 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', name: 'home', component: HomeView, meta: { title: '捷運點', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
+      { path: '', name: 'home', component: HomeView, meta: { title: '首頁', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
 
-      { path: 'points', name: 'points', component: PointsView },
+      { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
 
-      { path: 'coupons', name: 'coupons', component: CouponsView },
+      { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
 
-      { path: 'earn/events', name: 'earn-events', component: GetPointEventsView },
+      { path: 'earn/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '獲點活動', back: true } },
 
       { path: 'in-development', name: 'in-development', component: InDevelopmentView, meta: { title: '開發中', back: true } },
 
-      { path: 'use/product', name: 'use-product', component: ProductView },
+      { path: 'use/product', name: 'use-product', component: ProductView, meta: { title: '商品詳情', back: true } },
       { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
-      { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '', back: true } },
-      { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView },
-      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView },
-      { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView },
+      { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '收到禮物', back: true } },
+      { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView, meta: { title: '使用優惠券', back: true } },
+      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView, meta: { title: '結帳', back: true } },
+      { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView, meta: { title: '購買成功' } },
 
-      { path: 'profile', name: 'profile', component: ProfileView },
-      { path: 'profile/info', name: 'profile-info', component: BasicInfoView },
-      { path: 'profile/achievements', name: 'profile-achievements', component: AchievementsView },
-      { path: 'profile/activity', name: 'profile-activity', component: ActivityView },
-      { path: 'profile/gifts', name: 'profile-gifts', component: GiftsView },
-      { path: 'profile/gifts/available', name: 'profile-gifts-available', component: GiftsAvailableView },
-      { path: 'profile/gifts/history', name: 'profile-gifts-history', component: GiftsHistoryView },
-      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', component: GiftsSentView },
-      { path: 'profile/settings', name: 'profile-settings', component: SettingsView },
+      { path: 'profile', name: 'profile', component: ProfileView, meta: { title: '個人檔案', back: true } },
+      { path: 'profile/info', name: 'profile-info', component: BasicInfoView, meta: { title: '基本資料', back: true } },
+      { path: 'profile/achievements', name: 'profile-achievements', component: AchievementsView, meta: { title: '成就', back: true } },
+      { path: 'profile/activity', name: 'profile-activity', component: ActivityView, meta: { title: '活動紀錄', back: true } },
+      { path: 'profile/gifts', name: 'profile-gifts', component: GiftsView, meta: { title: '我的禮物', back: true } },
+      { path: 'profile/gifts/available', name: 'profile-gifts-available', component: GiftsAvailableView, meta: { title: '可用禮物', back: true } },
+      { path: 'profile/gifts/history', name: 'profile-gifts-history', component: GiftsHistoryView, meta: { title: '禮物紀錄', back: true } },
+      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', component: GiftsSentView, meta: { title: '已送禮物', back: true } },
+      { path: 'profile/settings', name: 'profile-settings', component: SettingsView, meta: { title: '設定', back: true } },
     ],
   },
 ]
 
-export default createRouter({ history: createWebHashHistory(), routes })
+const SITE_NAME = '捷點大集合'
+
+const router = createRouter({ history: createWebHashHistory(), routes })
+
+router.afterEach((to) => {
+  const pageTitle = to.meta?.title
+  document.title = pageTitle ? `${pageTitle}｜${SITE_NAME}` : SITE_NAME
+})
+
+export default router
