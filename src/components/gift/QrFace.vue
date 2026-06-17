@@ -27,7 +27,7 @@ const expiry = computed(() => {
 
 <template>
   <div
-    class="qr-face rounded-4 overflow-hidden w-100 h-100 d-flex flex-column p-5"
+    class="qr-face rounded-1 overflow-hidden w-100 h-100 d-flex flex-column p-5"
     :style="{ background: gradient, color: textColor }"
   >
     <!-- QR code -->
@@ -52,7 +52,7 @@ const expiry = computed(() => {
 
 <style scoped>
 .qr-face {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
 }
 .qr-area {
   min-height: 0;

@@ -24,7 +24,7 @@ const expiry = computed(() => {
 
 <template>
   <div
-    class="product-face rounded-4 overflow-hidden w-100 h-100 d-flex flex-column p-5"
+    class="product-face rounded-1 overflow-hidden w-100 h-100 d-flex flex-column p-5"
     :style="{ background: gradient, color: textColor }"
   >
     <!-- product image -->
@@ -41,7 +41,7 @@ const expiry = computed(() => {
 
 <style scoped>
 .product-face {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
 }
 .product-img {
   background: rgba(255, 255, 255, 0.35);

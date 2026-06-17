@@ -16,7 +16,7 @@ const router = useRouter()
 const gifts = useGiftsStore()
 
 const STAGE_W = 300
-const STAGE_H = 400
+const STAGE_H = 450 // 2:3, matching the Figma postcard (316×474) and the bg assets
 const STAMP_COLOR = '#0079a9'
 
 const stageRef = ref(null)
@@ -28,6 +28,7 @@ const penColor = ref('#e3002c')
 const penWidth = ref(4)
 
 const bg = ref({ type: 'color', value: '#ffffff' })
+const bgImage = ref(null) // loaded HTMLImageElement when bg.type === 'image'
 const lines = ref([]) // { id, points, stroke, strokeWidth }
 const items = ref([]) // { id, type, ... }
 const selectedId = ref('')
@@ -105,8 +106,22 @@ function bgConfig() {
   }
   return { ...base, fill: bg.value.type === 'color' ? bg.value.value : '#ffffff' }
 }
+// Image backgrounds are drawn as a full-stage Konva Image (so they export with the card).
+function bgImageConfig() {
+  return { x: 0, y: 0, width: STAGE_W, height: STAGE_H, image: bgImage.value, name: 'bg' }
+}
 function setBg(preset) {
   bg.value = preset
+  if (preset.type === 'image') {
+    const img = new window.Image()
+    img.onload = () => {
+      // Ignore if the user has since picked a different background.
+      if (bg.value.type === 'image' && bg.value.value === preset.value) bgImage.value = img
+    }
+    img.src = preset.value
+  } else {
+    bgImage.value = null
+  }
 }
 
 // ---- adding items ----
@@ -334,9 +349,9 @@ async function done() {
 
 <template>
   <div class="gift-editor d-flex flex-column h-100 position-relative">
-    <!-- stage row: desktop toolbar (left rail) + canvas -->
-    <div class="editor-stage flex-grow-1 d-flex" style="min-height: 0">
-      <div class="toolbar-col d-none d-md-flex flex-shrink-0 align-items-center p-3">
+    <!-- stage row: tablet → [toolbar rail | canvas | detail menu]; mobile → stacked -->
+    <div class="editor-stage flex-grow-1" style="min-height: 0">
+      <div class="toolbar-col d-none d-md-flex flex-shrink-0">
         <EditToolbar
           orientation="vertical"
           :tools="TOOLS"
@@ -361,7 +376,8 @@ async function done() {
           @touchend="onStageUp"
         >
           <Layer>
-            <Rect :config="bgConfig()" />
+            <Image v-if="bg.type === 'image' && bgImage" :config="bgImageConfig()" />
+            <Rect v-else :config="bgConfig()" />
 
             <Line
               v-for="l in lines"
@@ -413,13 +429,11 @@ async function done() {
         </Stage>
         </div>
       </div>
-    </div>
 
-    <!-- options strip: pen settings or the active tool's panel.
-         On mobile this sits directly above the bottom toolbar. -->
-    <div v-if="showOptions" class="options-strip border-top bg-body flex-shrink-0">
-    <!-- pen options -->
-    <div v-if="tool === 'pen'" class="px-4 py-3 d-flex align-items-center gap-3">
+      <!-- detail menu: right column on tablet (full height), bottom strip on mobile -->
+      <div v-if="showOptions" class="detail-col flex-shrink-0">
+      <!-- pen options -->
+      <div v-if="tool === 'pen'" class="px-4 py-3 d-flex align-items-center gap-3">
       <span class="small fw-bold">畫筆</span>
       <input v-model="penColor" type="color" class="form-control form-control-color form-control-sm p-0 border-0" />
       <input v-model.number="penWidth" type="range" min="2" max="14" class="form-range flex-grow-1" />
@@ -473,7 +487,8 @@ async function done() {
           @click="setBg(p)"
         />
       </div>
-    </div>
+      </div>
+      </div>
     </div>
 
     <!-- mobile toolbar (bottom) -->
@@ -505,7 +520,7 @@ async function done() {
 <style scoped>
 .stage-frame {
   width: 300px;
-  height: 400px;
+  height: 450px;
   background: #fff;
 }
 .sticker-btn {
@@ -520,9 +535,32 @@ async function done() {
   border: 1px solid var(--bs-gray-300);
   padding: 0;
 }
-/* The options strip can grow tall (e.g. background swatches) — cap it and scroll. */
-.options-strip {
+
+/* Stage row: stacked on mobile, three columns (toolbar | canvas | detail) on tablet+. */
+.editor-stage {
+  display: flex;
+  flex-direction: column;
+}
+.toolbar-col {
+  background: var(--bs-secondary-bg);
+}
+/* Detail menu: a bottom strip on mobile (capped + scroll)… */
+.detail-col {
+  border-top: 1px solid var(--bs-border-color);
+  background: var(--bs-body-bg);
   max-height: 45vh;
   overflow-y: auto;
+}
+@media (min-width: 768px) {
+  .editor-stage {
+    flex-direction: row;
+  }
+  /* …a full-height right rail on tablet+. */
+  .detail-col {
+    width: 320px;
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid var(--bs-border-color);
+  }
 }
 </style>

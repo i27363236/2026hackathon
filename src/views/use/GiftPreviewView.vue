@@ -46,8 +46,8 @@ function send() {
             <img
               v-if="gift.cardImage"
               :src="gift.cardImage"
-              class="rounded-4 w-100 h-100"
-              style="object-fit: cover; aspect-ratio: 3 / 4"
+              class="rounded-1 w-100 h-100"
+              style="object-fit: cover; aspect-ratio: 2 / 3"
               alt="禮物卡片"
             />
             <ProductFace

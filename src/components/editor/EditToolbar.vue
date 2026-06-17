@@ -96,14 +96,12 @@ defineEmits(['select', 'action'])
   cursor: default;
 }
 
-/* Vertical — desktop left rail, styled as a floating card. */
+/* Vertical — tablet left rail: flush, full height, secondary background. */
 .edit-toolbar.is-vertical {
   flex-direction: column;
+  height: 100%;
   background: var(--bs-secondary-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: 20px;
   padding: 8px;
-  box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
 }
 .edit-toolbar.is-vertical .tool-group {
   flex-direction: column;
