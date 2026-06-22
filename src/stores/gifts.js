@@ -24,6 +24,8 @@ function createGift(product) {
     name: product?.name ?? '',
     price: product?.price ?? 0,
     img: product?.img ?? '',
+    qty: 1,
+    isGift: true,
     purchaseDate: '',
     expiredDate: '',
     message: '',
@@ -40,6 +42,12 @@ function createGift(product) {
 export const useGiftsStore = defineStore('gifts', () => {
   const gifts = ref(loadGifts())
   const draftGift = ref(null)
+
+  // Derived (never stored): line total of the current draft (price × quantity).
+  const draftTotal = computed(() => {
+    const g = draftGift.value
+    return g ? (g.price || 0) * (g.qty || 1) : 0
+  })
 
   // Derived (never stored): humanized time-to-expiry of the current draft.
   const expireDuration = computed(() => {
@@ -119,6 +127,7 @@ export const useGiftsStore = defineStore('gifts', () => {
   return {
     gifts,
     draftGift,
+    draftTotal,
     expireDuration,
     startDraft,
     ensureDraft,

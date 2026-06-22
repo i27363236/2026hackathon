@@ -148,3 +148,8 @@ export function getProductById(id) {
   }
   return undefined
 }
+
+// Shelf (category) a product belongs to — used by ProductView for its category row.
+export function getShelfByProductId(id) {
+  return shelves.find((shelf) => shelf.products.some((p) => p.id === id))
+}

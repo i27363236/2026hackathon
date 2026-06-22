@@ -22,9 +22,10 @@ const SAMPLE = {
 const gift = computed(() => gifts.draftGift ?? SAMPLE)
 
 function send() {
-  // Persist the draft into the gifts list (if one is in progress) and carry its id forward.
+  // Persist the draft into the gifts list (if one is in progress) and carry its id forward
+  // to the purchase-success page (the buyer's end of the flow; it links on to the recipient view).
   const id = gifts.draftGift ? gifts.sendGift('') : null
-  router.push({ name: 'use-gift-received', query: id ? { id } : {} })
+  router.push({ name: 'purchase-success', query: id ? { id } : {} })
 }
 </script>
 
