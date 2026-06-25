@@ -38,14 +38,14 @@
         <div class="d-flex align-items-center gap-2">
           <button
             @click="decrease"
-            class="btn btn-light btn-sm rounded-2 d-flex align-items-center justify-content-center btn-counter"
+            class="btn btn-light btn-sm d-flex align-items-center justify-content-center btn-counter"
           >
             -
           </button>
           <span class="mx-3 fw-bold fs-5 text-dark">{{ quantity }}</span>
           <button
             @click="increase"
-            class="btn btn-light text-info btn-sm rounded-2 d-flex align-items-center justify-content-center btn-counter"
+            class="btn btn-light text-info btn-sm d-flex align-items-center justify-content-center btn-counter"
           >
             +
           </button>

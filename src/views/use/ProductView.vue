@@ -79,7 +79,7 @@ function proceed(isGift) {
             <div class="d-flex align-items-center gap-2">
               <button
                 type="button"
-                class="btn btn-light btn-sm rounded-2 d-flex align-items-center justify-content-center btn-counter"
+                class="btn btn-light btn-sm d-flex align-items-center justify-content-center btn-counter"
                 :disabled="qty <= 1"
                 @click="decrease"
               >
@@ -88,7 +88,7 @@ function proceed(isGift) {
               <span class="mx-3 fw-bold fs-5 text-body" style="min-width: 24px; text-align: center">{{ qty }}</span>
               <button
                 type="button"
-                class="btn btn-light text-info btn-sm rounded-2 d-flex align-items-center justify-content-center btn-counter"
+                class="btn btn-light text-info btn-sm d-flex align-items-center justify-content-center btn-counter"
                 @click="increase"
               >
                 <Icon icon="ph:plus-light" width="18" height="18" />

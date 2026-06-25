@@ -142,7 +142,7 @@ function confirm() {
         </div>
         <button
           type="button"
-          class="btn btn-info text-white fw-bold py-2 px-4 rounded-2 d-flex align-items-center justify-content-center gap-2"
+          class="btn btn-info text-white fw-bold py-2 px-4 d-flex align-items-center justify-content-center gap-2"
           style="min-width: 140px"
           :disabled="!draft"
           @click="confirm"

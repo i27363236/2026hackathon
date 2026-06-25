@@ -204,7 +204,7 @@
           </div>
 
           <button
-            class="btn btn-info text-white fw-bold py-2 px-4 rounded-2 btn-confirm"
+            class="btn btn-info text-white fw-bold py-2 px-4 btn-confirm"
             style="background-color: #007bbd; border: none; min-width: 140px"
           >
             確認購買
