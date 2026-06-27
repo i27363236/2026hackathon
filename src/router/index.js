@@ -44,7 +44,7 @@ const routes = [
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
       { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '收到禮物', back: true } },
       { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView, meta: { title: '使用優惠券', back: true } },
-      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView, meta: { title: '結帳', back: true } },
+      { path: 'use/checkout', name: 'purchase-checkout', component: PurchaseCheckoutView, meta: { title: '確認購買', back: true } },
       { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView, meta: { title: '購買成功' } },
 
       { path: 'profile', name: 'profile', component: ProfileView, meta: { title: '個人檔案', back: true } },

@@ -1,9 +1,11 @@
 /* typography - Default */
+// Use the Bootstrap default system font stack — do NOT load a web font (see AGENTS.md).
 // $font-family-sans-serif: Noto Sans TC;
 // $headings-font-family: Noto Sans TC;
-$headings-font-weight: 700px;
+$headings-font-weight: 700;
 // $display-font-family: Inter;
-$display-font-weight: 300px;
+$display-font-weight: 300;
+$font-size-base: 1.0625rem; // 17px — matches $Body-fontSize
 $h1-font-size: 34px;
 $h2-font-size: 28px;
 $h3-font-size: 22px;

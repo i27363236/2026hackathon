@@ -73,16 +73,16 @@ function confirm() {
     <!-- ============================ money checkout ============================ -->
     <template v-if="isMoney">
       <div class="content flex-grow-1 overflow-auto bg-body">
-        <div class="co-container">
+        <div class="one-col">
           <!-- product -->
           <section class="co-section d-flex align-items-center gap-3">
             <div class="co-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
-            <h2 class="co-product-name fw-bold m-0 text-truncate">{{ draft?.name || '—' }}</h2>
+            <h2 class="h3 fw-bold m-0 text-truncate">{{ draft?.name || '—' }}</h2>
           </section>
 
           <!-- 訂單明細 -->
           <section class="co-section">
-            <h3 class="co-title">訂單明細</h3>
+            <h3 class="h3 fw-bold mb-4">訂單明細</h3>
             <div class="co-row">
               <span class="text-body-secondary">小計</span>
               <span class="text-body">NT$ {{ subtotal }}</span>
@@ -96,7 +96,7 @@ function confirm() {
               <span class="text-success">−NT$ {{ discount }}</span>
             </div>
             <div class="co-divider" />
-            <div class="co-row co-total">
+            <div class="co-row fw-bold">
               <span class="text-body">總計</span>
               <span class="text-primary">NT$ {{ total }}</span>
             </div>
@@ -104,7 +104,7 @@ function confirm() {
 
           <!-- 付款方式 -->
           <section class="co-section">
-            <h3 class="co-title">付款方式</h3>
+            <h3 class="h3 fw-bold mb-4">付款方式</h3>
             <div v-for="opt in paymentOptions" :key="opt.id" class="co-option">
               <input
                 class="form-check-input mt-1"
@@ -116,18 +116,24 @@ function confirm() {
               />
               <label class="co-option-label" :for="`pay-${opt.id}`">
                 <span class="d-block text-body">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="co-sub text-body-secondary">{{ opt.sub }}</span>
+                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
               </label>
-              <button v-if="opt.change" type="button" class="btn btn-link p-0 co-change">更改</button>
+              <button
+                v-if="opt.change"
+                type="button"
+                class="btn btn-link p-0 fw-bold text-decoration-none text-nowrap text-body-secondary"
+              >
+                更改
+              </button>
             </div>
           </section>
 
           <!-- 捷運點折抵 -->
           <section class="co-section">
-            <h3 class="co-title">捷運點折抵</h3>
-            <div class="d-flex align-items-center gap-1 mb-2">
+            <h3 class="h3 fw-bold mb-3">捷運點折抵</h3>
+            <div class="d-flex align-items-center gap-1 mb-3">
               <img :src="coinImg" alt="" width="20" height="20" />
-              <span class="co-sub text-body-secondary">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
+              <span class="caption-1 text-body-secondary">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
             </div>
             <div class="co-row align-items-center">
               <span class="text-body">數量</span>
@@ -135,7 +141,7 @@ function confirm() {
                 <button type="button" class="co-step-btn" :disabled="discount <= 0" @click="decPoints">
                   <Icon icon="ph:minus-light" width="20" height="20" />
                 </button>
-                <span class="co-step-val">{{ discount }}</span>
+                <span class="co-step-val fw-bold">{{ discount }}</span>
                 <button
                   type="button"
                   class="co-step-btn co-step-plus"
@@ -150,7 +156,7 @@ function confirm() {
 
           <!-- 發票資訊 -->
           <section class="co-section">
-            <h3 class="co-title">發票資訊</h3>
+            <h3 class="h3 fw-bold mb-4">發票資訊</h3>
             <div v-for="opt in invoiceOptions" :key="opt.id" class="co-option">
               <input
                 class="form-check-input mt-1"
@@ -162,19 +168,25 @@ function confirm() {
               />
               <label class="co-option-label" :for="`inv-${opt.id}`">
                 <span class="d-block text-body">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="co-sub text-body-secondary">{{ opt.sub }}</span>
+                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
               </label>
-              <button v-if="opt.change" type="button" class="btn btn-link p-0 co-change">更改</button>
+              <button
+                v-if="opt.change"
+                type="button"
+                class="btn btn-link p-0 fw-bold text-decoration-none text-nowrap text-body-secondary"
+              >
+                更改
+              </button>
             </div>
           </section>
         </div>
       </div>
 
       <div class="footer bg-body border-top p-3">
-        <div class="co-container py-0">
+        <div class="one-col">
           <button
             type="button"
-            class="btn btn-primary fw-bold w-100 py-2"
+            class="btn btn-primary btn-lg fw-bold w-100"
             :disabled="!draft"
             @click="confirm"
           >
@@ -187,10 +199,10 @@ function confirm() {
     <!-- ============================ points checkout ============================ -->
     <template v-else>
       <div class="content flex-grow-1 overflow-auto bg-body-secondary">
-        <div class="container max-width-container px-4 py-4 d-flex flex-column gap-3" style="max-width: 720px">
+        <div class="one-col px-4 py-4 d-flex flex-column gap-3">
           <!-- line item -->
-          <div class="bg-body rounded-3 p-4 shadow-sm d-flex align-items-center gap-3">
-            <div class="item-thumb rounded flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
+          <div class="bg-body p-4 d-flex align-items-center gap-3">
+            <div class="item-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
             <div class="min-w-0">
               <h2 class="fs-6 fw-bold text-body mb-1 text-truncate">{{ draft?.name || '—' }}</h2>
               <div class="small text-body-secondary">捷運點 {{ draft?.price ?? 0 }} × {{ draft?.qty ?? 1 }} 件</div>
@@ -198,7 +210,7 @@ function confirm() {
           </div>
 
           <!-- 訂單明細 -->
-          <div class="bg-body rounded-3 p-5 shadow-sm">
+          <div class="bg-body p-5">
             <h3 class="fs-6 fw-bold text-body mb-3">訂單明細</h3>
             <div class="d-flex justify-content-between small text-body mb-2">
               <span>小計</span>
@@ -219,7 +231,7 @@ function confirm() {
           </div>
 
           <!-- 捷運點折抵 -->
-          <div class="bg-body rounded-3 p-5 shadow-sm">
+          <div class="bg-body p-5">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h3 class="fs-6 fw-bold text-body m-0">捷運點折抵</h3>
               <div class="form-check form-switch p-0 m-0">
@@ -236,14 +248,14 @@ function confirm() {
               <img :src="coinImg" alt="" width="20" height="20" />
               <span class="text-body small">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
             </div>
-            <div v-if="usePoints" class="d-flex justify-content-between text-body pt-2" style="font-size: 12px">
+            <div v-if="usePoints" class="d-flex justify-content-between text-body pt-2 caption-1">
               <span>本次折抵 {{ discount }} 捷運點</span>
               <span class="text-success">-捷運點 {{ discount }}</span>
             </div>
           </div>
 
           <!-- 發票資訊 -->
-          <div class="bg-body rounded-3 p-5 shadow-sm">
+          <div class="bg-body p-5">
             <h3 class="fs-6 fw-bold text-body mb-3">發票資訊</h3>
             <div
               v-for="opt in invoiceOptions"
@@ -253,7 +265,7 @@ function confirm() {
               <input class="form-check-input mt-1" type="radio" name="invoice-pt" :id="`pt-${opt.id}`" :value="opt.id" v-model="invoiceType" />
               <label class="form-check-label w-100" :for="`pt-${opt.id}`">
                 <span class="d-block fw-bold text-body small">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="text-body-secondary" style="font-size: 12px">{{ opt.sub }}</span>
+                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
               </label>
             </div>
           </div>
@@ -261,20 +273,19 @@ function confirm() {
       </div>
 
       <!-- footer -->
-      <div class="footer bg-body border-top p-3 shadow-sm">
-        <div class="container max-width-container d-flex align-items-center justify-content-between gap-3" style="max-width: 720px">
+      <div class="footer bg-body border-top p-3">
+        <div class="one-col d-flex align-items-center justify-content-between gap-3">
           <div class="price-summary">
-            <div class="text-body fw-bold" style="font-size: 12px">應付金額</div>
+            <div class="caption-1 text-body fw-bold">應付金額</div>
             <div class="fs-4 fw-bold text-primary mt-1">捷運點 {{ total }}</div>
           </div>
           <button
             type="button"
-            class="btn btn-primary text-white fw-bold py-2 px-4 d-flex align-items-center justify-content-center gap-2"
+            class="btn btn-primary btn-lg fw-bold px-4"
             style="min-width: 140px"
             :disabled="!draft"
             @click="confirm"
           >
-            <Icon :icon="draft?.isGift ? 'ph:gift-light' : 'ph:check-light'" width="18" height="18" />
             {{ confirmLabel }}
           </button>
         </div>
@@ -284,8 +295,15 @@ function confirm() {
 </template>
 
 <style scoped>
-.max-width-container {
-  max-width: 720px;
+/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
+.one-col {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .one-col {
+    max-width: 630px;
+    margin-inline: auto;
+  }
 }
 .min-w-0 {
   min-width: 0;
@@ -301,16 +319,11 @@ function confirm() {
 }
 
 /* ---- money checkout ---- */
-.co-container {
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-}
 .co-section {
-  padding: 16px;
+  padding: 20px 16px;
 }
-.co-section + .co-section {
-  border-top: 8px solid var(--bs-secondary-bg);
+.co-section:first-child {
+  padding-top: 16px;
 }
 .co-thumb {
   width: 66px;
@@ -318,24 +331,10 @@ function confirm() {
   border-radius: 4px;
   background: #f2ede7;
 }
-.co-product-name {
-  font-size: 22px;
-  line-height: 28px;
-  color: var(--bs-body-color);
-  min-width: 0;
-}
-.co-title {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 28px;
-  color: var(--bs-body-color);
-  margin: 0 0 12px;
-}
 .co-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 17px;
   margin-bottom: 12px;
 }
 .co-row:last-child {
@@ -345,9 +344,6 @@ function confirm() {
   height: 1px;
   background: var(--bs-border-color);
   margin: 4px 0 12px;
-}
-.co-total {
-  font-weight: 700;
 }
 .co-option {
   display: flex;
@@ -361,19 +357,7 @@ function confirm() {
 .co-option-label {
   flex: 1;
   min-width: 0;
-  font-size: 17px;
   cursor: pointer;
-}
-.co-sub {
-  font-size: 12px;
-  line-height: 16px;
-}
-.co-change {
-  font-size: 17px;
-  font-weight: 700;
-  text-decoration: none;
-  color: var(--bs-secondary-color);
-  white-space: nowrap;
 }
 .co-stepper {
   display: flex;
@@ -400,9 +384,6 @@ function confirm() {
 .co-step-val {
   min-width: 32px;
   text-align: center;
-  font-weight: 700;
-  font-size: 17px;
-  color: var(--bs-body-color);
 }
 .form-check-input:checked {
   background-color: var(--bs-primary);

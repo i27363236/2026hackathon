@@ -1,6 +1,5 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import ToolbarButton from './ToolbarButton.vue'
 import { mainNav, earnPointNav, usePointNav } from '../nav.js'
 
 defineProps({

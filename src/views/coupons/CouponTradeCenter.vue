@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { Icon } from '@iconify/vue'
 
 const categories = ['全部', '美食', '購物', '生活', '交通']
 const activeCategory = ref('全部')

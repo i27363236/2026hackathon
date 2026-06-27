@@ -57,7 +57,7 @@ function onPrimary() {
 <template>
   <div class="product-view d-flex flex-column h-100">
     <div class="content flex-grow-1 overflow-auto">
-      <div class="pv-container">
+      <div class="pv-container one-col">
         <!-- product image -->
         <div class="pv-image-wrap">
           <div class="pv-image-card">
@@ -67,7 +67,7 @@ function onPrimary() {
 
         <!-- title + merchant -->
         <div class="pv-info">
-          <h1 class="pv-title">{{ product?.name || '查無此商品' }}</h1>
+          <h1 class="h2 fw-bold mb-4">{{ product?.name || '查無此商品' }}</h1>
           <div v-if="merchant" class="pv-merchant">
             <span class="pv-merchant-logo">
               <Icon icon="ph:storefront-light" width="20" height="20" />
@@ -78,67 +78,73 @@ function onPrimary() {
 
         <!-- 商品說明 -->
         <div class="pv-intro">
-          <h2 class="pv-section-title">商品說明</h2>
-          <p class="pv-desc">{{ product?.desc }}</p>
+          <h2 class="h3 fw-bold mb-3">商品說明</h2>
+          <p class="text-body-secondary mb-0">{{ product?.desc }}</p>
         </div>
       </div>
     </div>
 
     <!-- dim backdrop while the sheet is expanded -->
-    <div v-if="sheetOpen" class="pv-overlay" @click="sheetOpen = false" />
+    <Transition name="fade">
+      <div v-if="sheetOpen" class="pv-overlay" @click="sheetOpen = false" />
+    </Transition>
 
     <!-- sticky bottom bar / expandable sheet -->
     <div class="pv-bottom bg-body">
-      <div class="pv-bottom-inner">
+      <div class="pv-bottom-inner one-col">
         <!-- expanded sheet content -->
-        <div v-if="sheetOpen" class="pv-sheet">
-          <div class="pv-qty-row">
-            <span class="text-body">數量</span>
-            <div class="pv-stepper">
-              <button type="button" class="pv-step-btn" :disabled="qty <= 1" @click="decrease">
-                <Icon icon="ph:minus-light" width="20" height="20" />
-              </button>
-              <span class="pv-step-val">{{ qty }}</span>
-              <button type="button" class="pv-step-btn pv-step-plus" @click="increase">
-                <Icon icon="ph:plus-light" width="20" height="20" />
-              </button>
+        <Transition name="sheet">
+          <div v-if="sheetOpen" class="pv-sheet-wrap">
+            <div class="pv-sheet">
+              <div class="pv-qty-row">
+                <span class="text-body">數量</span>
+                <div class="pv-stepper">
+                  <button type="button" class="pv-step-btn" :disabled="qty <= 1" @click="decrease">
+                    <Icon icon="ph:minus-light" width="20" height="20" />
+                  </button>
+                  <span class="pv-step-val fw-bold">{{ qty }}</span>
+                  <button type="button" class="pv-step-btn pv-step-plus" @click="increase">
+                    <Icon icon="ph:plus-light" width="20" height="20" />
+                  </button>
+                </div>
+              </div>
+
+              <div class="pv-usage">
+                <button
+                  type="button"
+                  class="pv-usage-tile"
+                  :class="{ active: !giftMode }"
+                  @click="giftMode = false"
+                >
+                  <Icon icon="ph:user-light" width="24" height="24" />
+                  <span class="caption-2">自己使用</span>
+                </button>
+                <button
+                  type="button"
+                  class="pv-usage-tile"
+                  :class="{ active: giftMode }"
+                  @click="giftMode = true"
+                >
+                  <Icon icon="ph:gift-light" width="24" height="24" />
+                  <span class="caption-2">送禮</span>
+                </button>
+              </div>
             </div>
           </div>
-
-          <div class="pv-usage">
-            <button
-              type="button"
-              class="pv-usage-tile"
-              :class="{ active: !giftMode }"
-              @click="giftMode = false"
-            >
-              <Icon icon="ph:user-light" width="24" height="24" />
-              <span class="pv-usage-label">自己使用</span>
-            </button>
-            <button
-              type="button"
-              class="pv-usage-tile"
-              :class="{ active: giftMode }"
-              @click="giftMode = true"
-            >
-              <Icon icon="ph:gift-light" width="24" height="24" />
-              <span class="pv-usage-label">送禮</span>
-            </button>
-          </div>
-        </div>
+        </Transition>
 
         <!-- summary + primary action -->
         <div class="pv-action-row">
           <div class="pv-summary">
-            <div class="pv-summary-name text-truncate">{{ product?.name }}</div>
-            <div class="pv-summary-price">
+            <div class="caption-1 text-body text-truncate">{{ product?.name }}</div>
+            <div class="pv-summary-price text-warning fw-bold">
               <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
               <span>{{ priceText }}</span>
             </div>
           </div>
           <button
             type="button"
-            class="btn btn-primary fw-bold pv-action-btn"
+            class="btn btn-primary btn-lg fw-bold w-100"
             :disabled="!product"
             @click="onPrimary"
           >
@@ -155,6 +161,17 @@ function onPrimary() {
   width: 100%;
 }
 
+/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
+.one-col {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .one-col {
+    max-width: 630px;
+    margin-inline: auto;
+  }
+}
+
 /* product image — full-bleed on phone */
 .pv-image-card {
   background: var(--bs-secondary-bg);
@@ -169,19 +186,10 @@ function onPrimary() {
 .pv-info {
   padding: 24px 16px;
 }
-.pv-title {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 34px;
-  letter-spacing: -0.4px;
-  color: var(--bs-body-color);
-  margin: 0 0 12px;
-}
 .pv-merchant {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 17px;
 }
 .pv-merchant-logo {
   width: 32px;
@@ -197,19 +205,6 @@ function onPrimary() {
 
 .pv-intro {
   padding: 16px;
-}
-.pv-section-title {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 28px;
-  color: var(--bs-body-color);
-  margin: 0 0 8px;
-}
-.pv-desc {
-  font-size: 17px;
-  line-height: 22px;
-  color: var(--bs-secondary-color);
-  margin: 0;
 }
 
 /* overlay */
@@ -232,6 +227,8 @@ function onPrimary() {
   width: 100%;
 }
 .pv-sheet {
+  overflow: hidden;
+  min-height: 0;
   padding: 20px 16px 0;
   display: flex;
   flex-direction: column;
@@ -241,7 +238,6 @@ function onPrimary() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 17px;
 }
 .pv-stepper {
   display: flex;
@@ -268,9 +264,6 @@ function onPrimary() {
 .pv-step-val {
   min-width: 24px;
   text-align: center;
-  font-weight: 700;
-  font-size: 17px;
-  color: var(--bs-body-color);
 }
 
 .pv-usage {
@@ -295,10 +288,6 @@ function onPrimary() {
   color: var(--bs-primary);
   font-weight: 700;
 }
-.pv-usage-label {
-  font-size: 11px;
-  line-height: 13px;
-}
 
 .pv-action-row {
   display: grid;
@@ -310,33 +299,40 @@ function onPrimary() {
 .pv-summary {
   min-width: 0;
 }
-.pv-summary-name {
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--bs-body-color);
-}
 .pv-summary-price {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-top: 2px;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--bs-warning);
-}
-.pv-action-btn {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* tablet / iPad — centered column, image in a dark gradient card */
+/* bottom-sheet expand/collapse — animate real content height via grid-template-rows */
+.pv-sheet-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: grid-template-rows 0.3s ease, opacity 0.3s ease;
+}
+.sheet-enter-from,
+.sheet-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+/* overlay fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* tablet / iPad — image in a dark gradient card (.one-col caps the width) */
 @media (min-width: 768px) {
-  .pv-container {
-    max-width: 640px;
-    margin: 0 auto;
-  }
   .pv-image-wrap {
     padding: 24px 16px 0;
   }
@@ -359,10 +355,6 @@ function onPrimary() {
   }
   .pv-merchant {
     justify-content: center;
-  }
-  .pv-bottom-inner {
-    max-width: 640px;
-    margin: 0 auto;
   }
 }
 </style>
