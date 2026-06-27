@@ -18,7 +18,6 @@ defineEmits(['back'])
       <div class="d-flex align-items-center flex-grow-1">
         <ToolbarButton
           v-if="showBack"
-          variant="ghost"
           icon="ph:caret-left-light"
           aria-label="返回"
           @click="$emit('back')"
@@ -29,14 +28,16 @@ defineEmits(['back'])
         {{ title }}
       </h1>
 
-      <div class="d-flex align-items-center flex-shrink-0">
+      <div class="d-flex align-items-center flex-shrink-0 gap-4">
         <slot name="actions" />
         <RouterLink
           v-if="showProfile"
           to="/profile"
           class="profile-avatar rounded-circle d-inline-block overflow-hidden text-decoration-none flex-shrink-0"
           aria-label="個人檔案"
-        />
+        >
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="頭像" class="w-100 h-100 object-fit-cover" />
+        </RouterLink>
       </div>
 
     </div>
@@ -51,7 +52,7 @@ defineEmits(['back'])
   right: 0;
   width: 100%;
   z-index: 1020;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0% ,rgba(255,255,255,0) 100%) !important;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%) !important;
 }
 .toolbar-inner {
   min-height: 40px;
@@ -62,9 +63,7 @@ defineEmits(['back'])
   max-width: 50%;
 }
 .profile-avatar {
-  width: 24px;
-  height: 24px;
-  background-color: var(--bs-gray-400);
-  margin-left: 10px;
+  width: 44px;
+  height: 44px;
 }
 </style>

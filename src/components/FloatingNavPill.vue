@@ -6,7 +6,7 @@ defineEmits(['open'])
 </script>
 
 <template>
-  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill border">
+  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill border bg-body-tertiary">
     <!-- Sidebar open button -->
     <button
       class="pill-btn d-flex align-items-center justify-content-center rounded-pill"

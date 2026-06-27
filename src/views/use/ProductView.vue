@@ -144,7 +144,7 @@ function onPrimary() {
           </div>
           <button
             type="button"
-            class="btn btn-primary btn-lg fw-bold w-100"
+            class="btn btn-primary fw-bold w-100"
             :disabled="!product"
             @click="onPrimary"
           >

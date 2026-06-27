@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys,json,subprocess,re; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); [print((r.stdout+r.stderr).strip()) for c in [['npm','run','lint'],['npm','run','type-check']] if re.search(r'\\\\.(vue|js)$',fp) for r in [subprocess.run(c,cwd='/Users/liuyuquan/Documents/2026捷運黑客松/mpoints-assemble',capture_output=True,text=True)] if (r.stdout+r.stderr).strip()]\""
+          }
+        ]
+      }
+    ]
+  }
+}

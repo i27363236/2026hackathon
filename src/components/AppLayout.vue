@@ -29,8 +29,8 @@ const sidebarOpen = ref(true)
         @back="router.back()"
       >
         <template v-if="meta.showHomeActions" #actions>
-          <ToolbarButton :size="32" variant="ghost" icon="ph:scan" aria-label="掃描" />
-          <ToolbarButton :size="32" variant="ghost" icon="ph:qr-code" aria-label="QR碼" />
+          <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
+          <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
         </template>
       </TopToolbar>
 

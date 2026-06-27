@@ -186,7 +186,7 @@ function confirm() {
         <div class="one-col">
           <button
             type="button"
-            class="btn btn-primary btn-lg fw-bold w-100"
+            class="btn btn-primary fw-bold w-100"
             :disabled="!draft"
             @click="confirm"
           >
@@ -281,7 +281,7 @@ function confirm() {
           </div>
           <button
             type="button"
-            class="btn btn-primary btn-lg fw-bold px-4"
+            class="btn btn-primary fw-bold px-4"
             style="min-width: 140px"
             :disabled="!draft"
             @click="confirm"
