@@ -49,7 +49,7 @@
             <h3>參加過10次台北捷運舉辦的活動</h3>
             <p class="date">2026-04-30 達成</p>
           </div>
-          <img src="../../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
+          <img src="../../img/award-1.png" alt="活動勳章" class="activity-badge-right" />
         </div>
 
         <div class="card activity-card">
@@ -58,7 +58,7 @@
             <h3>參加過10次台北捷運舉辦的活動</h3>
             <p class="date">2026-04-30 達成</p>
           </div>
-          <img src="../../img/ChatGPT Image 2026年5月13日 下午05_37_22 1.png" alt="活動勳章" class="activity-badge-right" />
+          <img src="../../img/award-1.png" alt="活動勳章" class="activity-badge-right" />
         </div>
 
         <div class="section-title-bar">

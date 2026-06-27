@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+import { Icon } from '@iconify/vue'
+</script>
 
 <template>
   <div class="checkout-page bg-light min-vh-100 d-flex flex-column pb-5">
@@ -7,11 +9,7 @@
         class="container max-width-container px-3 d-flex align-items-center position-relative"
       >
         <a href="#" class="position-absolute start-0 ps-3 text-dark">
-          <img
-            src="../../img/icon-back.png"
-            alt="返回"
-            style="width: 20px; height: 20px"
-          />
+          <Icon icon="ph:caret-left-light" width="24" height="24" />
         </a>
         <h1 class="fs-5 fw-bold m-auto text-dark">確認購買</h1>
       </div>
