@@ -1,6 +1,8 @@
 // Read-only gift catalog. Three fixed shelves, exactly 10 products each.
-// Product shape: { id, name, desc, price, sizeLabel, img, colorKey }.
+// Product shape: { id, name, desc, price, sizeLabel, img, colorKey, purchaseType? }.
 // colorKey is one of variant-1 … variant-6 (see _card-colors.scss); img is empty for now.
+// purchaseType: 'money' products are bought with NT$ (price = NT$ amount) and go through the
+// money checkout; everything else defaults to 'points' (price = 捷運點, exchanged via 兌換).
 
 const shelves = [
   {
@@ -71,16 +73,16 @@ const shelves = [
     key: 'style',
     title: '捷客，我的style',
     products: [
-      { id: 'cat-041', name: 'Metro Team 路線托特帆布袋', desc: '捷運路線圖印花帆布袋，寬底好裝日常必備', price: 290, sizeLabel: 'M', img: '', colorKey: 'variant-5' },
-      { id: 'cat-042', name: 'Metro Team 捷運限定馬克杯', desc: '捷運站名彩繪馬克杯，400ml 大容量陪你晨間時光', price: 390, sizeLabel: 'M', img: '', colorKey: 'variant-6' },
-      { id: 'cat-043', name: 'Metro Team 捷運隨行保溫瓶', desc: '不鏽鋼輕量保溫瓶，印製捷運路線彩條，保溫12小時', price: 590, sizeLabel: 'M', img: '', colorKey: 'variant-1' },
-      { id: 'cat-044', name: 'Metro Team 悠遊卡夾零錢包', desc: '附悠遊卡夾層的 PU 皮革零錢包，出站掃卡不用挖包包', price: 350, sizeLabel: 'S', img: '', colorKey: 'variant-2' },
-      { id: 'cat-045', name: 'Metro Team 捷運地圖絲巾', desc: '台北捷運路線圖輕薄印花絲巾，造型又實用', price: 490, sizeLabel: 'M', img: '', colorKey: 'variant-3' },
-      { id: 'cat-046', name: 'Metro Team 防潑水後背包', desc: '防潑水材質，捷運路線刺繡背帶，通勤首選', price: 790, sizeLabel: 'L', img: '', colorKey: 'variant-4' },
-      { id: 'cat-047', name: 'Metro Team 吉祥物壓克力鑰匙圈', desc: '捷運吉祥物造型透明壓克力鑰匙圈，隨身小確幸', price: 120, sizeLabel: 'S', img: '', colorKey: 'variant-5' },
-      { id: 'cat-048', name: 'Metro Team 捷運文具禮盒組', desc: '含原子筆、便利貼、書夾的捷運文具組，辦公室最潮', price: 290, sizeLabel: 'M', img: '', colorKey: 'variant-6' },
-      { id: 'cat-049', name: 'Metro Team 刺繡棒球帽', desc: '台北捷運 LOGO 刺繡可調式棒球帽，遮陽又有型', price: 690, sizeLabel: 'M', img: '', colorKey: 'variant-1' },
-      { id: 'cat-050', name: 'Metro Team 限定口袋筆記本', desc: 'A6 掌中筆記本，封面印台北捷運路線圖，隨時記錄靈感', price: 220, sizeLabel: 'S', img: '', colorKey: 'variant-2' },
+      { id: 'cat-041', name: 'Metro Team 路線托特帆布袋', desc: '捷運路線圖印花帆布袋，寬底好裝日常必備', price: 290, sizeLabel: 'M', img: '', colorKey: 'variant-5', purchaseType: 'money' },
+      { id: 'cat-042', name: 'Metro Team 捷運限定馬克杯', desc: '捷運站名彩繪馬克杯，400ml 大容量陪你晨間時光', price: 390, sizeLabel: 'M', img: '', colorKey: 'variant-6', purchaseType: 'money' },
+      { id: 'cat-043', name: 'Metro Team 捷運隨行保溫瓶', desc: '不鏽鋼輕量保溫瓶，印製捷運路線彩條，保溫12小時', price: 590, sizeLabel: 'M', img: '', colorKey: 'variant-1', purchaseType: 'money' },
+      { id: 'cat-044', name: 'Metro Team 悠遊卡夾零錢包', desc: '附悠遊卡夾層的 PU 皮革零錢包，出站掃卡不用挖包包', price: 350, sizeLabel: 'S', img: '', colorKey: 'variant-2', purchaseType: 'money' },
+      { id: 'cat-045', name: 'Metro Team 捷運地圖絲巾', desc: '台北捷運路線圖輕薄印花絲巾，造型又實用', price: 490, sizeLabel: 'M', img: '', colorKey: 'variant-3', purchaseType: 'money' },
+      { id: 'cat-046', name: 'Metro Team 防潑水後背包', desc: '防潑水材質，捷運路線刺繡背帶，通勤首選', price: 790, sizeLabel: 'L', img: '', colorKey: 'variant-4', purchaseType: 'money' },
+      { id: 'cat-047', name: 'Metro Team 吉祥物壓克力鑰匙圈', desc: '捷運吉祥物造型透明壓克力鑰匙圈，隨身小確幸', price: 120, sizeLabel: 'S', img: '', colorKey: 'variant-5', purchaseType: 'money' },
+      { id: 'cat-048', name: 'Metro Team 捷運文具禮盒組', desc: '含原子筆、便利貼、書夾的捷運文具組，辦公室最潮', price: 290, sizeLabel: 'M', img: '', colorKey: 'variant-6', purchaseType: 'money' },
+      { id: 'cat-049', name: 'Metro Team 刺繡棒球帽', desc: '台北捷運 LOGO 刺繡可調式棒球帽，遮陽又有型', price: 690, sizeLabel: 'M', img: '', colorKey: 'variant-1', purchaseType: 'money' },
+      { id: 'cat-050', name: 'Metro Team 限定口袋筆記本', desc: 'A6 掌中筆記本，封面印台北捷運路線圖，隨時記錄靈感', price: 220, sizeLabel: 'S', img: '', colorKey: 'variant-2', purchaseType: 'money' },
     ],
   },
   {

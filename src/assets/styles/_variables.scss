@@ -67,6 +67,9 @@ $box-shadow-sm: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
 $box-shadow:    0 3px 12px 2px rgba(0, 0, 0, 0.07);
 $box-shadow-lg: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
 
+// Dimming backdrop behind modals / bottom sheets / drawers.
+$overlay: rgba(41, 41, 58, 0.23);
+
 // Layout padding
 $px-phone:          16px;
 $px-tablet-tools:   10px;
@@ -75,4 +78,5 @@ $px-tablet-content: 24px;
 :root {
   --px-phone:          #{$px-phone};
   --px-tablet-content: #{$px-tablet-content};
+  --overlay:           #{$overlay};
 }

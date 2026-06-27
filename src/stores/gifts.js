@@ -24,6 +24,7 @@ function createGift(product) {
     name: product?.name ?? '',
     price: product?.price ?? 0,
     img: product?.img ?? '',
+    purchaseType: product?.purchaseType ?? 'points',
     qty: 1,
     isGift: true,
     purchaseDate: '',
