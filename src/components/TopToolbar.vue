@@ -6,13 +6,14 @@ defineProps({
   title: { type: String, default: '' },
   showBack: { type: Boolean, default: false },
   showProfile: { type: Boolean, default: false },
+  hero: { type: Boolean, default: false },
 })
 
 defineEmits(['back'])
 </script>
 
 <template>
-  <header class="top-toolbar">
+  <header class="top-toolbar" :class="{ 'top-toolbar--hero': hero }">
     <div class="toolbar-inner d-flex align-items-center justify-content-between px-5 pb-3 pt-0 position-relative">
 
       <div class="d-flex align-items-center flex-grow-1">
@@ -24,7 +25,7 @@ defineEmits(['back'])
         />
       </div>
 
-      <h1 v-if="title" class="toolbar-title h5 mb-0 position-absolute start-50 top-50 translate-middle-x text-truncate">
+      <h1 v-if="title" class="toolbar-title h5 mb-0 position-absolute start-50 top-50 translate-middle-x">
         {{ title }}
       </h1>
 
@@ -52,7 +53,14 @@ defineEmits(['back'])
   right: 0;
   width: 100%;
   z-index: 1020;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%) !important;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.88) 60%, rgba(255,255,255,0) 100%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.top-toolbar--hero {
+  background: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .toolbar-inner {
   min-height: 40px;
@@ -61,6 +69,10 @@ defineEmits(['back'])
   translate: 0 calc(-50% - 4px);
   pointer-events: none;
   max-width: 50%;
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.7);
 }
 .profile-avatar {
   position: relative;

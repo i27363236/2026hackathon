@@ -11,30 +11,6 @@ const joinedEvents = getEvents()
 const coupons = getCoupons()
 const giftProducts = getShelves()[0].products
 
-const heroSlides = [
-  {
-    eyebrow: '2026 捷運黑客松',
-    title: '尋找黑捷客',
-    subtitle: '玩點生活 · 智慧黑客松',
-    date: '05.15 — 13.5',
-    gradient: 'linear-gradient(135deg, #0a1f3c, #12365e)',
-  },
-  {
-    eyebrow: '本週活動',
-    title: '捷運到日市集',
-    subtitle: '中山站 · 限時優惠',
-    date: '06.07 — 06.08',
-    gradient: 'linear-gradient(135deg, #1a3a2c, #2a5e42)',
-  },
-  {
-    eyebrow: '點數快訊',
-    title: '夏日加倍回饋',
-    subtitle: '搭乘即享雙倍捷點',
-    date: '06.01 — 06.30',
-    gradient: 'linear-gradient(135deg, #3a1a2c, #5e2a42)',
-  },
-]
-
 const actions = [
   { label: '購物', icon: 'ph:shopping-bag', to: { name: 'in-development' } },
   { label: '送禮', icon: 'ph:gift', to: { name: 'use-gift-setup' } },
@@ -50,50 +26,21 @@ const actions = [
 <template>
   <div class="home mx-auto d-flex flex-column gap-8">
     <!-- Hero banner carousel -->
-    <section>
-      <div
-        id="heroCarousel"
-        class="carousel slide"
-        data-bs-ride="carousel"
-        data-bs-interval="3000"
-      >
+    <section class="hero-section">
+      <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
-          <div
-            v-for="(slide, i) in heroSlides"
-            :key="i"
-            class="carousel-item"
-            :class="{ active: i === 0 }"
-          >
-            <div
-              class="hero rounded-4 text-white p-7 position-relative overflow-hidden"
-              :style="{ background: slide.gradient }"
-            >
-              <div class="position-relative">
-                <p class="small mb-1 opacity-75">{{ slide.eyebrow }}</p>
-                <h2 class="fw-bold mb-2">{{ slide.title }}</h2>
-                <p class="mb-3 opacity-75">{{ slide.subtitle }}</p>
-                <p class="h4 fw-bold mb-0">{{ slide.date }}</p>
-              </div>
-              <Icon icon="ph:coin" class="hero-coin position-absolute opacity-50" width="160" height="160" />
-            </div>
+          <div v-for="i in 3" :key="i" class="carousel-item" :class="{ active: i === 1 }">
+            <!-- image placeholder; replace with <img class="d-block w-100"> when assets are ready -->
           </div>
         </div>
-
-        <button class="carousel-control-prev d-none" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" />
-        </button>
-        <button class="carousel-control-next d-none" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" />
-        </button>
-
-        <div class="carousel-indicators hero-indicators">
+        <div class="carousel-indicators">
           <button
-            v-for="(_, i) in heroSlides"
+            v-for="i in 3"
             :key="i"
             type="button"
             data-bs-target="#heroCarousel"
-            :data-bs-slide-to="i"
-            :class="{ active: i === 0 }"
+            :data-bs-slide-to="i - 1"
+            :class="{ active: i === 1 }"
           />
         </div>
       </div>
@@ -255,43 +202,18 @@ const actions = [
     padding: var(--px-tablet-content);
   }
 }
-.hero {
-  background: linear-gradient(135deg, #0a1f3c, #12365e);
-}
-.hero-coin {
-  right: -20px;
-  bottom: -20px;
-}
-.hero-indicators {
-  position: static;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-.hero-indicators [data-bs-target] {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--bs-gray-300);
-  border: none;
-  padding: 0;
-  flex-shrink: 0;
-  text-indent: -9999px;
-  transition: width 0.3s ease, border-radius 0.3s ease, background 0.3s ease;
-  opacity: 1;
-}
-.hero-indicators [data-bs-target].active {
-  width: 20px;
-  border-radius: 800px;
-  background: var(--bs-primary);
-}
 .rec-thumb {
   width: 56px;
   height: 56px;
   rotate: 4deg;
+}
+.hero-section {
+  margin-top: calc(-1 * var(--px-phone));
+  margin-inline: calc(-1 * var(--px-phone));
+  @media (min-width: 768px) {
+    margin-top: calc(-1 * var(--px-tablet-content));
+    margin-inline: calc(-1 * var(--px-tablet-content));
+  }
 }
 .card-row {
   overflow-x: auto;

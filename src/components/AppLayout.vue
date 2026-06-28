@@ -26,6 +26,7 @@ const sidebarOpen = ref(true)
         :title="meta.title"
         :show-back="!!meta.back"
         :show-profile="!!meta.showProfile"
+        :hero="!!meta.heroTop"
         @back="router.back()"
       >
         <template v-if="meta.showHomeActions" #actions>
@@ -34,7 +35,7 @@ const sidebarOpen = ref(true)
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto" style="min-height: 0; padding-top: 40px">
+      <main class="flex-grow-1 overflow-auto" style="min-height: 0" :style="meta.heroTop ? {} : { paddingTop: '40px' }">
         <RouterView />
       </main>
 

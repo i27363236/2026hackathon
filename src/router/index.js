@@ -29,7 +29,7 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', name: 'home', component: HomeView, meta: { title: '首頁', back: true, showSidebar: true, showHomeActions: true, showProfile: true } },
+      { path: '', name: 'home', component: HomeView, meta: { showSidebar: true, showHomeActions: true, showProfile: true, heroTop: true } },
 
       { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
 

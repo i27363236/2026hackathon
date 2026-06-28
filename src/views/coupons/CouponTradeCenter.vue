@@ -20,6 +20,24 @@ const filteredCoupons = computed(() => {
 </script>
 
 <template>
+  <div>
+  <!-- Banner carousel — replace carousel-item content with <img> when assets are ready -->
+  <div id="couponBannerCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="3000">
+    <div class="carousel-inner">
+      <div v-for="i in 3" :key="i" class="carousel-item" :class="{ active: i === 1 }" />
+    </div>
+    <div class="carousel-indicators">
+      <button
+        v-for="i in 3"
+        :key="i"
+        type="button"
+        data-bs-target="#couponBannerCarousel"
+        :data-bs-slide-to="i - 1"
+        :class="{ active: i === 1 }"
+      />
+    </div>
+  </div>
+
   <section class="coupon-trade-center py-6">
     <div class="d-flex justify-content-between align-items-center mb-5 px-2">
       <h2 class="h5 fw-bold mb-0">優惠券媒合中心</h2>
@@ -68,6 +86,7 @@ const filteredCoupons = computed(() => {
       </div>
     </div>
   </section>
+  </div>
 </template>
 
 <style lang="scss" scoped>
