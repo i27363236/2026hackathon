@@ -69,7 +69,7 @@ function confirm() {
 </script>
 
 <template>
-  <div class="checkout-view d-flex flex-column h-100">
+  <div class="checkout-view d-flex flex-column h-100 bg-body">
     <!-- ============================ money checkout ============================ -->
     <template v-if="isMoney">
       <div class="content flex-grow-1 overflow-auto bg-body">
@@ -198,7 +198,7 @@ function confirm() {
 
     <!-- ============================ points checkout ============================ -->
     <template v-else>
-      <div class="content flex-grow-1 overflow-auto bg-body-secondary">
+      <div class="content flex-grow-1 overflow-auto bg-body">
         <div class="one-col px-4 py-4 d-flex flex-column gap-3">
           <!-- line item -->
           <div class="bg-body p-4 d-flex align-items-center gap-3">

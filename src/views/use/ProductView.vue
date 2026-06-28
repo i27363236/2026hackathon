@@ -55,7 +55,7 @@ function onPrimary() {
 </script>
 
 <template>
-  <div class="product-view d-flex flex-column h-100">
+  <div class="product-view d-flex flex-column h-100 bg-body">
     <div class="content flex-grow-1 overflow-auto">
       <div class="pv-container one-col">
         <!-- product image -->
