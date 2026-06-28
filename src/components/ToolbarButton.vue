@@ -37,7 +37,7 @@ defineEmits(['click'])
 }
 .toolbar-btn:hover,
 .toolbar-btn:focus-visible {
-  background: rgba(249, 247, 243, 0.95);
+  background: rgba(220, 215, 205, 0.95);
   outline: none;
 }
 </style>

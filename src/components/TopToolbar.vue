@@ -63,7 +63,19 @@ defineEmits(['back'])
   max-width: 50%;
 }
 .profile-avatar {
+  position: relative;
   width: 44px;
   height: 44px;
+}
+.profile-avatar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.15s;
+}
+.profile-avatar:hover::after {
+  background: rgba(0, 0, 0, 0.15);
 }
 </style>
