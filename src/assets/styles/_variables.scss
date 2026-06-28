@@ -3,10 +3,11 @@ $white: #FFFFFFFF;
 $black: #000000FF;
 $body-color: $black;
 $body-bg: $white;
-$body-secondary-color: $gray-600;
+$body-secondary-color: $gray-800;
 $body-secondary-bg: $gray-50;
 $body-tertiary-color: $gray-500;
 $body-tertiary-bg: $gray-100;
+
 $primary-text-emphasis: $blue-700;
 $primary-bg-subtle: $blue-50;
 $primary-border-subtle: $blue-200;
@@ -46,6 +47,7 @@ $link-color: $primary;
 $link-hover-color: $blue-700;
 $component-active-color: $white;
 $component-active-bg: $primary;
+$component-hover-bg: rgba($gray-200, 0.5);
 $border-radius-sm: 4px;
 $border-radius: 8px;
 $border-radius-lg: 12px;
@@ -76,7 +78,8 @@ $px-tablet-tools:   10px;
 $px-tablet-content: 24px;
 
 :root {
-  --px-phone:          #{$px-phone};
-  --px-tablet-content: #{$px-tablet-content};
-  --overlay:           #{$overlay};
+  --px-phone:           #{$px-phone};
+  --px-tablet-content:  #{$px-tablet-content};
+  --overlay:            #{$overlay};
+  --component-hover-bg: #{$component-hover-bg};
 }

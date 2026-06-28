@@ -3,7 +3,7 @@ export const mainNav = [
   { label: '捷運路線', icon: 'ph:graph-light', to: null },
   { label: 'Go優惠', icon: 'ph:gift-light', to: null },
   { label: '更多功能', icon: 'ph:squares-four-light', to: null },
-  { label: '捷運點', icon: 'ph:coin-light', to: { name: 'home' } },
+  { label: '捷運點', metroIcon: true, to: { name: 'home' } },
 ]
 
 export const earnPointNav = [
