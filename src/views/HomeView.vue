@@ -6,7 +6,9 @@ import GiftRowCard from '../components/home/GiftRowCard.vue'
 import { getEvents } from '../data/events.js'
 import { getCoupons } from '../data/coupons.js'
 import { getShelves } from '../data/catalog.js'
+import { getRecommendations } from '../data/recommendations.js'
 
+const recommendations = getRecommendations()
 const joinedEvents = getEvents()
 const coupons = getCoupons()
 const giftProducts = getShelves()[0].products
@@ -103,8 +105,8 @@ const actions = [
         <div class="card p-3 border-0 shadow-lg rounded-5">
           <div class="card-body d-flex align-items-center gap-5 p-5">
             <div class="flex-grow-1">
-              <p class="fw-bold mb-1">在 4 號出口兌換咖啡</p>
-              <p class="text-body-secondary small mb-0">使用這張兌換好的優惠券</p>
+              <p class="fw-bold mb-1">{{ recommendations[0].title }}</p>
+              <p class="text-body-secondary small mb-0">{{ recommendations[0].sub }}</p>
             </div>
             <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
               <Icon icon="ph:coffee-light" width="32" height="32" class="text-body" />
@@ -137,6 +139,24 @@ const actions = [
           <div class="row g-4">
             <div v-for="a in actions" :key="a.label" class="col-6">
               <ActionTile :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Smart recommendations grid -->
+    <section>
+      <h3 class="mb-4">智慧推薦</h3>
+      <div class="row g-4">
+        <div v-for="r in recommendations" :key="r.id" class="col-12 col-md-6 col-lg-4">
+          <div class="rec-card card border rounded-4 h-100">
+            <div class="card-body d-flex align-items-center gap-4 p-4">
+              <div class="flex-grow-1">
+                <p class="fw-bold mb-1">{{ r.title }}</p>
+                <p class="text-body-secondary small mb-0">{{ r.sub }}</p>
+              </div>
+              <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
             </div>
           </div>
         </div>
@@ -281,6 +301,14 @@ const actions = [
 .rec-col {
   flex: 1 1 0;
   min-width: 0;
+}
+.rec-card {
+  border-color: #c8e4f8 !important;
+}
+.rec-card-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
 }
 .tiles-row :deep(.action-tile) {
   width: 185px;
