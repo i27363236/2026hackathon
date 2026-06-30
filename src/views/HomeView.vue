@@ -1,4 +1,5 @@
 <script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import ActionTile from '../components/ActionTile.vue'
 import RowCard from '../components/home/RowCard.vue'
@@ -12,6 +13,15 @@ const recommendations = getRecommendations()
 const joinedEvents = getEvents()
 const coupons = getCoupons()
 const giftProducts = getShelves()[0].products
+
+const currentIndex = ref(0)
+const wrap = n => ((n % recommendations.length) + recommendations.length) % recommendations.length
+const rec = computed(() => recommendations[wrap(currentIndex.value)])
+const recTriple = computed(() => [0, 1, 2].map(offset => recommendations[wrap(currentIndex.value + offset)]))
+let timer
+// decrement so each tick a new card enters on the left and the rightmost leaves
+onMounted(() => { timer = setInterval(() => { currentIndex.value-- }, 3_000) })
+onUnmounted(() => { clearInterval(timer) })
 
 const actions = [
   { label: '購物', icon: 'ph:shopping-bag', to: { name: 'in-development' } },
@@ -99,30 +109,48 @@ const actions = [
         </div>
       </section>
 
-      <!-- Smart recommendation -->
-      <section class="rec-col">
-        <h3 class="mb-md-7 d-md-none">智慧推薦</h3>
-        <div class="card p-3 border-0 shadow-lg rounded-5">
-          <div class="card-body d-flex align-items-center gap-5 p-5">
-            <div class="flex-grow-1">
-              <p class="fw-bold mb-1">{{ recommendations[0].title }}</p>
-              <p class="text-body-secondary small mb-0">{{ recommendations[0].sub }}</p>
+      <!-- Smart recommendation: mobile only -->
+      <section class="rec-col d-md-none">
+        <h3 class="mb-md-7">智慧推薦</h3>
+        <div class="rec-fade-wrap">
+          <Transition name="rec-fade">
+            <div :key="currentIndex" class="card p-3 border-0 shadow-lg rounded-5">
+              <div class="card-body d-flex align-items-center gap-5 p-5">
+                <div class="flex-grow-1">
+                  <p class="fw-bold mb-1">{{ rec.title }}</p>
+                  <p class="text-body-secondary small mb-0">{{ rec.sub }}</p>
+                </div>
+                <img :src="rec.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
+              </div>
             </div>
-            <div class="rec-thumb rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm border border-white border-3 bg-success">
-              <Icon icon="ph:coffee-light" width="32" height="32" class="text-body" />
-            </div>
-          </div>
+          </Transition>
         </div>
       </section>
     </div>
+
+    <!-- Smart recommendations row: tablet+ only -->
+    <section class="d-none d-md-block">
+      <h3 class="mb-4">智慧推薦</h3>
+      <TransitionGroup name="rec-slide" tag="div" class="rec-row d-flex gap-4">
+        <div v-for="r in recTriple" :key="r.id" class="card p-3 border-0 shadow-lg rounded-5 flex-fill">
+          <div class="card-body d-flex align-items-center gap-5 p-5">
+            <div class="flex-grow-1">
+              <p class="fw-bold mb-1">{{ r.title }}</p>
+              <p class="text-body-secondary small mb-0">{{ r.sub }}</p>
+            </div>
+            <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
+          </div>
+        </div>
+      </TransitionGroup>
+    </section>
 
     <!-- Tiles section -->
     <section>
       <!-- md+: single horizontal wrapping row -->
       <div class="tiles-row d-none d-md-flex pb-2">
-        <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" />
-        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="blue" />
-        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
+        <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" />
+        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="gray" />
+        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="gray" />
       </div>
 
       <!-- mobile: two separate grid groups -->
@@ -130,33 +158,15 @@ const actions = [
         <div>
           <h3 class="mb-4">累積捷運點</h3>
           <div class="row g-4">
-            <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="blue" /></div>
-            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="blue" /></div>
+            <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" /></div>
+            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="gray" /></div>
           </div>
         </div>
         <div>
           <h3 class="mb-4">使用捷運點</h3>
           <div class="row g-4">
             <div v-for="a in actions" :key="a.label" class="col-6">
-              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" variant="green" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Smart recommendations grid -->
-    <section>
-      <h3 class="mb-4">智慧推薦</h3>
-      <div class="row g-4">
-        <div v-for="r in recommendations" :key="r.id" class="col-12 col-md-6 col-lg-4">
-          <div class="rec-card card border rounded-4 h-100">
-            <div class="card-body d-flex align-items-center gap-4 p-4">
-              <div class="flex-grow-1">
-                <p class="fw-bold mb-1">{{ r.title }}</p>
-                <p class="text-body-secondary small mb-0">{{ r.sub }}</p>
-              </div>
-              <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
+              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" variant="gray" />
             </div>
           </div>
         </div>
@@ -225,7 +235,6 @@ const actions = [
 .rec-thumb {
   width: 56px;
   height: 56px;
-  rotate: 4deg;
 }
 .hero-section {
   margin-top: calc(-1 * var(--px-phone));
@@ -302,14 +311,45 @@ const actions = [
   flex: 1 1 0;
   min-width: 0;
 }
-.rec-card {
-  border-color: #c8e4f8 !important;
-}
 .rec-card-img {
   width: 72px;
   height: 72px;
   object-fit: cover;
 }
+.rec-fade-wrap {
+  position: relative;
+}
+.rec-fade-enter-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.rec-fade-leave-active {
+  transition: opacity 0.35s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.rec-fade-enter-from { opacity: 0; transform: translateY(16px); } // float up
+.rec-fade-leave-to   { opacity: 0; }
+// tablet+ recommendation row: one card swaps at a time
+.rec-row {
+  position: relative;
+}
+.rec-slide-move {
+  transition: transform 0.45s ease;
+}
+.rec-slide-enter-active {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.rec-slide-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc((100% - 24px) / 3); // 3 cards, two gap-4 (12px) gutters
+}
+.rec-slide-enter-from { opacity: 0; transform: translateY(16px); } // float up
+.rec-slide-leave-to   { opacity: 0; }
 .tiles-row :deep(.action-tile) {
   width: 185px;
   flex-shrink: 0;

@@ -39,7 +39,7 @@ defineProps({
 }
 
 .action-tile--gray {
-  background: linear-gradient(to bottom, #e6dfd8, #d4cac1);
+  background: linear-gradient(to bottom, var(--gray-100), var(--gray-300));
   color: #000;
 }
 

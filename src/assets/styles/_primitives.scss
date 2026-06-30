@@ -81,3 +81,13 @@ $cyan-700: #00545AFF;
 $cyan-800: #00373CFF;
 $cyan-900: #001C1FFF;
 $cyan-950: #000F10FF;
+
+:root{
+  --gray-100: #{$gray-100};
+  --gray-200: #{$gray-200};
+  --gray-300: #{$gray-300};
+  --gray-400: #{$gray-400};
+  --gray-500: #{$gray-500};
+  --gray-600: #{$gray-600};
+  --gray-700: #{$gray-700}; 
+}
