@@ -6,13 +6,18 @@ import RowCard from '../components/home/RowCard.vue'
 import GiftRowCard from '../components/home/GiftRowCard.vue'
 import { getEvents } from '../data/events.js'
 import { getCoupons } from '../data/coupons.js'
-import { getShelves } from '../data/catalog.js'
+import { getShelves, getProductById } from '../data/catalog.js'
 import { getRecommendations } from '../data/recommendations.js'
+import { getProfile } from '../data/profile.js'
 
 const recommendations = getRecommendations()
 const joinedEvents = getEvents()
 const coupons = getCoupons()
 const giftProducts = getShelves()[0].products
+
+const profile = getProfile()
+const goal = getProductById(profile.goalProductId)
+const goalPct = computed(() => Math.min(100, Math.round((profile.points / goal.price) * 100)))
 
 const currentIndex = ref(0)
 const wrap = n => ((n % recommendations.length) + recommendations.length) % recommendations.length
@@ -20,13 +25,16 @@ const rec = computed(() => recommendations[wrap(currentIndex.value)])
 const recTriple = computed(() => [0, 1, 2].map(offset => recommendations[wrap(currentIndex.value + offset)]))
 let timer
 // decrement so each tick a new card enters on the left and the rightmost leaves
-onMounted(() => { timer = setInterval(() => { currentIndex.value-- }, 3_000) })
+onMounted(() => { timer = setInterval(() => { currentIndex.value-- }, 4_500) })
 onUnmounted(() => { clearInterval(timer) })
+
+// Links to the in-development stub are rendered as disabled (muted, unclickable).
+const isStub = to => to?.name === 'in-development'
 
 const actions = [
   { label: '購物', icon: 'ph:shopping-bag', to: { name: 'in-development' } },
   { label: '送禮', icon: 'ph:gift', to: { name: 'use-gift-setup' } },
-  { label: '優惠券', icon: 'ph:ticket', to: { name: 'use-coupons' } },
+  { label: '優惠券', icon: 'ph:ticket', to: { name: 'coupon-trade' } },
   { label: '銷點地圖', icon: 'ph:map-pin', to: { name: 'in-development' } },
   { label: '捷客券商城', icon: 'ph:storefront', to: { name: 'in-development' } },
   { label: '轉換點數', icon: 'ph:arrows-left-right', to: { name: 'in-development' } },
@@ -39,6 +47,8 @@ const actions = [
   <div class="home mx-auto d-flex flex-column gap-8">
     <!-- Hero banner carousel -->
     <section class="hero-section">
+      <!-- Blur strip behind the (transparent) toolbar buttons; height matches ToolbarButton (44px) -->
+      <div class="hero-blur-bar" aria-hidden="true" />
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <div v-for="i in 3" :key="i" class="carousel-item" :class="{ active: i === 1 }">
@@ -61,30 +71,30 @@ const actions = [
     <!-- Points summary + Smart recommendation: stacked on mobile, side-by-side on tablet+ -->
     <div class="d-flex flex-column flex-md-row gap-5 align-items-md-start">
       <section class="summary-col">
-        <div class="row g-3">
+        <div class="summary-row row g-3">
           <div class="col-6 col-md-4">
             <div class="card border-0 rounded-4 text-decoration-none text-body h-100">
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
-                  <span class="summary-num display-3 me-auto">15</span>
+                  <span class="summary-num display-3 me-auto">{{ profile.points }}</span>
                   <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="fw-bold summary-label">捷運點</span>
                 </div>
-                <div class="mt-4 caption-2">4點將於5/15到期</div>
+                <div class="mt-4 caption-2">{{ profile.expiringPoints }}點將於{{ profile.expiringDate }}到期</div>
               </div>
             </div>
           </div>
           <div class="col-6 col-md-4">
-            <RouterLink :to="{ name: 'use-coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+            <RouterLink :to="{ name: 'coupon-trade' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
               <div class="card-body px-5 py-4">
                 <div class="d-flex align-items-start">
-                  <span class="summary-num display-3 me-auto">3</span>
+                  <span class="summary-num display-3 me-auto">{{ profile.coupons }}</span>
                   <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
                 </div>
                 <span class="fw-bold summary-label d-block">優惠券</span>
-                <div class="mt-4 caption-2">1張將於5/15到期</div>
+                <div class="mt-4 caption-2">{{ profile.expiringCoupons }}張將於{{ profile.expiringDate }}到期</div>
               </div>
             </RouterLink>
           </div>
@@ -92,17 +102,15 @@ const actions = [
             <div class="card border-0 rounded-4 h-100 overflow-hidden">
               <div class="card-body p-0 d-flex">
                 <div class="flex-grow-1 px-5 pt-4 summary-goal-body d-flex flex-column justify-content-end">
-                  <div class="summary-goal-num mb-1">15/50</div>
-                  <p class="mb-0 caption-2">誠品書店50元折價券</p>
+                  <div class="summary-goal-num mb-1">{{ profile.points }}/{{ goal.price }}</div>
+                  <p class="mb-0 caption-2">{{ goal.name }}</p>
                   <div class="mt-3">
                     <div class="progress rounded-pill summary-progress-track" style="height: 4px;">
-                      <div class="progress-bar rounded-pill summary-progress-fill" style="width: 30%;" />
+                      <div class="progress-bar rounded-pill summary-progress-fill" :style="{ width: goalPct + '%' }" />
                     </div>
                   </div>
                 </div>
-                <div class="summary-reward-img flex-shrink-0 d-flex align-items-center justify-content-center bg-secondary">
-                  <Icon icon="ph:ticket-light" width="28" height="28" class="text-white opacity-75" />
-                </div>
+                <div class="summary-reward-img flex-shrink-0" :style="{ background: goal.img }" />
               </div>
             </div>
           </div>
@@ -132,11 +140,11 @@ const actions = [
     <section class="d-none d-md-block">
       <h3 class="mb-4">智慧推薦</h3>
       <TransitionGroup name="rec-slide" tag="div" class="rec-row d-flex gap-4">
-        <div v-for="r in recTriple" :key="r.id" class="card p-3 border-0 shadow-lg rounded-5 flex-fill">
+        <div v-for="r in recTriple" :key="r.id" class="rec-card-fixed card p-3 border-0 shadow-lg rounded-5">
           <div class="card-body d-flex align-items-center gap-5 p-5">
-            <div class="flex-grow-1">
-              <p class="fw-bold mb-1">{{ r.title }}</p>
-              <p class="text-body-secondary small mb-0">{{ r.sub }}</p>
+            <div class="flex-grow-1 min-w-0">
+              <p class="fw-bold mb-1 text-nowrap text-truncate">{{ r.title }}</p>
+              <p class="rec-card-sub text-body-secondary small mb-0">{{ r.sub }}</p>
             </div>
             <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
           </div>
@@ -149,24 +157,24 @@ const actions = [
       <!-- md+: single horizontal wrapping row -->
       <div class="tiles-row d-none d-md-flex pb-2">
         <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" />
-        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="gray" />
-        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" variant="gray" />
+        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" />
+        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
       </div>
 
       <!-- mobile: two separate grid groups -->
       <div class="d-md-none d-flex flex-column gap-8">
         <div>
           <h3 class="mb-4">累積捷運點</h3>
-          <div class="row g-4">
+          <div class="tile-grid row g-4">
             <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" /></div>
-            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" variant="gray" /></div>
+            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" /></div>
           </div>
         </div>
         <div>
           <h3 class="mb-4">使用捷運點</h3>
-          <div class="row g-4">
+          <div class="tile-grid row g-4">
             <div v-for="a in actions" :key="a.label" class="col-6">
-              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" variant="gray" />
+              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
             </div>
           </div>
         </div>
@@ -237,12 +245,25 @@ const actions = [
   height: 56px;
 }
 .hero-section {
+  position: relative;
   margin-top: calc(-1 * var(--px-phone));
   margin-inline: calc(-1 * var(--px-phone));
   @media (min-width: 768px) {
     margin-top: calc(-1 * var(--px-tablet-content));
     margin-inline: calc(-1 * var(--px-tablet-content));
   }
+}
+.hero-blur-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px; // matches ToolbarButton default size (44px)
+  z-index: 3;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
 }
 .card-row {
   overflow-x: auto;
@@ -290,6 +311,8 @@ const actions = [
 }
 .summary-reward-img {
   width: 72px;
+  background-size: cover;
+  background-position: center;
 }
 .tiles-row {
   gap: 8px;
@@ -306,6 +329,28 @@ const actions = [
 .summary-col {
   flex: 3 1 0;
   min-width: 0;
+}
+// tablet: summary cards shrink to a fixed width and scroll horizontally if they overflow
+@media (min-width: 768px) {
+  .summary-col {
+    flex: 0 1 auto;
+  }
+  .summary-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .summary-row::-webkit-scrollbar {
+    display: none;
+  }
+  .summary-row > [class*='col-'] {
+    flex: 0 0 auto;
+    width: 200px;
+  }
+  .summary-row > [class*='col-']:last-child {
+    width: 280px; // goal card (with reward image) a touch wider
+  }
 }
 .rec-col {
   flex: 1 1 0;
@@ -331,22 +376,39 @@ const actions = [
 }
 .rec-fade-enter-from { opacity: 0; transform: translateY(16px); } // float up
 .rec-fade-leave-to   { opacity: 0; }
-// tablet+ recommendation row: one card swaps at a time
+// tablet+ recommendation row: fixed-size cards, one swaps at a time, row scrolls if it overflows
+.min-w-0 {
+  min-width: 0;
+}
 .rec-row {
   position: relative;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.rec-row::-webkit-scrollbar {
+  display: none;
+}
+.rec-card-fixed {
+  flex: 0 0 auto;
+  width: 320px;
+}
+.rec-card-sub {
+  column-count: 2;
+  column-gap: 12px;
 }
 .rec-slide-move {
-  transition: transform 0.45s ease;
+  transition: transform 0.8s ease;
 }
 .rec-slide-enter-active {
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .rec-slide-leave-active {
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease;
   position: absolute;
   top: 0;
   right: 0;
-  width: calc((100% - 24px) / 3); // 3 cards, two gap-4 (12px) gutters
+  width: 320px; // matches .rec-card-fixed
 }
 .rec-slide-enter-from { opacity: 0; transform: translateY(16px); } // float up
 .rec-slide-leave-to   { opacity: 0; }
@@ -354,5 +416,11 @@ const actions = [
   width: 185px;
   flex-shrink: 0;
   scroll-snap-align: start;
+}
+// 400–700px: action tiles go from 2 columns to 3
+@media (min-width: 400px) and (max-width: 767.98px) {
+  .tile-grid > .col-6 {
+    width: 33.3333%;
+  }
 }
 </style>

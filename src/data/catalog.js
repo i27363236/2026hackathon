@@ -24,7 +24,7 @@ const shelves = [
       { id: 'cat-004', name: '抹茶千層', desc: '薄如紙的可麗餅層疊濃郁抹茶醬', price: 280, sizeLabel: 'M', img: u('1571115177098-24ec42ed204d'), colorKey: 'variant-4' },
       { id: 'cat-005', name: '開心果可頌', desc: '酥層裹著開心果醬，堅果香氣飽滿', price: 150, sizeLabel: 'M', img: u('1509440159596-0249088772ff'), colorKey: 'variant-5' },
       { id: 'cat-006', name: '伯爵茶拿鐵', desc: '佛手柑香氣的伯爵茶與綿密奶泡', price: 170, sizeLabel: 'M', img: u('1572490122747-3968b75cc699'), colorKey: 'variant-6' },
-      { id: 'cat-007', name: '香草布丁燒', desc: '現烤布丁淋上手煮焦糖，入口即化', price: 120, sizeLabel: 'S', img: u('1461023058943-07fcbe16d735'), colorKey: 'variant-1' },
+      { id: 'cat-007', name: '香草布丁燒', desc: '現烤布丁淋上手煮焦糖，入口即化', price: 30, sizeLabel: 'S', img: u('1461023058943-07fcbe16d735'), colorKey: 'variant-1' },
       { id: 'cat-008', name: '莓果優格杯', desc: '綜合莓果搭配希臘優格，清爽無負擔', price: 140, sizeLabel: 'M', img: u('1490474418585-ba9bad8fd0ea'), colorKey: 'variant-2' },
       { id: 'cat-009', name: '海鹽奶蓋茶', desc: '微鹹奶蓋平衡茶香，層次分明', price: 130, sizeLabel: 'M', img: u('1558857563-b371033873b8'), colorKey: 'variant-3' },
       { id: 'cat-010', name: '榛果布朗尼', desc: '濃郁巧克力裹著酥脆榛果顆粒', price: 160, sizeLabel: 'S', img: u('1606313564200-e75d5e30476c'), colorKey: 'variant-4' },

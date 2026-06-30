@@ -6,6 +6,7 @@ import HomeView from '../views/HomeView.vue'
 import PointsView from '../views/points/PointsView.vue'
 
 import CouponsView from '../views/coupons/CouponsView.vue'
+import CouponTradeCenter from '../views/coupons/CouponTradeCenter.vue'
 
 import GetPointEventsView from '../views/points/GetPointEventsView.vue'
 import InDevelopmentView from '../views/InDevelopmentView.vue'
@@ -34,6 +35,7 @@ const routes = [
       { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
 
       { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
+      { path: 'coupons/trade', name: 'coupon-trade', component: CouponTradeCenter, meta: { title: '優惠券媒合中心', back: true } },
 
       { path: 'points/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '獲點活動', back: true } },
 
