@@ -63,3 +63,18 @@
 .carousel-item {
   height: 100%;
 }
+
+// ── Action list: Figma 2415-5410 ─────────────────────────────────────────
+.action-list {
+  border-radius: $border-radius-xl;
+  padding: 0 12px;
+
+  .list-group-item {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+    border-color: $border-color;
+  }
+}

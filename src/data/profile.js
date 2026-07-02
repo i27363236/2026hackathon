@@ -2,6 +2,8 @@
 
 export function getProfile() {
   return {
+    name: '小捷',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     points: 15,               // 捷運點 balance
     expiringPoints: 4,
     expiringDate: '5/15',
