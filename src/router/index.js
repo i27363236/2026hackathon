@@ -42,7 +42,7 @@ const routes = [
       { path: 'in-development', name: 'in-development', component: InDevelopmentView, meta: { title: '開發中', back: true } },
 
       { path: 'use/product', name: 'use-product', component: ProductView, meta: { title: '商品詳情', back: true } },
-      { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', back: true } },
+      { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', hideTitle: true, back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
       { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '收到禮物', back: true } },
       { path: 'use/coupons', name: 'use-coupons', component: UseCouponsView, meta: { title: '使用優惠券', back: true } },

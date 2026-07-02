@@ -8,6 +8,8 @@ defineProps({
 })
 
 defineEmits(['close'])
+
+const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
 </script>
 
 <template>
@@ -25,10 +27,10 @@ defineEmits(['close'])
     <ul class="nav nav-pills flex-column p-4 pt-2">
       <li v-for="item in mainNav" :key="item.label" class="nav-item">
         <component
-          :is="item.to ? 'RouterLink' : 'a'"
-          :to="item.to"
-          :href="item.to ? undefined : '#'"
-          class="nav-link d-flex align-items-center gap-4 text-body-secondary"
+          :is="isDisabled(item) ? 'span' : 'RouterLink'"
+          :to="isDisabled(item) ? undefined : item.to"
+          class="nav-link d-flex align-items-center gap-4"
+          :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
         >
           <img v-if="item.metroIcon" :src="metroPointImg" width="24" height="24" />
           <Icon v-else :icon="item.icon" width="24" class="text-body-secondary" />
@@ -42,26 +44,30 @@ defineEmits(['close'])
         <div class="caption-1 text-body-tertiary fw-bold px-5 mb-2">累積捷運點</div>
         <ul class="nav nav-pills flex-column">
           <li v-for="item in earnPointNav" :key="item.label" class="nav-item">
-            <RouterLink
-              :to="item.to"
-              class="nav-link d-flex align-items-center gap-4 text-body-secondary"
+            <component
+              :is="isDisabled(item) ? 'span' : 'RouterLink'"
+              :to="isDisabled(item) ? undefined : item.to"
+              class="nav-link d-flex align-items-center gap-4"
+              :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
             >
               <Icon :icon="item.icon" width="24" class="text-body-secondary" />
               <span>{{ item.label }}</span>
-            </RouterLink>
+            </component>
           </li>
         </ul>
       </div>
       <div class="caption-1 text-body-tertiary fw-bold px-5 mb-2">使用捷運點</div>
       <ul class="nav nav-pills flex-column">
         <li v-for="item in usePointNav" :key="item.label" class="nav-item">
-          <RouterLink
-            :to="item.to"
-            class="nav-link d-flex align-items-center gap-4 text-body-secondary"
+          <component
+            :is="isDisabled(item) ? 'span' : 'RouterLink'"
+            :to="isDisabled(item) ? undefined : item.to"
+            class="nav-link d-flex align-items-center gap-4"
+            :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
           >
             <Icon :icon="item.icon" width="24" class="text-body-secondary" />
             <span>{{ item.label }}</span>
-          </RouterLink>
+          </component>
         </li>
       </ul>
     </div>
@@ -95,8 +101,11 @@ defineEmits(['close'])
   white-space: nowrap;
   height: 3rem;
 }
-.nav-link:hover:not(.router-link-active) {
+.nav-link:hover:not(.router-link-active):not(.nav-link--disabled) {
   background-color: var(--component-hover-bg);
+}
+.nav-link--disabled {
+  cursor: default;
 }
 .nav-link.router-link-active {
   background-color: var(--bs-primary);

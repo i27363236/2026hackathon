@@ -77,12 +77,12 @@ function confirm() {
           <!-- product -->
           <section class="co-section d-flex align-items-center gap-3">
             <div class="co-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
-            <h2 class="h3 fw-bold m-0 text-truncate">{{ draft?.name || '—' }}</h2>
+            <h2 class="m-0 text-truncate">{{ draft?.name || '—' }}</h2>
           </section>
 
           <!-- 訂單明細 -->
           <section class="co-section">
-            <h3 class="h3 fw-bold mb-4">訂單明細</h3>
+            <h3 class="mb-4">訂單明細</h3>
             <div class="co-row">
               <span class="text-body-secondary">小計</span>
               <span class="text-body">NT$ {{ subtotal }}</span>
@@ -104,7 +104,7 @@ function confirm() {
 
           <!-- 付款方式 -->
           <section class="co-section">
-            <h3 class="h3 fw-bold mb-4">付款方式</h3>
+            <h3 class="mb-4">付款方式</h3>
             <div v-for="opt in paymentOptions" :key="opt.id" class="co-option">
               <input
                 class="form-check-input mt-1"
@@ -130,7 +130,7 @@ function confirm() {
 
           <!-- 捷運點折抵 -->
           <section class="co-section">
-            <h3 class="h3 fw-bold mb-3">捷運點折抵</h3>
+            <h3 class="mb-3">捷運點折抵</h3>
             <div class="d-flex align-items-center gap-1 mb-3">
               <img :src="coinImg" alt="" width="20" height="20" />
               <span class="caption-1 text-body-secondary">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
@@ -156,7 +156,7 @@ function confirm() {
 
           <!-- 發票資訊 -->
           <section class="co-section">
-            <h3 class="h3 fw-bold mb-4">發票資訊</h3>
+            <h3 class="mb-4">發票資訊</h3>
             <div v-for="opt in invoiceOptions" :key="opt.id" class="co-option">
               <input
                 class="form-check-input mt-1"
@@ -182,16 +182,22 @@ function confirm() {
         </div>
       </div>
 
-      <div class="footer bg-body border-top p-3">
+      <div class="footer bg-body border-top">
         <div class="one-col">
-          <button
-            type="button"
-            class="btn btn-primary fw-bold w-100"
-            :disabled="!draft"
-            @click="confirm"
-          >
-            {{ confirmLabel }}
-          </button>
+          <div class="co-action-row">
+            <div class="co-summary">
+              <div class="caption-1 text-body fw-bold">總計</div>
+              <div class="fs-4 fw-bold text-primary mt-1">NT$ {{ total }}</div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-primary fw-bold"
+              :disabled="!draft"
+              @click="confirm"
+            >
+              {{ confirmLabel }}
+            </button>
+          </div>
         </div>
       </div>
     </template>
@@ -204,14 +210,14 @@ function confirm() {
           <div class="bg-body p-4 d-flex align-items-center gap-3">
             <div class="item-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
             <div class="min-w-0">
-              <h2 class="fs-6 fw-bold text-body mb-1 text-truncate">{{ draft?.name || '—' }}</h2>
+              <h2 class="m-0 text-truncate">{{ draft?.name || '—' }}</h2>
               <div class="small text-body-secondary">捷運點 {{ draft?.price ?? 0 }} × {{ draft?.qty ?? 1 }} 件</div>
             </div>
           </div>
 
           <!-- 訂單明細 -->
           <div class="bg-body p-5">
-            <h3 class="fs-6 fw-bold text-body mb-3">訂單明細</h3>
+            <h3 class="mb-4">訂單明細</h3>
             <div class="d-flex justify-content-between small text-body mb-2">
               <span>小計</span>
               <span>捷運點 {{ subtotal }}</span>
@@ -233,7 +239,7 @@ function confirm() {
           <!-- 捷運點折抵 -->
           <div class="bg-body p-5">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h3 class="fs-6 fw-bold text-body m-0">捷運點折抵</h3>
+              <h3 class="m-0">捷運點折抵</h3>
               <div class="form-check form-switch p-0 m-0">
                 <input
                   class="form-check-input"
@@ -256,7 +262,7 @@ function confirm() {
 
           <!-- 發票資訊 -->
           <div class="bg-body p-5">
-            <h3 class="fs-6 fw-bold text-body mb-3">發票資訊</h3>
+            <h3 class="mb-4">發票資訊</h3>
             <div
               v-for="opt in invoiceOptions"
               :key="opt.id"
@@ -273,21 +279,22 @@ function confirm() {
       </div>
 
       <!-- footer -->
-      <div class="footer bg-body border-top p-3">
-        <div class="one-col d-flex align-items-center justify-content-between gap-3">
-          <div class="price-summary">
-            <div class="caption-1 text-body fw-bold">應付金額</div>
-            <div class="fs-4 fw-bold text-primary mt-1">捷運點 {{ total }}</div>
+      <div class="footer bg-body border-top">
+        <div class="one-col">
+          <div class="co-action-row">
+            <div class="co-summary">
+              <div class="caption-1 text-body fw-bold">應付金額</div>
+              <div class="fs-4 fw-bold text-primary mt-1">捷運點 {{ total }}</div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-primary fw-bold"
+              :disabled="!draft"
+              @click="confirm"
+            >
+              {{ confirmLabel }}
+            </button>
           </div>
-          <button
-            type="button"
-            class="btn btn-primary fw-bold px-4"
-            style="min-width: 140px"
-            :disabled="!draft"
-            @click="confirm"
-          >
-            {{ confirmLabel }}
-          </button>
         </div>
       </div>
     </template>
@@ -316,6 +323,16 @@ function confirm() {
 .footer {
   position: sticky;
   bottom: 0;
+}
+.co-action-row {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+}
+.co-summary {
+  min-width: 0;
 }
 
 /* ---- money checkout ---- */

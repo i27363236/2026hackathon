@@ -23,7 +23,7 @@ const sidebarOpen = ref(true)
 
     <div class="right-col flex-grow-1 d-flex flex-column overflow-hidden position-relative" style="min-width: 0">
       <TopToolbar
-        :title="meta.title"
+        :title="meta.hideTitle ? '' : meta.title"
         :show-back="!!meta.back"
         :show-profile="!!meta.showProfile"
         :hero="!!meta.heroTop"
