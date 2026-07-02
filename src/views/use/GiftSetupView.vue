@@ -2,12 +2,14 @@
 // Gift card editor — a Konva canvas (via vue-konva) for the personalized card "note" side.
 // Features: handwrite (pen), stickers, MRT station photos, custom stamps, background select.
 // On finish, the canvas is flattened to a PNG dataURL and stored on the draft gift.
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { Icon, loadIcon } from '@iconify/vue'
 // Local vue-konva imports keep Konva in this lazy chunk (not the Home bundle).
 import { Stage, Layer, Rect, Line, Text, Image, Group, Circle, Transformer } from 'vue-konva'
 import StampBuilder from '../../components/editor/StampBuilder.vue'
 import EditToolbar from '../../components/editor/EditToolbar.vue'
+import ToolbarButton from '../../components/ToolbarButton.vue'
 import { useGiftsStore } from '../../stores/gifts.js'
 import { stationPhotos } from '../../data/stationPhotos.js'
 import { giftBackgrounds } from '../../data/giftBackgrounds.js'
@@ -21,6 +23,14 @@ const STAMP_COLOR = '#0079a9'
 
 const stageRef = ref(null)
 const transformerRef = ref(null)
+
+// Gate the Teleport until the shell's TopToolbar (#top-toolbar-actions) is in
+// the document — on first load it isn't committed yet when this view mounts.
+const toolbarReady = ref(false)
+onMounted(async () => {
+  await nextTick()
+  toolbarReady.value = true
+})
 
 const tool = ref('select') // 'select' | 'pen'
 const panel = ref('') // '' | 'sticker' | 'photo' | 'stamp' | 'bg'
@@ -61,11 +71,6 @@ const TOOLS = [
   { key: 'bg', icon: 'ph:paint-bucket-light', label: '背景' },
 ]
 
-const actions = computed(() => [
-  { key: 'undo', icon: 'ph:arrow-counter-clockwise-light', label: '復原', disabled: !history.value.length },
-  { key: 'delete', icon: 'ph:trash-light', label: '刪除', disabled: !selectedId.value, danger: true },
-])
-
 // Which toolbar key reads as active: an open panel wins, otherwise the tool.
 const activeTool = computed(() => panel.value || tool.value)
 // Show the options strip when drawing with the pen or when a panel is open.
@@ -88,11 +93,6 @@ function onToolSelect(key) {
     togglePanel(key)
   }
 }
-function onAction(key) {
-  if (key === 'undo') undo()
-  else if (key === 'delete') removeSelected()
-}
-
 // ---- background config ----
 function bgConfig() {
   const base = { x: 0, y: 0, width: STAGE_W, height: STAGE_H, name: 'bg' }
@@ -142,13 +142,33 @@ function addSticker(emoji) {
   select(id)
 }
 
-function addStamp({ name, icon, shape }) {
+// Rasterize a Phosphor icon (by Iconify name) into a tinted HTMLImageElement so
+// it can live on the Konva canvas and export with the card.
+async function iconToImage(iconName, color) {
+  try {
+    const d = await loadIcon(iconName)
+    const body = d.body.replace(/currentColor/g, color)
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${d.width}" height="${d.height}" viewBox="0 0 ${d.width} ${d.height}">${body}</svg>`
+    return await new Promise((resolve) => {
+      const img = new window.Image()
+      img.onload = () => resolve(img)
+      img.onerror = () => resolve(null)
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
+    })
+  } catch {
+    return null
+  }
+}
+
+async function addStamp({ name, icon, shape }) {
+  const iconImage = await iconToImage(icon, '#ffffff')
   const id = nextId('item')
   items.value.push({
     id,
     type: 'stamp',
     label: name,
     icon,
+    iconImage,
     shape,
     x: STAGE_W / 2,
     y: STAGE_H / 2,
@@ -250,12 +270,11 @@ function stampShapeConfig(it) {
   }
 }
 const stampIconConfig = (it) => ({
-  text: it.icon,
-  x: 0,
-  y: 20,
-  width: 90,
-  align: 'center',
-  fontSize: 28,
+  image: it.iconImage,
+  x: 29,
+  y: 16,
+  width: 32,
+  height: 32,
 })
 const stampLabelConfig = (it) => ({
   text: it.label,
@@ -349,21 +368,40 @@ async function done() {
 
 <template>
   <div class="gift-editor d-flex flex-column h-100 position-relative">
+    <!-- Top-toolbar actions injected into the app shell's TopToolbar: 復原 + 完成. -->
+    <Teleport v-if="toolbarReady" to="#top-toolbar-actions">
+      <ToolbarButton
+        icon="ph:arrow-counter-clockwise-light"
+        aria-label="復原"
+        :disabled="!history.length"
+        @click="undo"
+      />
+      <ToolbarButton icon="ph:check-light" aria-label="完成" accent @click="done" />
+    </Teleport>
+
     <!-- stage row: tablet → [toolbar rail | canvas | detail menu]; mobile → stacked -->
     <div class="editor-stage flex-grow-1" style="min-height: 0">
       <div class="toolbar-col d-none d-md-flex flex-shrink-0">
         <EditToolbar
           orientation="vertical"
           :tools="TOOLS"
-          :actions="actions"
           :active="activeTool"
           @select="onToolSelect"
-          @action="onAction"
         />
       </div>
 
       <!-- canvas -->
-      <div class="canvas-area flex-grow-1 overflow-auto d-flex align-items-center justify-content-center p-5" style="min-height: 0">
+      <div class="canvas-area position-relative flex-grow-1 overflow-auto d-flex align-items-center justify-content-center p-5" style="min-height: 0">
+        <!-- contextual delete: only while an item is selected -->
+        <button
+          v-if="selectedId"
+          type="button"
+          class="delete-fab btn btn-danger rounded-pill d-inline-flex align-items-center gap-2 px-3 py-2"
+          @click="removeSelected"
+        >
+          <Icon icon="ph:trash-light" width="24" height="24" />
+          <span class="small fw-bold">刪除</span>
+        </button>
         <div class="stage-frame rounded-1 shadow-sm overflow-hidden">
         <Stage
           ref="stageRef"
@@ -419,7 +457,7 @@ async function done() {
               >
                 <Circle v-if="it.shape === 'circle'" :config="stampShapeConfig(it)" />
                 <Rect v-else :config="stampShapeConfig(it)" />
-                <Text :config="stampIconConfig(it)" />
+                <Image v-if="it.iconImage" :config="stampIconConfig(it)" />
                 <Text :config="stampLabelConfig(it)" />
               </Group>
             </template>
@@ -496,23 +534,9 @@ async function done() {
       <EditToolbar
         orientation="horizontal"
         :tools="TOOLS"
-        :actions="actions"
         :active="activeTool"
         @select="onToolSelect"
-        @action="onAction"
       />
-    </div>
-
-    <!-- footer -->
-    <div class="footer border-top bg-body p-4 flex-shrink-0">
-      <div class="d-flex gap-3 mx-auto" style="max-width: 880px">
-        <button type="button" class="btn btn-outline-secondary flex-fill rounded-pill py-2" @click="router.back()">
-          上一步
-        </button>
-        <button type="button" class="btn btn-primary flex-fill rounded-pill py-2" @click="done">
-          完成
-        </button>
-      </div>
     </div>
   </div>
 </template>
@@ -534,6 +558,15 @@ async function done() {
   border-radius: 10px;
   border: 1px solid var(--bs-gray-300);
   padding: 0;
+}
+/* Floating delete button, pinned to the bottom of the canvas while selecting. */
+.delete-fab {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  box-shadow: var(--bs-box-shadow);
 }
 
 /* Stage row: stacked on mobile, three columns (toolbar | canvas | detail) on tablet+. */

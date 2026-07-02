@@ -29,7 +29,7 @@ defineEmits(['back'])
         {{ title }}
       </h1>
 
-      <div class="d-flex align-items-center flex-shrink-0 gap-4">
+      <div id="top-toolbar-actions" class="d-flex align-items-center flex-shrink-0 gap-4">
         <slot name="actions" />
         <RouterLink
           v-if="showProfile"

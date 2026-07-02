@@ -1,11 +1,22 @@
 <script setup>
-// Custom stamp builder panel: type a station name, pick an icon + a shape, emit the spec.
-// The parent (GiftSetupView) turns the spec into a Konva group on the canvas.
-import { ref } from 'vue'
+// Custom stamp builder panel: type a station name, pick a Phosphor icon, an icon
+// weight, and a shape, then emit the spec. The parent (GiftSetupView) turns the
+// spec into a Konva group on the canvas (the icon is rasterized from its SVG).
+import { ref, computed } from 'vue'
+import { Icon } from '@iconify/vue'
 
 const emit = defineEmits(['add'])
 
-const ICONS = ['🚇', '🚉', '🏯', '🗼', '🌊', '⛩️']
+// Phosphor base names (no weight suffix) shown in the 圖示 section.
+const ICONS = ['train', 'subway', 'tram', 'map-pin', 'heart', 'star', 'coffee', 'buildings', 'mountains', 'flower']
+// Phosphor weight variants — 'regular' has no suffix.
+const WEIGHTS = [
+  { key: 'thin', label: '細' },
+  { key: 'light', label: '輕' },
+  { key: 'regular', label: '標準' },
+  { key: 'bold', label: '粗' },
+  { key: 'fill', label: '實心' },
+]
 const SHAPES = [
   { key: 'circle', label: '圓形' },
   { key: 'square', label: '方形' },
@@ -14,10 +25,19 @@ const SHAPES = [
 
 const name = ref('')
 const icon = ref(ICONS[0])
+const weight = ref('regular')
 const shape = ref('circle')
 
+// Compose the full Iconify name, e.g. 'ph:train' or 'ph:train-light'.
+const iconName = (base) => `ph:${base}${weight.value === 'regular' ? '' : `-${weight.value}`}`
+const selectedIconName = computed(() => iconName(icon.value))
+
 function add() {
-  emit('add', { name: name.value.trim() || '車站', icon: icon.value, shape: shape.value })
+  emit('add', {
+    name: name.value.trim() || '車站',
+    icon: selectedIconName.value,
+    shape: shape.value,
+  })
   name.value = ''
 }
 </script>
@@ -39,11 +59,25 @@ function add() {
         v-for="ic in ICONS"
         :key="ic"
         type="button"
-        class="stamp-icon-btn btn btn-sm"
+        class="stamp-icon-btn btn btn-sm d-inline-flex align-items-center justify-content-center"
         :class="icon === ic ? 'btn-primary' : 'btn-outline-secondary'"
         @click="icon = ic"
       >
-        {{ ic }}
+        <Icon :icon="iconName(ic)" width="22" height="22" />
+      </button>
+    </div>
+
+    <div class="small fw-bold mb-1">粗細</div>
+    <div class="d-flex gap-2 mb-2">
+      <button
+        v-for="w in WEIGHTS"
+        :key="w.key"
+        type="button"
+        class="btn btn-sm flex-fill px-1"
+        :class="weight === w.key ? 'btn-primary' : 'btn-outline-secondary'"
+        @click="weight = w.key"
+      >
+        {{ w.label }}
       </button>
     </div>
 
@@ -70,7 +104,7 @@ function add() {
 <style scoped>
 .stamp-icon-btn {
   width: 40px;
-  font-size: 18px;
+  height: 36px;
   line-height: 1;
   padding: 6px 0;
 }
