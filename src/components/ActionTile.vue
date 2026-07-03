@@ -1,23 +1,30 @@
 <script setup>
+import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 
-defineProps({
+const props = defineProps({
   label: { type: String, required: true },
   icon: { type: String, required: true },
   variant: { type: String, default: 'blue' }, // 'blue' | 'green' | 'gray'
   to: { type: [String, Object], default: null },
+  disabled: { type: Boolean, default: false },
 })
+
+// Disabled (or target-less) tiles render as a non-interactive div, like a disabled link.
+const target = computed(() => (props.disabled ? null : props.to))
 </script>
 
 <template>
   <component
-    :is="to ? 'RouterLink' : 'div'"
-    :to="to || undefined"
+    :is="target ? 'RouterLink' : 'div'"
+    :to="target || undefined"
+    :aria-disabled="disabled ? 'true' : undefined"
+    :tabindex="disabled ? -1 : undefined"
     class="action-tile position-relative rounded-2 overflow-hidden text-decoration-none"
-    :class="`action-tile--${variant}`"
+    :class="[`action-tile--${variant}`, { 'action-tile--disabled pe-none': disabled }]"
   >
-    <h4 class="action-tile__label ps-4 pt-3 m-0">{{ label }}</h4>
-    <Icon :icon="icon" width="64" class="action-tile__icon position-absolute" style="opacity: 0.8;" />
+    <h4 class="ps-4 pt-4 m-0" :class="{ 'text-body-tertiary': disabled }">{{ label }}</h4>
+    <Icon :icon="icon" width="64" class="action-tile__icon position-absolute" style="opacity: 0.4;" />
   </component>
 </template>
 
@@ -25,7 +32,6 @@ defineProps({
 .action-tile {
   display: block;
   height: 6.25rem;
-  max-width: 185px;
 }
 
 .action-tile--blue {
@@ -39,20 +45,16 @@ defineProps({
 }
 
 .action-tile--gray {
-  background: linear-gradient(to bottom, #e6dfd8, #d4cac1);
+  background: linear-gradient(to bottom, var(--gray-100), var(--gray-300));
   color: #000;
+}
+
+.action-tile--disabled {
+  opacity: 0.55;
 }
 
 .action-tile__icon {
   bottom: 8px;
   right: 8px;
-}
-
-.action-tile__label {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 26px;
-  letter-spacing: 0.45px;
-  white-space: nowrap;
 }
 </style>

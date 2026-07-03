@@ -16,12 +16,16 @@ const props = defineProps({
 
 const { gradient, textColor } = useCardColors(toRef(props, 'img'))
 
-const expiry = computed(() => {
+const expiryDuration = computed(() => {
+  if (!props.expiredDate) return ''
+  const months = Math.max(1, Math.round((new Date(props.expiredDate) - Date.now()) / (30 * 86400000)))
+  return `${months}個月`
+})
+
+const expiryDate = computed(() => {
   if (!props.expiredDate) return ''
   const d = new Date(props.expiredDate)
-  const date = `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
-  const months = Math.max(1, Math.round((d.getTime() - Date.now()) / (30 * 86400000)))
-  return `${months} 個月 · ${date}到期`
+  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}到期`
 })
 </script>
 
@@ -35,16 +39,19 @@ const expiry = computed(() => {
       <img :src="qrCodeImg" alt="QR Code" class="qr-img" />
     </div>
 
-    <!-- coupon stub + info -->
+    <!-- thumbnail + info -->
     <div class="d-flex align-items-center gap-4 pt-4">
-      <div class="stub bg-white text-dark rounded-3 text-center px-3 py-2 flex-shrink-0">
-        <div class="stub-small lh-1">不限金額</div>
-        <div class="fw-bold lh-1 my-1"><span class="stub-value">{{ price }}</span>{{ unit }}</div>
-        <div class="stub-small lh-1">抵用券</div>
-      </div>
-      <div class="min-w-0">
-        <p class="qr-title fw-bold mb-1 text-truncate">{{ name }}</p>
-        <p class="qr-expiry mb-0 opacity-75">{{ expiry }}</p>
+      <div
+        class="thumb flex-shrink-0"
+        :style="{ background: img || '#999', backgroundSize: 'cover', backgroundPosition: 'center' }"
+      ></div>
+      <div class="min-w-0 flex-grow-1">
+        <p class="qr-title fw-bold mb-2 text-truncate">{{ name }}</p>
+        <div class="d-flex align-items-center gap-2">
+          <span class="qr-expiry fw-bold">{{ expiryDuration }}</span>
+          <span class="dot rounded-circle flex-shrink-0"></span>
+          <span class="qr-expiry">{{ expiryDate }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -65,19 +72,24 @@ const expiry = computed(() => {
 .min-w-0 {
   min-width: 0;
 }
-.stub {
-  border: 1px solid var(--bs-gray-300);
+.thumb {
+  width: 73px;
+  aspect-ratio: 109 / 73;
+  border-radius: 4px;
 }
-.stub-small {
-  font-size: 11px;
-}
-.stub-value {
-  font-size: 20px;
+.dot {
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
 }
 .qr-title {
-  font-size: 15px;
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: 0.45px;
+  color: white;
 }
 .qr-expiry {
-  font-size: 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
 }
 </style>
