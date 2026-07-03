@@ -15,29 +15,6 @@ import banner3 from '../img/banner-3.jpg'
 
 const banners = [banner1, banner2, banner3]
 
-const bannerIndex = ref(0)
-const bannerColors = ref([])
-
-function extractColor(src) {
-  return new Promise((resolve) => {
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = canvas.height = 1
-      canvas.getContext('2d').drawImage(img, 0, 0, 1, 1)
-      const [r, g, b] = canvas.getContext('2d').getImageData(0, 0, 1, 1).data
-      resolve({ r, g, b })
-    }
-    img.src = src
-  })
-}
-
-const colorBarGradient = computed(() => {
-  const c = bannerColors.value[bannerIndex.value]
-  if (!c) return ''
-  return `linear-gradient(to top, rgba(${c.r},${c.g},${c.b},0.7), transparent)`
-})
-
 const recommendations = getRecommendations()
 const joinedEvents = getEvents()
 const coupons = getCoupons()
@@ -52,22 +29,9 @@ const wrap = n => ((n % recommendations.length) + recommendations.length) % reco
 const rec = computed(() => recommendations[wrap(currentIndex.value)])
 const recTriple = computed(() => [0, 1, 2].map(offset => recommendations[wrap(currentIndex.value + offset)]))
 let timer
-let carouselSlideHandler
 // decrement so each tick a new card enters on the left and the rightmost leaves
-onMounted(() => {
-  Promise.all(banners.map(extractColor)).then(colors => { bannerColors.value = colors })
-  const carouselEl = document.getElementById('heroCarousel')
-  if (carouselEl) {
-    carouselSlideHandler = e => { bannerIndex.value = e.to }
-    carouselEl.addEventListener('slid.bs.carousel', carouselSlideHandler)
-  }
-  timer = setInterval(() => { currentIndex.value-- }, 4_500)
-})
-onUnmounted(() => {
-  clearInterval(timer)
-  const carouselEl = document.getElementById('heroCarousel')
-  if (carouselEl && carouselSlideHandler) carouselEl.removeEventListener('slid.bs.carousel', carouselSlideHandler)
-})
+onMounted(() => { timer = setInterval(() => { currentIndex.value-- }, 4_500) })
+onUnmounted(() => { clearInterval(timer) })
 
 // Links to the in-development stub are rendered as disabled (muted, unclickable).
 const isStub = to => to?.name === 'in-development'
@@ -93,7 +57,11 @@ const actions = [
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <div v-for="(src, i) in banners" :key="i" class="carousel-item" :class="{ active: i === 0 }">
-            <img :src="src" class="d-block w-100" alt="" />
+            <div class="banner-frame">
+              <!-- mirrored top-edge slice; frosted by .hero-blur-bar to extend the image's color up behind the toolbar -->
+              <img :src="src" class="banner-extend" aria-hidden="true" alt="" />
+              <img :src="src" class="banner-main d-block w-100" alt="" />
+            </div>
           </div>
         </div>
         <div class="carousel-indicators">
@@ -294,23 +262,28 @@ const actions = [
     margin-inline: calc(-1 * var(--px-tablet-content));
   }
 }
-.hero-color-bar {
+.banner-frame {
+  position: relative;
+  // reserve space so the real image sits below the frosted band; the band above is filled by
+  // .banner-extend (a mirror of the image top), keeping the full banner visible under the toolbar
+  padding-top: 60px;
+}
+.banner-extend {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  right: 0;
-  height: 64px;
-  z-index: 1;
-  pointer-events: none;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  width: 100%;
+  height: 60px; // matches .hero-blur-bar
+  object-fit: cover;
+  object-position: top;
+  transform: scaleY(-1); // mirror so the slice's bottom edge meets the image top edge seamlessly
 }
 .hero-blur-bar {
-  // position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 44px; // matches ToolbarButton default size (44px)
+  height: 60px; // frosts the .banner-extend band behind the (transparent) toolbar
   z-index: 3;
   pointer-events: none;
   backdrop-filter: blur(20px);
