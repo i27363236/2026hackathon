@@ -1,13 +1,15 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import ToolbarButton from './ToolbarButton.vue'
 import { mainNav, earnPointNav, usePointNav } from '../nav.js'
+import metroPointImg from '../img/metro-point.png'
 
 defineProps({
   open: { type: Boolean, default: true },
 })
 
 defineEmits(['close'])
+
+const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
 </script>
 
 <template>
@@ -25,13 +27,13 @@ defineEmits(['close'])
     <ul class="nav nav-pills flex-column p-4 pt-2">
       <li v-for="item in mainNav" :key="item.label" class="nav-item">
         <component
-          :is="item.to ? 'RouterLink' : 'a'"
-          :to="item.to"
-          :href="item.to ? undefined : '#'"
-          class="nav-link d-flex align-items-center gap-4 text-body"
-          style="height: 2.5rem"
+          :is="isDisabled(item) ? 'span' : 'RouterLink'"
+          :to="isDisabled(item) ? undefined : item.to"
+          class="nav-link d-flex align-items-center gap-4"
+          :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
         >
-          <Icon :icon="item.icon" width="24" class="text-body-secondary" />
+          <img v-if="item.metroIcon" :src="metroPointImg" width="24" height="24" />
+          <Icon v-else :icon="item.icon" width="24" class="text-body-secondary" />
           <span>{{ item.label }}</span>
         </component>
       </li>
@@ -39,31 +41,33 @@ defineEmits(['close'])
 
     <div class="px-4 py-3 pb-4">
       <div class="pb-4">
-        <div class="caption-1 text-body-secondary fw-bold px-5 mb-2">累積捷運點</div>
+        <div class="caption-1 text-body-tertiary fw-bold px-5 mb-2">累積捷運點</div>
         <ul class="nav nav-pills flex-column">
           <li v-for="item in earnPointNav" :key="item.label" class="nav-item">
-            <RouterLink
-              :to="item.to"
-              class="nav-link d-flex align-items-center gap-4 text-body"
-              style="height: 2.75rem"
+            <component
+              :is="isDisabled(item) ? 'span' : 'RouterLink'"
+              :to="isDisabled(item) ? undefined : item.to"
+              class="nav-link d-flex align-items-center gap-4"
+              :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
             >
               <Icon :icon="item.icon" width="24" class="text-body-secondary" />
               <span>{{ item.label }}</span>
-            </RouterLink>
+            </component>
           </li>
         </ul>
       </div>
-      <div class="caption-1 text-body-secondary fw-bold px-5 mb-2">使用捷運點</div>
+      <div class="caption-1 text-body-tertiary fw-bold px-5 mb-2">使用捷運點</div>
       <ul class="nav nav-pills flex-column">
         <li v-for="item in usePointNav" :key="item.label" class="nav-item">
-          <RouterLink
-            :to="item.to"
-            class="nav-link d-flex align-items-center gap-4 text-body"
-            style="height: 2.75rem"
+          <component
+            :is="isDisabled(item) ? 'span' : 'RouterLink'"
+            :to="isDisabled(item) ? undefined : item.to"
+            class="nav-link d-flex align-items-center gap-4"
+            :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
           >
             <Icon :icon="item.icon" width="24" class="text-body-secondary" />
             <span>{{ item.label }}</span>
-          </RouterLink>
+          </component>
         </li>
       </ul>
     </div>
@@ -95,14 +99,22 @@ defineEmits(['close'])
 
 .nav-link {
   white-space: nowrap;
+  height: 3rem;
 }
-.nav-link:hover:not(.router-link-active) {
-  background-color: var(--bs-primary-bg-subtle);
-  color: var(--bs-primary) !important;
+.nav-link:hover:not(.router-link-active):not(.nav-link--disabled) {
+  background-color: var(--component-hover-bg);
+}
+.nav-link--disabled {
+  cursor: default;
 }
 .nav-link.router-link-active {
   background-color: var(--bs-primary);
   color: var(--bs-white) !important;
+  cursor: default;
+
+  .iconify {
+    color: var(--bs-white) !important;
+  }
 }
 
 .close-sidebar-button {
@@ -110,7 +122,7 @@ defineEmits(['close'])
   cursor: pointer;
 
   &:hover {
-    background-color: var(--bs-primary-bg-subtle);
+    background-color: var(--component-hover-bg);
   }
 }
 </style>

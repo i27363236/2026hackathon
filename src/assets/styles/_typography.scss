@@ -1,17 +1,35 @@
-/* typography - Default */
-// $font-family-sans-serif: Noto Sans TC;
-// $headings-font-family: Noto Sans TC;
-$headings-font-weight: 700px;
-// $display-font-family: Inter;
-$display-font-weight: 300px;
-$h1-font-size: 34px;
-$h2-font-size: 28px;
-$h3-font-size: 22px;
-$h4-font-size: 20px;
-$h5-font-size: 17px;
-$h6-font-size: 17px;
-$Body-fontSize: 17px;
-$Caption-fontSize: 12px;
+// Use the Bootstrap default system font stack — do NOT load a web font (see AGENTS.md).
+
+$font-size-base: 1.0625rem; // 17px — matches $Body-fontSize
+
+$Body-fontSize: 1.0625rem;
+
+$headings-font-weight: 700;
+$h1-font-size: 2.125rem;
+$h2-font-size: 1.75rem;
+$h3-font-size: 1.375rem;
+$h4-font-size: 1rem;
+h1 {
+  line-height: 2.5625rem;
+  letter-spacing: .025rem;
+}
+
+h2 {
+  line-height: 2.125rem;
+  letter-spacing: -.025rem;
+}
+
+h3 {
+  line-height: 1.75rem;
+  letter-spacing: .0281rem;
+}
+
+h4 {
+  line-height: 1.625rem;
+  letter-spacing: .0281rem;
+}
+
+$display-font-weight: 300;
 
 $display-font-sizes: (
   1: 5rem,
@@ -20,14 +38,15 @@ $display-font-sizes: (
   4: 1.75rem,
   5: 1.375rem,
   6: 1.0625rem
-);
-
-
+  );
+  
+$Caption-fontSize: 0.75rem;
+  
 .caption-1 {
-  font-size: .75rem;
-  line-height: 1rem;
+    font-size: .75rem;
+    line-height: 1rem;
 }
-
+  
 .caption-2 {
   font-size: .6875rem;
   line-height: .8125rem;

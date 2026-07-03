@@ -30,6 +30,12 @@ Icons: Phosphor via `@iconify/vue` — use `<Icon icon="ph:..." />`, import `{ I
 - Navigation icons (nav.js / AppSidebar): use `-duotone` suffix — separate convention, do not change
 - Exemptions: ActionTile.vue (64px decorative bg), GiftCard.vue (fill doodles), hero background icons (≥100px), QR display icons
 
+### Fonts
+Use the **system font stack** (Bootstrap default). Do **not** load web fonts (e.g. Noto Sans TC)
+— the Figma design specifies Noto Sans TC, but we render with system fonts on purpose, so
+expect minor glyph/metric differences from the mockups. Keep `$font-family-sans-serif`
+commented out in `_typography.scss`; tune sizes/weights via the existing typography tokens.
+
 ### Layout Padding
 - Phone horizontal padding: `$px-phone` (16 px)
 - Tablet tools / sidebar padding: `$px-tablet-tools` (10 px)
@@ -69,6 +75,14 @@ Spacers are custom (not Bootstrap defaults): 1=2px, 2=4px, 3=8px, 4=12px, 5=16px
 ### No Test Suite
 There are no automated tests. Verify features by running `npm run dev` and checking in-browser.
 "Completed" means you observed the correct behavior in the browser, not that the code compiles.
+
+### Visual Verification with Playwright
+After making UI changes, use Playwright CLI to capture a screenshot and visually confirm the result:
+```bash
+npx playwright screenshot --browser chromium http://localhost:5173/<route> /tmp/check.png
+```
+Start `npm run dev` first if not already running. Read `/tmp/check.png` with the Read tool to inspect it.
+Prefer this over claiming "looks correct" without a visual check.
 
 ### Fail Loud
 "Done" is wrong if you skipped a browser check.

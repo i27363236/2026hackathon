@@ -63,6 +63,7 @@ defineEmits(['select', 'action'])
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  flex: 0 0 auto;
   width: 61px;
   padding: 8px;
   border: 0;
@@ -96,9 +97,10 @@ defineEmits(['select', 'action'])
   cursor: default;
 }
 
-/* Vertical — tablet left rail: flush, full height, secondary background. */
+/* Vertical — tablet left rail: flush, full height, secondary background, centered. */
 .edit-toolbar.is-vertical {
   flex-direction: column;
+  justify-content: center;
   height: 100%;
   background: var(--bs-secondary-bg);
   padding: 8px;
@@ -113,14 +115,21 @@ defineEmits(['select', 'action'])
   border-top: 1px solid var(--bs-border-color);
 }
 
-/* Horizontal — mobile bottom bar. */
+/* Horizontal — mobile bottom bar. Centers when it fits, scrolls when the
+   phone is too narrow to show every tool. */
 .edit-toolbar.is-horizontal {
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: safe center;
   width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.edit-toolbar.is-horizontal::-webkit-scrollbar {
+  display: none;
 }
 .edit-toolbar.is-horizontal .tool-group {
   flex-direction: row;
+  flex-wrap: nowrap;
 }
 </style>

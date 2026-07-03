@@ -3,10 +3,11 @@ $white: #FFFFFFFF;
 $black: #000000FF;
 $body-color: $black;
 $body-bg: $white;
-$body-secondary-color: $gray-600;
+$body-secondary-color: $gray-800;
 $body-secondary-bg: $gray-50;
 $body-tertiary-color: $gray-500;
 $body-tertiary-bg: $gray-100;
+
 $primary-text-emphasis: $blue-700;
 $primary-bg-subtle: $blue-50;
 $primary-border-subtle: $blue-200;
@@ -46,12 +47,16 @@ $link-color: $primary;
 $link-hover-color: $blue-700;
 $component-active-color: $white;
 $component-active-bg: $primary;
+$component-hover-bg: rgba($gray-200, 0.5);
 $border-radius-sm: 4px;
 $border-radius: 8px;
 $border-radius-lg: 12px;
 $border-radius-xl: 20px;
 $border-radius-xxl: 28px;
 $border-radius-pill: 800px;
+$btn-border-radius:    $border-radius-pill;
+$btn-border-radius-sm: $border-radius-pill;
+$btn-border-radius-lg: $border-radius-pill;
 $focus-ring-width: 4px;
 $focus-ring-opacity: 0.25px;
 $focus-ring-color: #0079A940;
@@ -64,12 +69,25 @@ $box-shadow-sm: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
 $box-shadow:    0 3px 12px 2px rgba(0, 0, 0, 0.07);
 $box-shadow-lg: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
 
+// Carousel
+$carousel-indicator-width:          8px;
+$carousel-indicator-height:         8px;
+$carousel-indicator-spacer:         0;
+$carousel-indicator-opacity:        1;
+$carousel-indicator-active-opacity: 1;
+$carousel-indicator-active-bg:      $gray-700;
+
+// Dimming backdrop behind modals / bottom sheets / drawers.
+$overlay: rgba(41, 41, 58, 0.23);
+
 // Layout padding
 $px-phone:          16px;
 $px-tablet-tools:   10px;
 $px-tablet-content: 24px;
 
 :root {
-  --px-phone:          #{$px-phone};
-  --px-tablet-content: #{$px-tablet-content};
+  --px-phone:           #{$px-phone};
+  --px-tablet-content:  #{$px-tablet-content};
+  --overlay:            #{$overlay};
+  --component-hover-bg: #{$component-hover-bg};
 }
