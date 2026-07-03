@@ -130,7 +130,7 @@ const goBack = () => router.back()
 <style lang="scss" scoped>
 .my-coupons {
   background-color: #f8f9fa;
-  min-height: 100vh;
+  min-height: 100dvh;
   .nav-tabs-custom { border: 1px solid rgba(0,0,0,0.05); }
   .coupon-card {
     height: 140px;

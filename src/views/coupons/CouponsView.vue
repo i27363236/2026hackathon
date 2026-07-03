@@ -76,7 +76,7 @@ const goBack = () => router.back()
 
 <style lang="scss" scoped>
 .coupons-view {
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #F8F9FA;
 }
 

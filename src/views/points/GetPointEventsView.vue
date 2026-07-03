@@ -130,7 +130,7 @@ const goBack = () => router.back()
 <style lang="scss" scoped>
 .get-point-events {
   background-color: #f8f9fa;
-  min-height: 100vh;
+  min-height: 100dvh;
 
   .points-card {
     background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);

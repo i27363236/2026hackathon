@@ -123,18 +123,6 @@ const getStampText = (status) => {
 </template>
 
 <style scoped>
-/* ================= 你原本保留的優秀樣式 ================= */
-:global(body) {
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
 .tablet-bg {
   width: 100%;
   max-width: 1193px; 

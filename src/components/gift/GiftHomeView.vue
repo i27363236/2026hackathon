@@ -116,7 +116,7 @@ const handleGiftClick = (id) => {
 <style lang="scss" scoped>
 .gift-home {
   background-color: #f8f9fa;
-  min-height: 100vh;
+  min-height: 100dvh;
 
   .banner-card {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);

@@ -3,7 +3,7 @@ import { Icon } from '@iconify/vue'
 </script>
 
 <template>
-  <div class="checkout-page bg-light min-vh-100 d-flex flex-column pb-5">
+  <div class="checkout-page bg-light d-flex flex-column pb-5">
     <div class="bg-white border-bottom sticky-top py-3">
       <div
         class="container max-width-container px-3 d-flex align-items-center position-relative"
@@ -239,6 +239,7 @@ import { Icon } from '@iconify/vue'
 /* 確保底部的固定欄不會擋到最後的發票選單內容 */
 .checkout-page {
   padding-bottom: 100px !important;
+  min-height: 100dvh;
 }
 
 .btn-confirm:hover {

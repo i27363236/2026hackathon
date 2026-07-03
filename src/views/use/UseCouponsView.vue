@@ -34,7 +34,7 @@ const handleBack = () => {
 </script>
 
 <template>
-  <div class="use-coupons-view min-vh-100 d-flex flex-column mx-auto">
+  <div class="use-coupons-view d-flex flex-column mx-auto">
     <!-- 頂部導覽列 -->
     <TopToolbar title="使用優惠券" show-back @back="handleBack" />
 
@@ -100,6 +100,7 @@ const handleBack = () => {
 <style scoped>
 .use-coupons-view {
   max-width: 720px;
+  min-height: 100dvh;
 }
 
 .hero {

@@ -14,7 +14,7 @@ const sidebarOpen = ref(true)
 </script>
 
 <template>
-  <div class="app-shell vh-100 d-flex overflow-hidden bg-body-secondary">
+  <div class="app-shell d-flex overflow-hidden bg-body-secondary">
     <AppSidebar
       v-if="meta.showSidebar"
       :open="sidebarOpen"
