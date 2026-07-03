@@ -4,6 +4,7 @@
 // and PurchaseCheckoutView. Seeds a purchased draft, then opens the editor.
 import { useRouter } from 'vue-router'
 import { useGiftsStore } from './stores/gifts.js'
+import GiftsHistoryView from './views/profile/GiftsHistoryView.vue'
 
 
 
@@ -19,6 +20,7 @@ function launchEditor() {
 
 <template>
   <RouterView />
+  <GiftsHistoryView />
  
 
   <!-- TEMP launch button -->
