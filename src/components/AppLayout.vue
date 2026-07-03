@@ -23,18 +23,19 @@ const sidebarOpen = ref(true)
 
     <div class="right-col flex-grow-1 d-flex flex-column overflow-hidden position-relative" style="min-width: 0">
       <TopToolbar
-        :title="meta.title"
+        :title="meta.hideTitle ? '' : meta.title"
         :show-back="!!meta.back"
         :show-profile="!!meta.showProfile"
+        :hero="!!meta.heroTop"
         @back="router.back()"
       >
         <template v-if="meta.showHomeActions" #actions>
-          <ToolbarButton :size="32" variant="ghost" icon="ph:scan" aria-label="掃描" />
-          <ToolbarButton :size="32" variant="ghost" icon="ph:qr-code" aria-label="QR碼" />
+          <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
+          <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto" style="min-height: 0; padding-top: 40px">
+      <main class="flex-grow-1 overflow-auto" style="min-height: 0" :style="meta.heroTop ? {} : { paddingTop: '40px' }">
         <RouterView />
       </main>
 

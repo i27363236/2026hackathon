@@ -86,17 +86,19 @@ const transactions = ref([
         </div>
       </div>
 
-      <div class="transaction-list">
-        <div v-for="tx in transactions" :key="tx.id" class="d-flex align-items-center py-4 border-bottom border-light">
-          <div class="flex-shrink-0 icon-box-sm rounded-circle d-flex align-items-center justify-content-center me-4" :class="tx.type === 'earn' ? 'bg-primary-subtle' : 'bg-light'">
-            <Icon :icon="tx.type === 'earn' ? 'ph:train-light' : 'ph:gift-light'" :class="tx.type === 'earn' ? 'text-primary' : 'text-secondary'" width="20" height="20" />
-          </div>
-          <div class="flex-grow-1">
-            <div class="fw-bold text-dark small mb-1">{{ tx.title }}</div>
-            <div class="text-muted smaller">{{ tx.date }}</div>
-          </div>
-          <div class="flex-shrink-0 fw-bold" :class="tx.type === 'earn' ? 'text-primary' : 'text-dark'">
-            {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount }} P
+      <div class="action-list">
+        <div class="list-group list-group-flush">
+          <div v-for="tx in transactions" :key="tx.id" class="list-group-item d-flex align-items-center gap-4">
+            <div class="flex-shrink-0 icon-box-sm rounded-circle d-flex align-items-center justify-content-center" :class="tx.type === 'earn' ? 'bg-primary-subtle' : 'bg-light'">
+              <Icon :icon="tx.type === 'earn' ? 'ph:train-light' : 'ph:gift-light'" :class="tx.type === 'earn' ? 'text-primary' : 'text-secondary'" width="20" height="20" />
+            </div>
+            <div class="flex-grow-1 min-w-0">
+              <div class="fw-bold text-dark small mb-1">{{ tx.title }}</div>
+              <div class="text-muted smaller">{{ tx.date }}</div>
+            </div>
+            <div class="flex-shrink-0 fw-bold" :class="tx.type === 'earn' ? 'text-primary' : 'text-dark'">
+              {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount }} P
+            </div>
           </div>
         </div>
       </div>

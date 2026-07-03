@@ -1,0 +1,79 @@
+/* _style-overrides — last layer, loaded after Bootstrap to patch component specifics. */
+
+// ── Carousel: frosted pill indicator container ──────────────────────────────
+
+.carousel-indicators {
+  bottom: 0;
+  left: 50%;
+  right: auto;
+  width: fit-content;
+  transform: translateX(-50%);
+  margin: 0 0 10px;
+  gap: 8px;
+  // background: rgba(255, 255, 255, 0.25);
+  border-radius: $border-radius-pill;
+}
+
+// Inactive dot
+.carousel-indicators [data-bs-target] {
+  width: 8px;
+  height: 8px;
+  border-radius: $border-radius-pill;
+  background: $gray-500;
+  opacity: 1;
+  padding: 0;
+  margin: 0;
+  border: 0;                 // reset Bootstrap's invisible 10px top/bottom borders
+  flex-shrink: 0;
+  text-indent: -9999px;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+// Active: wider pill as progress track
+.carousel-indicators .active {
+  width: 24px;
+  background: $gray-500;
+}
+
+// Progress fill sweeps left → right over the slide interval
+@keyframes carousel-indicator-fill {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+.carousel-indicators .active::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 0;
+  background: $white;
+  animation: carousel-indicator-fill 3s linear forwards;
+}
+
+// ── Carousel: image area ────────────────────────────────────────────────────
+
+.carousel-inner {
+  aspect-ratio: 358 / 123;
+}
+
+.carousel-item {
+  height: 100%;
+}
+
+// ── Action list: Figma 2415-5410 ─────────────────────────────────────────
+.action-list {
+  border-radius: $border-radius-xl;
+  padding: 0 12px;
+
+  .list-group-item {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+    border-color: $border-color;
+  }
+}

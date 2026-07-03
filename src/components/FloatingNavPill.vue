@@ -6,14 +6,14 @@ defineEmits(['open'])
 </script>
 
 <template>
-  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill border">
+  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill border bg-body-tertiary">
     <!-- Sidebar open button -->
     <button
-      class="pill-btn d-flex align-items-center justify-content-center rounded-pill"
+      class="pill-btn d-flex align-items-center justify-content-center rounded-pill text-body-secondary"
       aria-label="開啟側邊欄"
       @click="$emit('open')"
     >
-      <Icon icon="ph:sidebar-simple-light" width="24" height="24"/>
+      <Icon icon="ph:sidebar-light" width="24" height="24"/>
     </button>
 
     <div class="pill-divider" />
@@ -23,7 +23,7 @@ defineEmits(['open'])
       v-for="(item, i) in mainNav"
       :key="item.label"
       :to="item.to || { path: '#' }"
-      class="pill-btn d-flex align-items-center justify-content-center rounded-pill"
+      class="pill-btn text-body-secondary d-flex align-items-center justify-content-center rounded-pill"
       :class="{ 'pill-btn--active': i === mainNav.length - 1 }"
       :title="item.label"
     >
@@ -51,18 +51,17 @@ defineEmits(['open'])
   padding: 0 12px;
   border: none;
   background: transparent;
-  color: var(--bs-body-color);
   text-decoration: none;
   flex-shrink: 0;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.pill-btn:hover {
-  background: var(--bs-primary-bg-subtle);
-  color: var(--bs-primary);
+.pill-btn:hover:not(.router-link-active) {
+  background: var(--component-hover-bg);
 }
 .pill-btn--active {
   background: var(--bs-primary);
-  color: var(--bs-white);
+  color: var(--bs-white) !important;
+  cursor: default;
 }
 
 .pill-divider {

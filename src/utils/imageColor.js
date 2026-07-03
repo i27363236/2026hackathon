@@ -7,6 +7,14 @@ const FALLBACK = '#6b7b8c'
 function isHex(s) {
   return typeof s === 'string' && /^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(s.trim())
 }
+// Pull the bare image URL out of a CSS background shorthand like
+// `url('https://…') center/cover no-repeat`. Returns the input unchanged when
+// it is already a plain URL/dataURL (no url(...) wrapper).
+function extractUrl(s) {
+  if (typeof s !== 'string') return s
+  const m = s.match(/url\(\s*['"]?(.*?)['"]?\s*\)/)
+  return m ? m[1] : s
+}
 function normHex(s) {
   let h = s.trim().replace('#', '')
   if (h.length === 3) h = h.split('').map((c) => c + c).join('')
@@ -31,7 +39,7 @@ export async function dominantColor(src) {
   if (!src) return FALLBACK
   if (isHex(src)) return normHex(src)
   try {
-    const palette = await Vibrant.from(src).getPalette()
+    const palette = await Vibrant.from(extractUrl(src)).getPalette()
     const sw =
       palette.Vibrant || palette.Muted || palette.DarkVibrant || palette.LightVibrant
     return sw ? sw.hex : FALLBACK
