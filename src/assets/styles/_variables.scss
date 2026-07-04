@@ -85,6 +85,8 @@ $px-phone:          16px;
 $px-tablet-tools:   10px;
 $px-tablet-content: 24px;
 
+$enable-negative-margins: true;
+
 :root {
   --px-phone:           #{$px-phone};
   --px-tablet-content:  #{$px-tablet-content};

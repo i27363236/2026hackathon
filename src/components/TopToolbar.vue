@@ -14,7 +14,7 @@ defineEmits(['back'])
 
 <template>
   <header class="top-toolbar" :class="{ 'top-toolbar--hero': hero }">
-    <div class="toolbar-inner d-flex align-items-center justify-content-between px-5 pb-3 pt-0 position-relative">
+    <div class="toolbar-inner d-flex align-items-center justify-content-between px-5 pb-3 pt-4 pt-md-0 position-relative">
 
       <div class="d-flex align-items-center flex-grow-1">
         <ToolbarButton

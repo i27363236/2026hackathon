@@ -8,10 +8,13 @@
   right: auto;
   width: fit-content;
   transform: translateX(-50%);
-  margin: 0 0 10px;
+  margin: 0 0 16px;
   gap: 8px;
-  // background: rgba(255, 255, 255, 0.25);
   border-radius: $border-radius-pill;
+  
+  @media (min-width: 48rem) {
+    margin: 0 0 32px;
+  }
 }
 
 // Inactive dot

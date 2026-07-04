@@ -51,15 +51,11 @@ const actions = [
 <template>
   <div class="home mx-auto d-flex flex-column gap-8">
     <!-- Hero banner carousel -->
-    <section class="hero-section">
-      <!-- Blur strip behind the (transparent) toolbar buttons; height matches ToolbarButton (44px) -->
-      <div class="hero-blur-bar" aria-hidden="true" />
+    <section class="hero-section mt-10 mt-sm-n7">
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <div v-for="(src, i) in banners" :key="i" class="carousel-item" :class="{ active: i === 0 }">
             <div class="banner-frame">
-              <!-- mirrored top-edge slice; frosted by .hero-blur-bar to extend the image's color up behind the toolbar -->
-              <img :src="src" class="banner-extend" aria-hidden="true" alt="" />
               <img :src="src" class="banner-main d-block w-100" alt="" />
             </div>
           </div>
@@ -266,17 +262,6 @@ const actions = [
   position: relative;
   // reserve space so the real image sits below the frosted band; the band above is filled by
   // .banner-extend (a mirror of the image top), keeping the full banner visible under the toolbar
-  padding-top: 60px;
-}
-.banner-extend {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px; // matches .hero-blur-bar
-  object-fit: cover;
-  object-position: top;
-  transform: scaleY(-1); // mirror so the slice's bottom edge meets the image top edge seamlessly
 }
 .hero-blur-bar {
   position: absolute;
@@ -286,8 +271,8 @@ const actions = [
   height: 60px; // frosts the .banner-extend band behind the (transparent) toolbar
   z-index: 3;
   pointer-events: none;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  // backdrop-filter: blur(20px);
+  // -webkit-backdrop-filter: blur(20px);
 }
 .card-row {
   overflow-x: auto;
