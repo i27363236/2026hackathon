@@ -52,7 +52,7 @@ const actions = [
 <template>
   <div class="home mx-auto d-flex flex-column">
     <!-- Hero banner carousel -->
-    <section class="hero-section mt-sm-n7">
+    <section class="position-relative">
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <div v-for="(src, i) in banners" :key="i" class="carousel-item" :class="{ active: i === 0 }">
@@ -174,14 +174,14 @@ const actions = [
       <div class="d-md-none d-flex flex-column gap-8 px-default py-5">
         <div>
           <h3 class="mb-4">累積捷運點</h3>
-          <div class="tile-grid row g-4">
+          <div class="tile-grid row g-3">
             <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" /></div>
             <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" /></div>
           </div>
         </div>
         <div>
           <h3 class="mb-4">使用捷運點</h3>
-          <div class="tile-grid row g-4">
+          <div class="tile-grid row g-3">
             <div v-for="a in actions" :key="a.label" class="col-6">
               <ActionTile :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
             </div>
@@ -252,14 +252,6 @@ const actions = [
   width: 56px;
   height: 56px;
 }
-.hero-section {
-  position: relative;
-  margin-top: 64px;
-  @media (min-width: 48rem) {
-    margin-top: calc(-1 * var(--px-tablet-content));
-    margin-inline: calc(-1 * var(--px-tablet-content));
-  }
-}
 .banner-frame {
   position: relative;
   // reserve space so the real image sits below the frosted band; the band above is filled by
@@ -305,7 +297,6 @@ const actions = [
   scroll-padding-inline-start: var(--px-tablet-content);
   -ms-overflow-style: none;
   scrollbar-width: none;
-  margin-inline-end: calc(-1 * var(--px-tablet-content));
   padding-inline-end: var(--px-tablet-content);
 }
 .tiles-row::-webkit-scrollbar {

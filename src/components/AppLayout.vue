@@ -31,8 +31,8 @@ const sidebarOpen = ref(true)
       >
         <template v-if="meta.showHomeActions || meta.showCouponActions || meta.showEventActions" #actions>
           <template v-if="meta.showHomeActions">
-            <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
-            <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
+            <ToolbarButton icon="ph:scan-light" aria-label="掃描" />
+            <ToolbarButton icon="ph:qr-code-light" aria-label="QR碼" />
           </template>
           <template v-else-if="meta.showCouponActions">
             <ToolbarButton icon="ph:map-trifold-light" aria-label="地圖" />
@@ -44,7 +44,7 @@ const sidebarOpen = ref(true)
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto" style="min-height: 0" :style="meta.heroTop ? {} : { paddingTop: '40px' }">
+      <main class="flex-grow-1 overflow-auto mt-11 mt-sm-0" style="min-height: 0" :style="meta.heroTop ? {} : { paddingTop: '40px' }">
         <RouterView />
       </main>
 
