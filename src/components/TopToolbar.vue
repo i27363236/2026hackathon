@@ -25,7 +25,7 @@ defineEmits(['back'])
         />
       </div>
 
-      <h1 v-if="title" class="toolbar-title h5 mb-0 position-absolute start-50 top-50 translate-middle-x">
+      <h1 v-if="title" class="toolbar-title fs-6 mb-0 position-absolute start-50 top-50 translate-middle-x px-5 py-3">
         {{ title }}
       </h1>
 
@@ -53,14 +53,9 @@ defineEmits(['back'])
   right: 0;
   width: 100%;
   z-index: 1020;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.88) 60%, rgba(255,255,255,0) 100%) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.top-toolbar--hero {
-  background: none !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: none;
+  /* Transparent on every page — the glass pills (buttons + title) stay legible on their own,
+     matching the iOS 27 look. The --hero modifier is kept as a no-op for backward compat. */
 }
 .toolbar-inner {
   min-height: 40px;
@@ -68,11 +63,19 @@ defineEmits(['back'])
 .toolbar-title {
   translate: 0 calc(-50% - 4px);
   pointer-events: none;
-  max-width: 50%;
-  overflow: visible;
+  max-width: 70%;
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.7);
+  border-radius: 800px;
+  background: var(--toolbar-glass-fill);
+  box-shadow: var(--toolbar-glass-shadow);
+  backdrop-filter: var(--toolbar-glass-blur);
+  -webkit-backdrop-filter: var(--toolbar-glass-blur);
+  margin-block: 6px;
+  @media (min-width: 768px) {
+  margin-block: 0;
+  }
 }
 .profile-avatar {
   position: relative;

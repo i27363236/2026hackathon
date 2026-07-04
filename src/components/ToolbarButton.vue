@@ -29,11 +29,12 @@ defineEmits(['click'])
 <style scoped>
 .toolbar-btn {
   flex: 0 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 0;
   border-radius: 800px;
-  background: rgba(249, 247, 243, 0.8);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: var(--toolbar-glass-fill);
+  box-shadow: var(--toolbar-glass-shadow);
+  backdrop-filter: var(--toolbar-glass-blur);
+  -webkit-backdrop-filter: var(--toolbar-glass-blur);
   color: inherit;
   cursor: pointer;
   padding: 4px;
@@ -46,7 +47,7 @@ defineEmits(['click'])
 }
 .toolbar-btn--accent {
   background: var(--bs-primary);
-  border-color: var(--bs-primary);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
   color: #fff;
 }
 .toolbar-btn--accent:hover,
