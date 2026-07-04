@@ -1,4 +1,7 @@
 /* _style-overrides — last layer, loaded after Bootstrap to patch component specifics. */
+body {
+  text-autospace: normal;
+}
 
 h1 {
   line-height: 2.5625rem;
