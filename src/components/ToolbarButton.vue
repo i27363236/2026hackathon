@@ -35,10 +35,10 @@ defineEmits(['click'])
   box-shadow: var(--toolbar-glass-shadow);
   backdrop-filter: var(--toolbar-glass-blur);
   -webkit-backdrop-filter: var(--toolbar-glass-blur);
+  transition: background 0.15s;
   color: inherit;
   cursor: pointer;
   padding: 4px;
-  transition: background 0.15s;
 }
 .toolbar-btn:hover,
 .toolbar-btn:focus-visible {

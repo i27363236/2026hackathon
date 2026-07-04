@@ -3,10 +3,12 @@ import { mainNav } from '../nav.js'
 import { Icon } from '@iconify/vue'
 
 defineEmits(['open'])
+
+const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
 </script>
 
 <template>
-  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill border border-white bg-body-tertiary shadow-sm">
+  <div class="floating-pill d-none d-md-flex align-items-center rounded-pill">
     <!-- Sidebar open button -->
     <button
       class="pill-btn d-flex align-items-center justify-content-center rounded-pill text-body-secondary"
@@ -19,16 +21,17 @@ defineEmits(['open'])
     <div class="pill-divider" />
 
     <!-- Nav tab links -->
-    <RouterLink
+    <component
       v-for="(item, i) in mainNav"
       :key="item.label"
-      :to="item.to || { path: '#' }"
-      class="pill-btn text-body-secondary d-flex align-items-center justify-content-center rounded-pill"
-      :class="{ 'pill-btn--active': i === mainNav.length - 1 }"
+      :is="isDisabled(item) ? 'span' : 'RouterLink'"
+      :to="isDisabled(item) ? undefined : item.to"
+      class="pill-btn d-flex align-items-center justify-content-center rounded-pill"
+      :class="i === mainNav.length - 1 ? 'pill-btn--active' : (isDisabled(item) ? ['pill-btn--disabled', 'text-body-tertiary'] : 'text-body-secondary')"
       :title="item.label"
     >
       <span class="pill-label">{{ item.label }}</span>
-    </RouterLink>
+    </component>
   </div>
 </template>
 
@@ -40,9 +43,12 @@ defineEmits(['open'])
   left: 50%;
   translate: -50% 0;
   z-index: 1200;
-  background: rgb(0 0 0 / 40%);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
   padding: 6px 2px;
+  background: var(--toolbar-glass-fill);
+  box-shadow: var(--toolbar-glass-shadow);
+  backdrop-filter: var(--toolbar-glass-blur);
+  -webkit-backdrop-filter: var(--toolbar-glass-blur);
+  transition: background 0.15s;
 }
 
 .pill-btn {
@@ -55,8 +61,11 @@ defineEmits(['open'])
   flex-shrink: 0;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.pill-btn:hover:not(.router-link-active) {
+.pill-btn:hover:not(.pill-btn--active):not(.pill-btn--disabled) {
   background: var(--component-hover-bg);
+}
+.pill-btn--disabled {
+  cursor: default;
 }
 .pill-btn--active {
   background: var(--bs-primary);
