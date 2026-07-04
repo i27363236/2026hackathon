@@ -80,3 +80,14 @@
     border-color: $border-color;
   }
 }
+
+// 預設的左右padding class，手機版16px，平板版24px
+.px-default {
+  padding-left: $px-phone;
+  padding-right: $px-phone;
+
+  @media (min-width: 48rem) {
+    padding-left: $px-tablet-content;
+    padding-right: $px-tablet-content;
+  }
+}

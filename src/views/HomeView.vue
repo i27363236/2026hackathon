@@ -12,6 +12,7 @@ import { getProfile } from '../data/profile.js'
 import banner1 from '../img/banner-1.jpg'
 import banner2 from '../img/banner-2.jpg'
 import banner3 from '../img/banner-3.jpg'
+import metroPointImg from '../img/metro-point.png'
 
 const banners = [banner1, banner2, banner3]
 
@@ -49,9 +50,9 @@ const actions = [
 </script>
 
 <template>
-  <div class="home mx-auto d-flex flex-column gap-8">
+  <div class="home mx-auto d-flex flex-column">
     <!-- Hero banner carousel -->
-    <section class="hero-section mt-10 mt-sm-n7">
+    <section class="hero-section mt-sm-n7">
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <div v-for="(src, i) in banners" :key="i" class="carousel-item" :class="{ active: i === 0 }">
@@ -74,45 +75,48 @@ const actions = [
     </section>
 
     <!-- Points summary + Smart recommendation: stacked on mobile, side-by-side on tablet+ -->
-    <div class="d-flex flex-column flex-md-row gap-5 align-items-md-start">
+    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start px-default py-5">
       <section class="summary-col">
         <div class="summary-row row g-3">
           <div class="col-6 col-md-4">
             <div class="card border-0 rounded-4 text-decoration-none text-body h-100">
-              <div class="card-body px-5 py-4">
-                <div class="d-flex align-items-start">
-                  <span class="summary-num display-3 me-auto">{{ profile.points }}</span>
-                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
+              <div class="card-body px-5 py-4 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
+                  <img :src="metroPointImg" class="w-8 h-8 mt-1" style="width:32px;height:32px;object-fit:contain" alt="捷運點" />
+                  <div class="display-3">{{ profile.points }}</div>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="fw-bold summary-label">捷運點</span>
-                </div>
-                <div class="mt-4 caption-2">{{ profile.expiringPoints }}點將於{{ profile.expiringDate }}到期</div>
+                <h4 class="mt-2 mb-0">捷運點</h4>
+                <div class="caption-2 mt-1 text-body-secondary">{{ profile.expiringPoints }}點將於{{ profile.expiringDate }}到期</div>
               </div>
             </div>
           </div>
           <div class="col-6 col-md-4">
             <RouterLink :to="{ name: 'coupon-trade' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
-              <div class="card-body px-5 py-4">
-                <div class="d-flex align-items-start">
-                  <span class="summary-num display-3 me-auto">{{ profile.coupons }}</span>
-                  <Icon icon="ph:caret-right-light" width="20" height="20" class="text-body-tertiary summary-caret" />
+              <div class="card-body px-5 py-4 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
+                  <Icon icon="ph:ticket-light" width="32" height="32" class="text-body-secondary"/>
+                  <span class="display-3">{{ profile.coupons }}</span>
                 </div>
-                <span class="fw-bold summary-label d-block">優惠券</span>
-                <div class="mt-4 caption-2">{{ profile.expiringCoupons }}張將於{{ profile.expiringDate }}到期</div>
+                <h4 class="mt-2 mb-0">優惠券</h4>
+                <div class="caption-2 mt-1 text-body-secondary">{{ profile.expiringCoupons }}張將於{{ profile.expiringDate }}到期</div>
               </div>
             </RouterLink>
           </div>
           <div class="col-12 col-md-4">
             <div class="card border-0 rounded-4 h-100 overflow-hidden">
               <div class="card-body p-0 d-flex">
-                <div class="flex-grow-1 px-5 pt-4 summary-goal-body d-flex flex-column justify-content-end">
-                  <div class="summary-goal-num mb-1">{{ profile.points }}/{{ goal.price }}</div>
-                  <p class="mb-0 caption-2">{{ goal.name }}</p>
-                  <div class="mt-3">
-                    <div class="progress rounded-pill summary-progress-track" style="height: 4px;">
-                      <div class="progress-bar rounded-pill summary-progress-fill" :style="{ width: goalPct + '%' }" />
-                    </div>
+                <div class="flex-grow-1 px-5 py-4 d-flex flex-column justify-content-between">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <Icon icon="ph:target-light" width="32" height="32" class="text-body-secondary"/>
+                    <span class="display-4 ms-auto">{{ profile.points }}/{{ goal.price }}
+                    </span>
+                  </div>
+                  <div class="progress rounded-pill bg-warning-subtle" style="height: 4px;">
+                    <div class="progress-bar rounded-pill bg-warning" :style="{ width: goalPct + '%' }" />
+                  </div>
+                  <div class="flex-shrink-1">
+                    <h4 class="mb-0 lh-1">集點目標</h4>
+                    <span class="caption-2 text-body-secondary">{{ goal.name }}</span>
                   </div>
                 </div>
                 <div class="summary-reward-img flex-shrink-0" :style="{ background: goal.img }" />
@@ -123,7 +127,7 @@ const actions = [
       </section>
 
       <!-- Smart recommendation: mobile only -->
-      <section class="rec-col d-md-none">
+      <section class="rec-col d-md-none pt-5">
         <h3 class="mb-md-7">智慧推薦</h3>
         <div class="rec-fade-wrap">
           <Transition name="rec-fade">
@@ -131,9 +135,9 @@ const actions = [
               <div class="card-body d-flex align-items-center gap-5 p-5">
                 <div class="flex-grow-1">
                   <p class="fw-bold mb-1">{{ rec.title }}</p>
-                  <p class="text-body-secondary small mb-0">{{ rec.sub }}</p>
+                  <p class="text-body-secondary small mb-0" style="text-wrap: pretty;">{{ rec.sub }}</p>
                 </div>
-                <img :src="rec.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
+                <img :src="rec.img" class="rec-card-img rounded-3 border border-4 border-light shadow-lg flex-shrink-0" alt="" />
               </div>
             </RouterLink>
           </Transition>
@@ -142,8 +146,8 @@ const actions = [
     </div>
 
     <!-- Smart recommendations row: tablet+ only -->
-    <section class="d-none d-md-block">
-      <h3 class="mb-4">智慧推薦</h3>
+    <section class="d-none d-md-block pt-5 pb-9">
+      <h3 class="ms-7 mb-4">智慧推薦</h3>
       <TransitionGroup name="rec-slide" tag="div" class="rec-row d-flex gap-4">
         <RouterLink v-for="r in recTriple" :to="r.to" :key="r.id" class="rec-card-fixed card p-3 border-0 shadow-lg rounded-5 text-decoration-none text-body">
           <div class="card-body d-flex align-items-center gap-5 p-5">
@@ -151,7 +155,7 @@ const actions = [
               <p class="fw-bold mb-1 text-nowrap text-truncate">{{ r.title }}</p>
               <p class="rec-card-sub text-body-secondary small mb-0">{{ r.sub }}</p>
             </div>
-            <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0" alt="" />
+            <img :src="r.img" class="rec-card-img rounded-3 flex-shrink-0 border border-4 border-light shadow-lg" alt="" />
           </div>
         </RouterLink>
       </TransitionGroup>
@@ -160,14 +164,14 @@ const actions = [
     <!-- Tiles section -->
     <section>
       <!-- md+: single horizontal wrapping row -->
-      <div class="tiles-row d-none d-md-flex pb-2">
+      <div class="tiles-row d-none d-md-flex px-default py-5 gap-3">
         <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" />
         <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" />
         <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
       </div>
 
       <!-- mobile: two separate grid groups -->
-      <div class="d-md-none d-flex flex-column gap-8">
+      <div class="d-md-none d-flex flex-column gap-8 px-default py-5">
         <div>
           <h3 class="mb-4">累積捷運點</h3>
           <div class="tile-grid row g-4">
@@ -187,7 +191,7 @@ const actions = [
     </section>
 
     <!-- Joined events -->
-    <section>
+    <section class="px-default py-5">
       <h3 class="mb-4">大家都參加</h3>
       <div class="card-row d-flex gap-4 pb-2">
         <RowCard
@@ -202,7 +206,7 @@ const actions = [
     </section>
 
     <!-- Coupon exchange deals -->
-    <section>
+    <section class="px-default py-5">
       <h3 class="mb-4">這樣換，最划算</h3>
       <div class="card-row d-flex gap-4 pb-2">
         <RowCard
@@ -211,13 +215,14 @@ const actions = [
           :subtitle="c.point + ' 點'"
           :title="c.title"
           :detail="c.sub"
+          :img="c.img"
           :color-key="c.colorKey"
         />
       </div>
     </section>
 
     <!-- Gift cards -->
-    <section>
+    <section class="px-default py-5">
       <h3 class="mb-4">最新主打</h3>
       <div class="card-row d-flex gap-4 pb-2">
         <GiftRowCard
@@ -239,10 +244,8 @@ const actions = [
 <style lang="scss" scoped>
 .home {
   max-width: 720px;
-  padding: var(--px-phone);
   @media (min-width: 768px) {
     max-width: 100%;
-    padding: var(--px-tablet-content);
   }
 }
 .rec-thumb {
@@ -251,9 +254,8 @@ const actions = [
 }
 .hero-section {
   position: relative;
-  margin-top: calc(-1 * var(--px-phone));
-  margin-inline: calc(-1 * var(--px-phone));
-  @media (min-width: 768px) {
+  margin-top: 64px;
+  @media (min-width: 48rem) {
     margin-top: calc(-1 * var(--px-tablet-content));
     margin-inline: calc(-1 * var(--px-tablet-content));
   }
@@ -292,41 +294,15 @@ const actions = [
 .card-row > * {
   scroll-snap-align: start;
 }
-.summary-caret {
-  margin-top: 5px;
-}
-.summary-metro-icon {
-  opacity: 0.8;
-}
-.summary-label {
-  font-size: 20px;
-  letter-spacing: 0.45px;
-  line-height: 26px;
-}
-.summary-goal-body {
-  padding-bottom: 15px;
-}
-.summary-goal-num {
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 0.45px;
-  line-height: 28px;
-}
-.summary-progress-track {
-  background: #fff0b2;
-}
-.summary-progress-fill {
-  background: #eeb740;
-}
 .summary-reward-img {
   width: 72px;
   background-size: cover;
   background-position: center;
 }
 .tiles-row {
-  gap: 8px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--px-tablet-content);
   -ms-overflow-style: none;
   scrollbar-width: none;
   margin-inline-end: calc(-1 * var(--px-tablet-content));
@@ -369,6 +345,7 @@ const actions = [
   width: 72px;
   height: 72px;
   object-fit: cover;
+  rotate: 3deg;
 }
 .rec-fade-wrap {
   position: relative;
@@ -391,11 +368,11 @@ const actions = [
 }
 .rec-row {
   position: relative;
-  overflow-x: auto;
+  overflow-x: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  padding-block: 16px;
-  margin-block: -16px;
+  padding-block: 32px;
+  margin-block: -32px;
 }
 .rec-row::-webkit-scrollbar {
   display: none;
@@ -403,10 +380,10 @@ const actions = [
 .rec-card-fixed {
   flex: 0 0 auto;
   width: 320px;
-}
-.rec-card-sub {
-  column-count: 2;
-  column-gap: 12px;
+
+  &:first-child{
+    margin-inline-start: var(--px-tablet-content);
+  }
 }
 .rec-slide-move {
   transition: transform 0.8s ease;

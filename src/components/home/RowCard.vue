@@ -16,17 +16,17 @@ const VARIANTS = ['variant-1', 'variant-2', 'variant-3', 'variant-4', 'variant-5
 
 <template>
   <div class="row-card flex-shrink-0">
-    <div class="row-card-img rounded-4" :style="img ? { background: img } : {}" />
-    <div class="pt-3">
+    <div class="row-card-img rounded-4 bg-body-tertiary" :style="img ? { background: img } : {}" />
+    <div class="pt-3 ps-2">
       <p
         v-if="subtitle"
-        class="row-card-subtitle mb-1"
+        class="caption-1 mb-1 fw-bold"
         :class="VARIANTS.includes(colorKey) ? 'card-subtitle--' + colorKey : ''"
       >
         {{ subtitle }}
       </p>
-      <p class="row-card-title fw-bold mb-1">{{ title }}</p>
-      <p v-if="detail" class="row-card-detail text-body-secondary mb-0">{{ detail }}</p>
+      <h4 class="mb-1">{{ title }}</h4>
+      <p v-if="detail" class="caption-1 text-body-secondary mb-0">{{ detail }}</p>
     </div>
   </div>
 </template>
@@ -37,19 +37,5 @@ const VARIANTS = ['variant-1', 'variant-2', 'variant-3', 'variant-4', 'variant-5
 }
 .row-card-img {
   height: 120px;
-  background: #f2ede7;
-}
-.row-card-subtitle {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-}
-.row-card-title {
-  font-size: 16px;
-  line-height: 22px;
-}
-.row-card-detail {
-  font-size: 12px;
-  line-height: 16px;
 }
 </style>

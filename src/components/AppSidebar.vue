@@ -33,7 +33,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
           :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
         >
           <img v-if="item.metroIcon" :src="metroPointImg" width="24" height="24" />
-          <Icon v-else :icon="item.icon" width="24" class="text-body-secondary" />
+          <Icon v-else :icon="item.icon" width="24"/>
           <span>{{ item.label }}</span>
         </component>
       </li>
@@ -50,7 +50,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
               class="nav-link d-flex align-items-center gap-4"
               :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
             >
-              <Icon :icon="item.icon" width="24" class="text-body-secondary" />
+              <Icon :icon="item.icon" width="24"/>
               <span>{{ item.label }}</span>
             </component>
           </li>
@@ -65,7 +65,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
             class="nav-link d-flex align-items-center gap-4"
             :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
           >
-            <Icon :icon="item.icon" width="24" class="text-body-secondary" />
+            <Icon :icon="item.icon" width="24"/>
             <span>{{ item.label }}</span>
           </component>
         </li>
