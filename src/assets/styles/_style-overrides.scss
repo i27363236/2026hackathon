@@ -1,5 +1,6 @@
 /* _style-overrides — last layer, loaded after Bootstrap to patch component specifics. */
 body {
+  text-wrap: pretty;
   text-autospace: normal;
 }
 
@@ -26,14 +27,6 @@ h4 {
 h5 {
   line-height: 1.375rem;
   letter-spacing: -0.0269rem;
-}
-
-h1, h2, h3, h4, h5 {
-  text-wrap: pretty;
-}
-
-p {
-  text-wrap: pretty;
 }
 
 // ── Carousel: frosted pill indicator container ──────────────────────────────
