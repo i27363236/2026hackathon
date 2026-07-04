@@ -105,7 +105,7 @@ const actions = [
           <div class="col-12 col-md-4">
             <div class="card border-0 rounded-4 h-100 overflow-hidden">
               <div class="card-body p-0 d-flex">
-                <div class="flex-grow-1 px-5 py-4 d-flex flex-column justify-content-between">
+                <div class="flex-grow-1 px-5 py-4 gap-3 d-flex flex-column justify-content-between">
                   <div class="d-flex justify-content-between align-items-center">
                     <Icon icon="ph:target-light" width="32" height="32" class="text-body-secondary"/>
                     <span class="display-4 ms-auto">{{ profile.points }}/{{ goal.price }}
@@ -116,7 +116,7 @@ const actions = [
                   </div>
                   <div class="flex-shrink-1">
                     <h4 class="mb-0 lh-1">集點目標</h4>
-                    <span class="caption-2 text-body-secondary">{{ goal.name }}</span>
+                    <div class="caption-2 mt-1 text-body-secondary">{{ goal.name }}</div>
                   </div>
                 </div>
                 <div class="summary-reward-img flex-shrink-0" :style="{ background: goal.img }" />
