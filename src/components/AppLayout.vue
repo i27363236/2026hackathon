@@ -29,9 +29,18 @@ const sidebarOpen = ref(true)
         :hero="!!meta.heroTop"
         @back="router.back()"
       >
-        <template v-if="meta.showHomeActions" #actions>
-          <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
-          <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
+        <template v-if="meta.showHomeActions || meta.showCouponActions || meta.showEventActions" #actions>
+          <template v-if="meta.showHomeActions">
+            <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
+            <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
+          </template>
+          <template v-else-if="meta.showCouponActions">
+            <ToolbarButton icon="ph:map-trifold-light" aria-label="地圖" />
+            <ToolbarButton icon="ph:magnifying-glass-light" aria-label="搜尋" />
+          </template>
+          <template v-else-if="meta.showEventActions">
+            <ToolbarButton icon="ph:map-trifold-light" aria-label="地圖" />
+          </template>
         </template>
       </TopToolbar>
 

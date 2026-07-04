@@ -35,9 +35,9 @@ const routes = [
       { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
 
       { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
-      { path: 'coupons/trade', name: 'coupon-trade', component: CouponTradeCenter, meta: { title: '優惠券媒合中心', back: true } },
+      { path: 'coupons/trade', name: 'coupon-trade', component: CouponTradeCenter, meta: { title: '優惠券', back: true, showCouponActions: true } },
 
-      { path: 'points/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '獲點活動', back: true } },
+      { path: 'points/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '累點活動', back: true, showEventActions: true } },
 
       { path: 'in-development', name: 'in-development', component: InDevelopmentView, meta: { title: '開發中', back: true } },
 
