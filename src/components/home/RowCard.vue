@@ -25,7 +25,7 @@ const VARIANTS = ['variant-1', 'variant-2', 'variant-3', 'variant-4', 'variant-5
       >
         {{ subtitle }}
       </p>
-      <h4 class="mb-1">{{ title }}</h4>
+      <h5 class="mb-1" style="line-height: 1.1;">{{ title }}</h5>
       <p v-if="detail" class="caption-1 text-body-secondary mb-0">{{ detail }}</p>
     </div>
   </div>
