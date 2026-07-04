@@ -83,6 +83,7 @@ npx playwright screenshot --browser chromium http://localhost:5173/<route> /tmp/
 ```
 Start `npm run dev` first if not already running. Read `/tmp/check.png` with the Read tool to inspect it.
 Prefer this over claiming "looks correct" without a visual check.
+We're using webhash history.
 
 ### Fail Loud
 "Done" is wrong if you skipped a browser check.
