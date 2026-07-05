@@ -90,7 +90,8 @@ const actions = [
             </div>
           </div>
           <div class="col-6 col-md-4">
-            <RouterLink :to="{ name: 'coupon-trade' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
+            <!-- 摘要卡導向 /coupons(兌換總覽:優惠券+禮物);功能磚的優惠券則導向交換中心 -->
+            <RouterLink :to="{ name: 'coupons' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
               <div class="card-body px-5 py-4 d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
                   <Icon icon="ph:ticket-light" width="32" height="32" class="text-body-secondary"/>

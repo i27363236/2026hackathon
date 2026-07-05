@@ -27,10 +27,21 @@ test('我的點數頁可到達', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
-test('優惠券頁列出優惠券', async ({ page }) => {
+test('優惠券頁合併列出禮物與優惠券(禮物在上)', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/coupons')
+  await expect(page.getByRole('heading', { name: '我的禮物' })).toBeVisible()
+  await expect(page.getByText('誠品50元抵用券').first()).toBeVisible()
   await expect(page.getByText('誠品生活｜100元優惠券')).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test('送禮中心列出禮物並可導向商品頁', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/use/gift')
+  await expect(page.getByRole('heading', { name: '捷運伴手禮' })).toBeVisible()
+  await page.getByText('法式經典可麗露').click()
+  await expect(page).toHaveURL(/use\/product\?id=cat-001/)
   expect(errors).toEqual([])
 })
 

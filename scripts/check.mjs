@@ -29,6 +29,7 @@ const ROUTES = [
   '/coupons',
   '/coupons/trade',
   '/use/product?id=cat-001',
+  '/use/gift',
   '/use/gift/setup',
   '/use/gift/preview',
   '/use/gift/received',

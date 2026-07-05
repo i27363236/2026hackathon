@@ -1,14 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+// img 是給 <img :src> 用的「裸 URL」(和 catalog 的 CSS background 簡寫不同)。
+// 原相對路徑字串在執行期解析不到,改為 Vite 匯入的實際資產 + Unsplash 示意圖。
+import esliteCouponImg from '@/img/誠品100元抵用券.png'
 
-export const useGiftStore = defineStore('gifts', () => {
+const sevenElevenImg =
+  'https://images.unsplash.com/photo-1481070555726-e2fe8357725c?w=600&h=400&fit=crop&q=80'
+
+// 注意:store id 不能用 'gifts' — stores/gifts.js(購買流程)已使用,重複會共用實例。
+export const useGiftStore = defineStore('gifts-mock', () => {
   // 1. 模擬資料庫 (Mock Database)
   const gifts = ref([
     // 可使用 - 附近
     {
       id: 1,
       title: '誠品50元抵用券',
-      img: '../../img/誠品50元抵用券.png',
+      img: esliteCouponImg,
       expiry: '2026-06-30 23:59',
       type: 'near',
       status: 'available'
@@ -16,7 +23,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 2,
       title: '7-11商品券',
-      img: '../../img/711商品券.png',
+      img: sevenElevenImg,
       expiry: '2026-06-30 23:59',
       type: 'near',
       status: 'available'
@@ -25,7 +32,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 3,
       title: '誠品50元抵用券',
-      img: '../../img/誠品50元抵用券.png',
+      img: esliteCouponImg,
       expiry: '2026-06-30 23:59',
       type: 'other',
       status: 'available'
@@ -33,7 +40,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 4,
       title: '7-11商品券',
-      img: '../../img/711商品券.png',
+      img: sevenElevenImg,
       expiry: '2026-06-30 23:59',
       type: 'other',
       status: 'available'
@@ -42,7 +49,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 5,
       title: '誠品50元抵用券',
-      img: '../../img/誠品50元抵用券.png',
+      img: esliteCouponImg,
       expiry: '2026-05-12',
       type: 'other',
       status: 'used' // 會顯示「已使用」紅章
@@ -50,7 +57,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 6,
       title: '7-11商品券',
-      img: '../../img/711商品券.png',
+      img: sevenElevenImg,
       expiry: '2026-05-12',
       type: 'other',
       status: 'expired' // 會顯示「已過期」紅章
@@ -59,7 +66,7 @@ export const useGiftStore = defineStore('gifts', () => {
     {
       id: 7,
       title: '誠品50元抵用券',
-      img: '../../img/誠品50元抵用券.png',
+      img: esliteCouponImg,
       expiry: '2026-05-12',
       type: 'other',
       status: 'sent' // 會顯示「已送出」紅章
