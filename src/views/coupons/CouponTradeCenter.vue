@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import RowCard from '@/components/home/RowCard.vue'
+import ContentCard from '@/components/cards/ContentCard.vue'
 import { getCoupons } from '@/data/coupons.js'
 
 const coupons = getCoupons()
@@ -75,7 +75,7 @@ const sections = [
         </button>
       </div>
       <div class="card-row d-flex gap-4 px-default pb-2">
-        <RowCard
+        <ContentCard
           v-for="c in coupons"
           :key="c.id"
           :subtitle="c.point + ' 點'"

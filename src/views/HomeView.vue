@@ -2,8 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import ActionTile from '@/components/ActionTile.vue'
-import RowCard from '@/components/home/RowCard.vue'
-import GiftRowCard from '@/components/home/GiftRowCard.vue'
+import ContentCard from '@/components/cards/ContentCard.vue'
 import { getEvents } from '@/data/events.js'
 import { getCoupons } from '@/data/coupons.js'
 import { getShelves, getProductById } from '@/data/catalog.js'
@@ -194,7 +193,7 @@ const actions = [
     <section class="px-default py-5">
       <h3 class="mb-4">大家都參加</h3>
       <div class="card-row d-flex gap-4 pb-2">
-        <RowCard
+        <ContentCard
           v-for="e in joinedEvents"
           :key="e.id"
           :subtitle="e.tag"
@@ -209,7 +208,7 @@ const actions = [
     <section class="px-default py-5">
       <h3 class="mb-4">這樣換，最划算</h3>
       <div class="card-row d-flex gap-4 pb-2">
-        <RowCard
+        <ContentCard
           v-for="c in coupons"
           :key="c.id"
           :subtitle="c.point + ' 點'"
@@ -225,16 +224,17 @@ const actions = [
     <section class="px-default py-5">
       <h3 class="mb-4">最新主打</h3>
       <div class="card-row d-flex gap-4 pb-2">
-        <GiftRowCard
+        <ContentCard
           v-for="p in giftProducts"
           :key="p.id"
-          :id="p.id"
-          :name="p.name"
+          variant="gift"
+          :title="p.name"
           :detail="p.desc"
           :price="p.price"
           :size-label="p.sizeLabel"
           :img="p.img"
           :color-key="p.colorKey"
+          :to="{ name: 'use-product', query: { id: p.id } }"
         />
       </div>
     </section>

@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { getEvents } from '@/data/events.js'
-import EventLargeCard from '@/components/home/EventLargeCard.vue'
-import RowCard from '@/components/home/RowCard.vue'
+import ContentCard from '@/components/cards/ContentCard.vue'
 
 const events = getEvents()
 
@@ -17,9 +16,10 @@ const offlineEvents = computed(() => events.filter(e => e.category === 'offline'
     <!-- 大家都參加 (toolbar with back/title/map lives in AppLayout via route meta) -->
     <section class="px-default py-7">
       <div class="card-row d-flex gap-4">
-        <EventLargeCard
+        <ContentCard
           v-for="e in participationEvents"
           :key="e.id"
+          variant="large"
           :subtitle="e.tag"
           :title="e.title"
           :detail="e.detail"
@@ -38,7 +38,7 @@ const offlineEvents = computed(() => events.filter(e => e.category === 'offline'
         </button>
       </div>
       <div class="card-row d-flex gap-4">
-        <RowCard
+        <ContentCard
           v-for="e in onlineEvents"
           :key="e.id"
           :title="e.title"
@@ -58,7 +58,7 @@ const offlineEvents = computed(() => events.filter(e => e.category === 'offline'
         </button>
       </div>
       <div class="card-row d-flex gap-4">
-        <RowCard
+        <ContentCard
           v-for="e in offlineEvents"
           :key="e.id"
           :subtitle="e.tag"
