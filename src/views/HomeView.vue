@@ -8,6 +8,7 @@ import { getCoupons } from '@/data/coupons.js'
 import { getShelves, getProductById } from '@/data/catalog.js'
 import { getRecommendations } from '@/data/recommendations.js'
 import { getProfile } from '@/data/profile.js'
+import { earnPointNav, usePointNav } from '@/nav.js'
 import banner1 from '@/img/banner-1.jpg'
 import banner2 from '@/img/banner-2.jpg'
 import banner3 from '@/img/banner-3.jpg'
@@ -35,16 +36,6 @@ onUnmounted(() => { clearInterval(timer) })
 
 // Links to the in-development stub are rendered as disabled (muted, unclickable).
 const isStub = to => to?.name === 'in-development'
-
-const actions = [
-  { label: '購物', icon: 'ph:shopping-bag', to: { name: 'in-development' } },
-  { label: '送禮', icon: 'ph:gift', to: { name: 'use-gift-setup' } },
-  { label: '優惠券', icon: 'ph:ticket', to: { name: 'coupon-trade' } },
-  { label: '銷點地圖', icon: 'ph:map-pin', to: { name: 'in-development' } },
-  { label: '捷客券商城', icon: 'ph:storefront', to: { name: 'in-development' } },
-  { label: '轉換點數', icon: 'ph:arrows-left-right', to: { name: 'in-development' } },
-  { label: '點數傳愛', icon: 'ph:heart', to: { name: 'in-development' } },
-]
 
 </script>
 
@@ -163,11 +154,17 @@ const actions = [
 
     <!-- Tiles section -->
     <section>
-      <!-- md+: single horizontal wrapping row -->
+      <!-- md+: single horizontal wrapping row(磚塊資料來自 nav.js,tileIcon 為磚塊專用圖示) -->
       <div class="tiles-row d-none d-md-flex px-default py-5 gap-3">
-        <ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" />
-        <ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" />
-        <ActionTile v-for="a in actions" :key="a.label" :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
+        <ActionTile
+          v-for="a in [...earnPointNav, ...usePointNav]"
+          :key="a.label"
+          :label="a.label"
+          :icon="a.tileIcon ?? a.icon"
+          :to="a.to"
+          :disabled="isStub(a.to)"
+          variant="gray"
+        />
       </div>
 
       <!-- mobile: two separate grid groups -->
@@ -175,15 +172,16 @@ const actions = [
         <div>
           <h3 class="mb-4">累積捷運點</h3>
           <div class="tile-grid row g-3">
-            <div class="col-6"><ActionTile label="累點活動" icon="ph:calendar-star-duotone" :to="{ name: 'earn-events' }" variant="gray" /></div>
-            <div class="col-6"><ActionTile label="累點地圖" icon="ph:map-trifold-duotone" :to="{ name: 'in-development' }" disabled variant="gray" /></div>
+            <div v-for="a in earnPointNav" :key="a.label" class="col-6">
+              <ActionTile :label="a.label" :icon="a.tileIcon ?? a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
+            </div>
           </div>
         </div>
         <div>
           <h3 class="mb-4">使用捷運點</h3>
           <div class="tile-grid row g-3">
-            <div v-for="a in actions" :key="a.label" class="col-6">
-              <ActionTile :label="a.label" :icon="a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
+            <div v-for="a in usePointNav" :key="a.label" class="col-6">
+              <ActionTile :label="a.label" :icon="a.tileIcon ?? a.icon" :to="a.to" :disabled="isStub(a.to)" variant="gray" />
             </div>
           </div>
         </div>
