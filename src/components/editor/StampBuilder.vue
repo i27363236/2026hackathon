@@ -7,7 +7,7 @@
 import { ref, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { STAMP_SHAPES } from './stampShapes.js'
-import { stampIcons } from '../../data/stampIcons.js'
+import { stampIcons } from '@/data/stampIcons.js'
 
 const emit = defineEmits(['add'])
 

@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { mainNav, earnPointNav, usePointNav } from '../nav.js'
-import metroPointImg from '../img/metro-point.png'
+import { mainNav, earnPointNav, usePointNav } from '@/nav.js'
+import metroPointImg from '@/img/metro-point.png'
 
 defineProps({
   open: { type: Boolean, default: true },

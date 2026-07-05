@@ -2,7 +2,7 @@
 // Gift back face — product info (Figma node 2415-2043).
 // Image-derived lighter gradient background; text auto black/white for readability.
 import { computed, toRef } from 'vue'
-import { useCardColors } from '../../utils/imageColor.js'
+import { useCardColors } from '@/utils/imageColor.js'
 
 const props = defineProps({
   name: { type: String, default: '' },

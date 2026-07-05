@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import RowCard from '../../components/home/RowCard.vue'
-import { getCoupons } from '../../data/coupons.js'
+import RowCard from '@/components/home/RowCard.vue'
+import { getCoupons } from '@/data/coupons.js'
 
 const coupons = getCoupons()
 

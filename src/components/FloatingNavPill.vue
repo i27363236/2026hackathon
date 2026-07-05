@@ -1,5 +1,5 @@
 <script setup>
-import { mainNav } from '../nav.js'
+import { mainNav } from '@/nav.js'
 import { Icon } from '@iconify/vue'
 
 defineEmits(['open'])

@@ -3,8 +3,8 @@
 // Big white QR area + a coupon stub and title/expiry below.
 // Shares the image-derived lighter gradient background with ProductFace.
 import { computed, toRef } from 'vue'
-import { useCardColors } from '../../utils/imageColor.js'
-import qrCodeImg from '../../img/qr-code-example.png'
+import { useCardColors } from '@/utils/imageColor.js'
+import qrCodeImg from '@/img/qr-code-example.png'
 
 const props = defineProps({
   name: { type: String, default: '' },

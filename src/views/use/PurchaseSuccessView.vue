@@ -5,7 +5,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { useGiftsStore } from '../../stores/gifts.js'
+import { useGiftsStore } from '@/stores/gifts.js'
 
 const route = useRoute()
 const router = useRouter()

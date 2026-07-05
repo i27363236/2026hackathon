@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import { getProductById } from '../data/catalog.js'
+import { getProductById } from '@/data/catalog.js'
 
 const STORAGE_KEY = 'metro:gifts'
 const DEFAULT_VALID_DAYS = 60

@@ -1,29 +1,29 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import AppLayout from '../components/AppLayout.vue'
+import AppLayout from '@/components/AppLayout.vue'
 
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@/views/HomeView.vue'
 
-import PointsView from '../views/points/PointsView.vue'
+import PointsView from '@/views/points/PointsView.vue'
 
-import CouponsView from '../views/coupons/CouponsView.vue'
-import CouponTradeCenter from '../views/coupons/CouponTradeCenter.vue'
+import CouponsView from '@/views/coupons/CouponsView.vue'
+import CouponTradeCenter from '@/views/coupons/CouponTradeCenter.vue'
 
-import GetPointEventsView from '../views/points/GetPointEventsView.vue'
-import InDevelopmentView from '../views/InDevelopmentView.vue'
+import GetPointEventsView from '@/views/points/GetPointEventsView.vue'
+import InDevelopmentView from '@/views/InDevelopmentView.vue'
 
-import ProductView from '../views/use/ProductView.vue'
+import ProductView from '@/views/use/ProductView.vue'
 // GiftSetupView is the Konva canvas editor — lazy-loaded so Konva stays out of the Home bundle.
-import GiftPreviewView from '../views/use/GiftPreviewView.vue'
-import GiftReceivedView from '../views/use/GiftReceivedView.vue'
-import UseCouponsView from '../views/use/UseCouponsView.vue'
-import PurchaseCheckoutView from '../views/use/PurchaseCheckoutView.vue'
-import PurchaseSuccessView from '../views/use/PurchaseSuccessView.vue'
+import GiftPreviewView from '@/views/use/GiftPreviewView.vue'
+import GiftReceivedView from '@/views/use/GiftReceivedView.vue'
+import UseCouponsView from '@/views/use/UseCouponsView.vue'
+import PurchaseCheckoutView from '@/views/use/PurchaseCheckoutView.vue'
+import PurchaseSuccessView from '@/views/use/PurchaseSuccessView.vue'
 
-import ProfileView from '../views/profile/ProfileView.vue'
-import GiftsView from '../views/profile/GiftsView.vue'
-import GiftsAvailableView from '../views/profile/GiftsAvailableView.vue'
-import GiftsHistoryView from '../views/profile/GiftsHistoryView.vue'
-import GiftsSentView from '../views/profile/GiftsSentView.vue'
+import ProfileView from '@/views/profile/ProfileView.vue'
+import GiftsView from '@/views/profile/GiftsView.vue'
+import GiftsAvailableView from '@/views/profile/GiftsAvailableView.vue'
+import GiftsHistoryView from '@/views/profile/GiftsHistoryView.vue'
+import GiftsSentView from '@/views/profile/GiftsSentView.vue'
 
 const routes = [
   {

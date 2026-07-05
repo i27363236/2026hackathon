@@ -1,9 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import TopToolbar from '../../components/TopToolbar.vue'
-import RowCard from '../../components/home/RowCard.vue'
-import { getCoupons } from '../../data/coupons.js'
+import TopToolbar from '@/components/TopToolbar.vue'
+import RowCard from '@/components/home/RowCard.vue'
+import { getCoupons } from '@/data/coupons.js'
 
 const router = useRouter()
 const coupons = getCoupons()

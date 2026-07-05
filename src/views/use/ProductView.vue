@@ -9,9 +9,9 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { getProductById, getShelfByProductId } from '../../data/catalog.js'
-import { useGiftsStore } from '../../stores/gifts.js'
-import coinImg from '../../img/coin.png'
+import { getProductById, getShelfByProductId } from '@/data/catalog.js'
+import { useGiftsStore } from '@/stores/gifts.js'
+import coinImg from '@/img/coin.png'
 
 const route = useRoute()
 const router = useRouter()

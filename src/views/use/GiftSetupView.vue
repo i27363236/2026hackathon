@@ -7,13 +7,13 @@ import { useRouter } from 'vue-router'
 import { Icon, loadIcon } from '@iconify/vue'
 // Local vue-konva imports keep Konva in this lazy chunk (not the Home bundle).
 import { Stage, Layer, Rect, Line, Text, Image, Group, Path, Transformer } from 'vue-konva'
-import StampBuilder from '../../components/editor/StampBuilder.vue'
-import EditToolbar from '../../components/editor/EditToolbar.vue'
-import ToolbarButton from '../../components/ToolbarButton.vue'
-import { SHAPE_BY_KEY } from '../../components/editor/stampShapes.js'
-import { useGiftsStore } from '../../stores/gifts.js'
-import { stationPhotos } from '../../data/stationPhotos.js'
-import { giftBackgrounds } from '../../data/giftBackgrounds.js'
+import StampBuilder from '@/components/editor/StampBuilder.vue'
+import EditToolbar from '@/components/editor/EditToolbar.vue'
+import ToolbarButton from '@/components/ToolbarButton.vue'
+import { SHAPE_BY_KEY } from '@/components/editor/stampShapes.js'
+import { useGiftsStore } from '@/stores/gifts.js'
+import { stationPhotos } from '@/data/stationPhotos.js'
+import { giftBackgrounds } from '@/data/giftBackgrounds.js'
 
 const router = useRouter()
 const gifts = useGiftsStore()

@@ -2,10 +2,10 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import FlipCard from '../../components/gift/FlipCard.vue'
-import QrFace from '../../components/gift/QrFace.vue'
-import ProductFace from '../../components/gift/ProductFace.vue'
-import { useGiftsStore } from '../../stores/gifts.js'
+import FlipCard from '@/components/gift/FlipCard.vue'
+import QrFace from '@/components/gift/QrFace.vue'
+import ProductFace from '@/components/gift/ProductFace.vue'
+import { useGiftsStore } from '@/stores/gifts.js'
 
 const router = useRouter()
 const gifts = useGiftsStore()

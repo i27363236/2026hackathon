@@ -8,8 +8,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { useGiftsStore } from '../../stores/gifts.js'
-import coinImg from '../../img/coin.png'
+import { useGiftsStore } from '@/stores/gifts.js'
+import coinImg from '@/img/coin.png'
 
 const router = useRouter()
 const gifts = useGiftsStore()

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { getCoupons } from '../../data/coupons.js'
+import { getCoupons } from '@/data/coupons.js'
 
 const router = useRouter()
 const coupons = ref(getCoupons())

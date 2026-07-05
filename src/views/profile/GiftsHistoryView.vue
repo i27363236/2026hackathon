@@ -1,5 +1,5 @@
 <script setup>
-import { useGiftStore } from '../../data/gifts' // 1. 已修正為正確的兩層路徑
+import { useGiftStore } from '@/data/gifts' // 1. 已修正為正確的兩層路徑
 import { storeToRefs } from 'pinia'
 
 // 2. 初始化你的禮物資料庫

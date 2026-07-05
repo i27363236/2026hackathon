@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
-import { getEvents } from '../../data/events.js'
-import EventLargeCard from '../../components/home/EventLargeCard.vue'
-import RowCard from '../../components/home/RowCard.vue'
+import { getEvents } from '@/data/events.js'
+import EventLargeCard from '@/components/home/EventLargeCard.vue'
+import RowCard from '@/components/home/RowCard.vue'
 
 const events = getEvents()
 

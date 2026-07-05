@@ -9,7 +9,7 @@
 //
 // To add a custom icon: drop the file in `src/assets/stamp-icons/`, import it below
 // (`?raw` for tintable SVG, or a normal import for a raster `img`), and push an entry.
-import finn from '../assets/stamp-icons/finn.svg?raw'
+import finn from '@/assets/stamp-icons/finn.svg?raw'
 
 const ph = (name, label) => ({ id: name, type: 'ph', name, label: label || name })
 
