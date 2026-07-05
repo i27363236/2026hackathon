@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "type-check": "vue-tsc --noEmit --skipLibCheck"
+    "type-check": "vue-tsc --noEmit --skipLibCheck",
+    "test": "playwright test",
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
     "@iconify-json/ph": "^1.2.2",
