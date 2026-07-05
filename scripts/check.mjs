@@ -13,7 +13,8 @@ import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 
 const BASE = 'http://localhost:5173'
-const OUT_DIR = 'test-results/check'
+// 注意:不能放在 test-results/ 下 — playwright test 每次啟動會清空該目錄。
+const OUT_DIR = 'screenshots/check'
 
 const VIEWPORTS = {
   phone: { width: 390, height: 844 },

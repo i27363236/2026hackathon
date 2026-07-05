@@ -20,7 +20,9 @@ const gifts = useGiftsStore()
 
 const STAGE_W = 300
 const STAGE_H = 450 // 2:3, matching the Figma postcard (316×474) and the bg assets
-const STAMP_COLOR = '#0079a9'
+// Konva needs a literal color string — read the brand primary from the CSS tokens.
+const STAMP_COLOR =
+  getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#0079a9'
 
 const stageRef = ref(null)
 const transformerRef = ref(null)

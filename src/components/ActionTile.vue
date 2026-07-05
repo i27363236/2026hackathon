@@ -35,17 +35,17 @@ const target = computed(() => (props.disabled ? null : props.to))
 }
 
 .action-tile--blue {
-  background: linear-gradient(to top, #005886, #0079a9);
+  background: var(--tile-gradient-blue);
   color: #fff;
 }
 
 .action-tile--green {
-  background: linear-gradient(to top, #005f00, #007e00);
+  background: var(--tile-gradient-green);
   color: #fff;
 }
 
 .action-tile--gray {
-  background: linear-gradient(to bottom, var(--gray-100), var(--gray-300));
+  background: var(--tile-gradient-gray);
   color: #000;
 }
 

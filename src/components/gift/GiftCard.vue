@@ -39,7 +39,7 @@ defineProps({
 
 <style scoped>
 .gift-card {
-  background: linear-gradient(160deg, #cdeefe 0%, #e7f7ff 100%);
+  background: var(--gift-note-gradient);
   aspect-ratio: 3 / 4;
 }
 .doodle {

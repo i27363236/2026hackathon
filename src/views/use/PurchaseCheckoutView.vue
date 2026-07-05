@@ -318,7 +318,7 @@ function confirm() {
 .item-thumb {
   width: 80px;
   height: 50px;
-  background: #f2ede7;
+  background: var(--surface-cream);
 }
 .footer {
   position: sticky;
@@ -346,7 +346,7 @@ function confirm() {
   width: 66px;
   height: 44px;
   border-radius: 4px;
-  background: #f2ede7;
+  background: var(--surface-cream);
 }
 .co-row {
   display: flex;
