@@ -7,8 +7,10 @@
 // gift → card editor; self → success.
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { Icon } from '@iconify/vue'
 import { useGiftsStore } from '@/stores/gifts.js'
+import CheckoutOptionGroup from '@/components/checkout/CheckoutOptionGroup.vue'
+import CheckoutFooter from '@/components/checkout/CheckoutFooter.vue'
+import PointsStepper from '@/components/checkout/PointsStepper.vue'
 import coinImg from '@/img/coin.png'
 
 const router = useRouter()
@@ -24,12 +26,6 @@ const maxApplicable = computed(() => Math.min(POINTS_BALANCE, subtotal.value))
 
 // money mode: how many 捷運點 to apply, adjustable via a stepper (defaults to full discount).
 const pointsApplied = ref(Math.min(POINTS_BALANCE, gifts.draftTotal))
-function decPoints() {
-  pointsApplied.value = Math.max(0, pointsApplied.value - 1)
-}
-function incPoints() {
-  pointsApplied.value = Math.min(maxApplicable.value, pointsApplied.value + 1)
-}
 
 // points mode: simple on/off toggle for the discount.
 const usePoints = ref(true)
@@ -105,27 +101,7 @@ function confirm() {
           <!-- 付款方式 -->
           <section class="co-section">
             <h3 class="mb-4">付款方式</h3>
-            <div v-for="opt in paymentOptions" :key="opt.id" class="co-option">
-              <input
-                class="form-check-input mt-1"
-                type="radio"
-                name="payment"
-                :id="`pay-${opt.id}`"
-                :value="opt.id"
-                v-model="paymentMethod"
-              />
-              <label class="co-option-label" :for="`pay-${opt.id}`">
-                <span class="d-block text-body">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
-              </label>
-              <button
-                v-if="opt.change"
-                type="button"
-                class="btn btn-link p-0 fw-bold text-decoration-none text-nowrap text-body-secondary"
-              >
-                更改
-              </button>
-            </div>
+            <CheckoutOptionGroup v-model="paymentMethod" name="payment" :options="paymentOptions" />
           </section>
 
           <!-- 捷運點折抵 -->
@@ -137,69 +113,25 @@ function confirm() {
             </div>
             <div class="co-row align-items-center">
               <span class="text-body">數量</span>
-              <div class="co-stepper">
-                <button type="button" class="co-step-btn" :disabled="discount <= 0" @click="decPoints">
-                  <Icon icon="ph:minus-light" width="20" height="20" />
-                </button>
-                <span class="co-step-val fw-bold">{{ discount }}</span>
-                <button
-                  type="button"
-                  class="co-step-btn co-step-plus"
-                  :disabled="discount >= maxApplicable"
-                  @click="incPoints"
-                >
-                  <Icon icon="ph:plus-light" width="20" height="20" />
-                </button>
-              </div>
+              <PointsStepper v-model="pointsApplied" :max="maxApplicable" />
             </div>
           </section>
 
           <!-- 發票資訊 -->
           <section class="co-section">
             <h3 class="mb-4">發票資訊</h3>
-            <div v-for="opt in invoiceOptions" :key="opt.id" class="co-option">
-              <input
-                class="form-check-input mt-1"
-                type="radio"
-                name="invoice"
-                :id="`inv-${opt.id}`"
-                :value="opt.id"
-                v-model="invoiceType"
-              />
-              <label class="co-option-label" :for="`inv-${opt.id}`">
-                <span class="d-block text-body">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
-              </label>
-              <button
-                v-if="opt.change"
-                type="button"
-                class="btn btn-link p-0 fw-bold text-decoration-none text-nowrap text-body-secondary"
-              >
-                更改
-              </button>
-            </div>
+            <CheckoutOptionGroup v-model="invoiceType" name="invoice" :options="invoiceOptions" />
           </section>
         </div>
       </div>
 
-      <div class="footer bg-body border-top">
-        <div class="one-col">
-          <div class="co-action-row">
-            <div class="co-summary">
-              <div class="caption-1 text-body fw-bold">總計</div>
-              <div class="fs-4 fw-bold text-primary mt-1">NT$ {{ total }}</div>
-            </div>
-            <button
-              type="button"
-              class="btn btn-primary fw-bold"
-              :disabled="!draft"
-              @click="confirm"
-            >
-              {{ confirmLabel }}
-            </button>
-          </div>
-        </div>
-      </div>
+      <CheckoutFooter
+        label="總計"
+        :value="`NT$ ${total}`"
+        :confirm-label="confirmLabel"
+        :disabled="!draft"
+        @confirm="confirm"
+      />
     </template>
 
     <!-- ============================ points checkout ============================ -->
@@ -263,40 +195,18 @@ function confirm() {
           <!-- 發票資訊 -->
           <div class="bg-body p-5">
             <h3 class="mb-4">發票資訊</h3>
-            <div
-              v-for="opt in invoiceOptions"
-              :key="opt.id"
-              class="form-check d-flex align-items-start gap-2 py-2 border-bottom border-light-subtle"
-            >
-              <input class="form-check-input mt-1" type="radio" name="invoice-pt" :id="`pt-${opt.id}`" :value="opt.id" v-model="invoiceType" />
-              <label class="form-check-label w-100" :for="`pt-${opt.id}`">
-                <span class="d-block fw-bold text-body small">{{ opt.label }}</span>
-                <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
-              </label>
-            </div>
+            <CheckoutOptionGroup v-model="invoiceType" name="invoice-pt" :options="invoiceOptions" variant="list" />
           </div>
         </div>
       </div>
 
-      <!-- footer -->
-      <div class="footer bg-body border-top">
-        <div class="one-col">
-          <div class="co-action-row">
-            <div class="co-summary">
-              <div class="caption-1 text-body fw-bold">應付金額</div>
-              <div class="fs-4 fw-bold text-primary mt-1">捷運點 {{ total }}</div>
-            </div>
-            <button
-              type="button"
-              class="btn btn-primary fw-bold"
-              :disabled="!draft"
-              @click="confirm"
-            >
-              {{ confirmLabel }}
-            </button>
-          </div>
-        </div>
-      </div>
+      <CheckoutFooter
+        label="應付金額"
+        :value="`捷運點 ${total}`"
+        :confirm-label="confirmLabel"
+        :disabled="!draft"
+        @confirm="confirm"
+      />
     </template>
   </div>
 </template>
@@ -319,20 +229,6 @@ function confirm() {
   width: 80px;
   height: 50px;
   background: var(--surface-cream);
-}
-.footer {
-  position: sticky;
-  bottom: 0;
-}
-.co-action-row {
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 16px;
-}
-.co-summary {
-  min-width: 0;
 }
 
 /* ---- money checkout ---- */
@@ -361,46 +257,6 @@ function confirm() {
   height: 1px;
   background: var(--bs-border-color);
   margin: 4px 0 12px;
-}
-.co-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.co-option:last-child {
-  margin-bottom: 0;
-}
-.co-option-label {
-  flex: 1;
-  min-width: 0;
-  cursor: pointer;
-}
-.co-stepper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.co-step-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--bs-border-color);
-  background: var(--bs-secondary-bg);
-  color: var(--bs-secondary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.co-step-btn:disabled {
-  opacity: 0.5;
-}
-.co-step-plus {
-  color: var(--bs-primary);
-}
-.co-step-val {
-  min-width: 32px;
-  text-align: center;
 }
 .form-check-input:checked {
   background-color: var(--bs-primary);
