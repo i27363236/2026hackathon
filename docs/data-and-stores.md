@@ -17,14 +17,31 @@
 
 ### `img` 欄位契約
 
-- `catalog` / `events` / `coupons` 的 `img` 是 **CSS background 簡寫**,直接餵給
-  `:style="{ background: x.img }"`,必須是 `center/cover url(...)` 形式(**不是**裸 URL)。
+- `catalog` / `events` / `coupons` / `data/gifts.js`(gifts-mock)的 `img` 是 **CSS background 簡寫**,
+  直接餵給 `:style="{ background: x.img }"`,必須是 `center/cover url(...)` 形式(**不是**裸 URL)。
 - `stationPhotos` 的 `src` 是**裸圖片 URL**(給 `<img :src>` 與 Konva Image 載入器,不加 `url(...)`)。
 
 ### `colorKey` 語意
 
 資料項用 `colorKey: 'variant-1'…'variant-6'` 指定 MRT 卡片配色;`ContentCard` 映射成
 副標(row/large)或價格(gift)的 `.card-subtitle--N` 類別。見 design-tokens.md。
+
+---
+
+## Points store(`src/stores/points.js`)
+
+`usePointsStore`(Pinia id `'points'`)是**捷運點餘額的單一來源** — Home 摘要卡、
+我的點數頁、商品頁不足判斷、結帳折抵都讀這裡,不要再各自寫死餘額。
+
+| 名稱                  | 說明                                                       |
+| --------------------- | ---------------------------------------------------------- |
+| `balance`             | 目前餘額(demo 預設 320)                                  |
+| `expiringPoints` / `expiringDate` | 即將到期點數與日期                            |
+| `transactions`        | 交易紀錄(近期在前)                                       |
+| `earn(amount, title)` | 加點並寫入一筆 `earn` 交易                                 |
+| `spend(amount, title)`| 扣點並寫入一筆 `redeem` 交易(結帳 confirm 時呼叫)        |
+
+尚未持久化(Phase 3 簽到功能加上 localStorage watch)。
 
 ---
 

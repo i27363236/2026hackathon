@@ -21,10 +21,7 @@ import PurchaseCheckoutView from '@/views/use/PurchaseCheckoutView.vue'
 import PurchaseSuccessView from '@/views/use/PurchaseSuccessView.vue'
 
 import ProfileView from '@/views/profile/ProfileView.vue'
-import GiftsView from '@/views/profile/GiftsView.vue'
-import GiftsAvailableView from '@/views/profile/GiftsAvailableView.vue'
 import GiftsHistoryView from '@/views/profile/GiftsHistoryView.vue'
-import GiftsSentView from '@/views/profile/GiftsSentView.vue'
 
 const routes = [
   {
@@ -52,10 +49,11 @@ const routes = [
       { path: 'use/purchase-success', name: 'purchase-success', component: PurchaseSuccessView, meta: { title: '購買成功' } },
 
       { path: 'profile', name: 'profile', component: ProfileView, meta: { title: '個人檔案', back: true } },
-      { path: 'profile/gifts', name: 'profile-gifts', component: GiftsView, meta: { title: '我的禮物', back: true } },
-      { path: 'profile/gifts/available', name: 'profile-gifts-available', component: GiftsAvailableView, meta: { title: '可用禮物', back: true } },
+      // 我的禮物三個子頁原為空白 stub — 轉址到已完整實作的禮物紀錄頁(available/history 分頁)。
+      { path: 'profile/gifts', name: 'profile-gifts', redirect: { name: 'profile-gifts-history' } },
+      { path: 'profile/gifts/available', name: 'profile-gifts-available', redirect: { name: 'profile-gifts-history', query: { tab: 'available' } } },
       { path: 'profile/gifts/history', name: 'profile-gifts-history', component: GiftsHistoryView, meta: { title: '禮物紀錄', back: true } },
-      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', component: GiftsSentView, meta: { title: '已送禮物', back: true } },
+      { path: 'profile/gifts/sent', name: 'profile-gifts-sent', redirect: { name: 'profile-gifts-history', query: { tab: 'history' } } },
     ],
   },
 ]

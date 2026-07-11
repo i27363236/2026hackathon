@@ -1,4 +1,5 @@
 <script setup>
+import { useRoute } from 'vue-router'
 import { useGiftStore } from '@/data/gifts' // 1. 已修正為正確的兩層路徑
 import { storeToRefs } from 'pinia'
 
@@ -6,13 +7,19 @@ import { storeToRefs } from 'pinia'
 const giftStore = useGiftStore()
 
 // 3. 直接從 Pinia 資料庫把你寫好的計算屬性撈出來用，不用在這邊重新 filter 囉！
-const { 
-  currentTab, 
-  availableNearGifts, 
-  availableOtherGifts, 
-  historyCoupons, 
-  historySentGifts 
+const {
+  currentTab,
+  availableNearGifts,
+  availableOtherGifts,
+  historyCoupons,
+  historySentGifts
 } = storeToRefs(giftStore)
+
+// 轉址進來時可用 ?tab=available|history 指定分頁(profile/gifts/* 舊路徑轉址用)
+const route = useRoute()
+if (route.query.tab === 'available' || route.query.tab === 'history') {
+  currentTab.value = route.query.tab
+}
 
 // 4. 根據蓋章狀態輸出對應的中文文字
 const getStampText = (status) => {
@@ -59,9 +66,7 @@ const getStampText = (status) => {
             <h2 class="column-title">附近</h2>
             
             <div class="card coupon-card" v-for="gift in availableNearGifts" :key="gift.id">
-              <div class="coupon-img-wrapper">
-                <img :src="gift.img" :alt="gift.title" class="coupon-img" />
-              </div>
+              <div class="coupon-img-wrapper" :style="{ background: gift.img }" />
               <div class="coupon-info">
                 <h3 class="coupon-title">{{ gift.title }}</h3>
                 <p class="coupon-expiry">使用期限 {{ gift.expiry }}</p>
@@ -73,9 +78,7 @@ const getStampText = (status) => {
             <h2 class="column-title">其他優惠券</h2>
             
             <div class="card coupon-card" v-for="gift in availableOtherGifts" :key="gift.id">
-              <div class="coupon-img-wrapper">
-                <img :src="gift.img" :alt="gift.title" class="coupon-img" />
-              </div>
+              <div class="coupon-img-wrapper" :style="{ background: gift.img }" />
               <div class="coupon-info">
                 <h3 class="coupon-title">{{ gift.title }}</h3>
                 <p class="coupon-expiry">使用期限 {{ gift.expiry }}</p>
@@ -89,9 +92,7 @@ const getStampText = (status) => {
             <h2 class="column-title">所有優惠券</h2>
             
             <div class="card coupon-card history-mode" v-for="gift in historyCoupons" :key="gift.id">
-              <div class="coupon-img-wrapper">
-                <img :src="gift.img" :alt="gift.title" class="coupon-img" />
-              </div>
+              <div class="coupon-img-wrapper" :style="{ background: gift.img }" />
               <div class="coupon-info">
                 <h3 class="coupon-title">{{ gift.title }}</h3>
                 <p class="coupon-expiry">{{ gift.expiry }}</p>
@@ -104,9 +105,7 @@ const getStampText = (status) => {
             <h2 class="column-title">送出的禮物</h2>
             
             <div class="card coupon-card history-mode" v-for="gift in historySentGifts" :key="gift.id">
-              <div class="coupon-img-wrapper">
-                <img :src="gift.img" :alt="gift.title" class="coupon-img" />
-              </div>
+              <div class="coupon-img-wrapper" :style="{ background: gift.img }" />
               <div class="coupon-info">
                 <h3 class="coupon-title">{{ gift.title }}</h3>
                 <p class="coupon-expiry">{{ gift.expiry }}</p>
@@ -255,15 +254,6 @@ const getStampText = (status) => {
   overflow: hidden;
   background-color: #f1f3f5;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.coupon-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .coupon-info {

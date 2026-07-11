@@ -28,7 +28,7 @@ function viewReceived() {
 
 <template>
   <div class="success-view d-flex flex-column h-100">
-    <div class="content flex-grow-1 overflow-auto d-flex flex-column align-items-center justify-content-center text-center px-5 py-5">
+    <div class="content flex-grow-1 overflow-auto d-flex flex-column align-items-center justify-content-center text-center px-5 pt-8 pb-5">
       <span class="success-badge rounded-circle d-flex align-items-center justify-content-center mb-5">
         <Icon icon="ph:check-light" width="48" height="48" class="text-white" />
       </span>

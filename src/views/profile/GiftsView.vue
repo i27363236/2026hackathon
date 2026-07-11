@@ -1,4 +1,10 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+
+const quantity = ref(1)
+const decrease = () => { if (quantity.value > 1) quantity.value-- }
+const increase = () => { quantity.value++ }
+</script>
 
 <template>
   

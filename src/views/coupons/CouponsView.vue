@@ -65,9 +65,12 @@ const STAMP_TEXT = { used: '已使用', sent: '已送出', expired: '已過期' 
         class="coupon-card position-relative d-flex align-items-center p-3 mb-3 border rounded-3 bg-white text-decoration-none text-body"
         :class="{ 'opacity-75': activeTab !== 'available' }"
       >
-        <div class="coupon-img-wrapper rounded overflow-hidden flex-shrink-0" style="width: 72px; height: 72px;">
-          <img :src="gift.img" class="w-100 h-100 object-fit-cover" :alt="gift.title">
-        </div>
+        <!-- gift.img 同 coupon.img 契約:CSS background 簡寫,用背景呈現 -->
+        <div
+          class="coupon-img-wrapper rounded overflow-hidden flex-shrink-0"
+          style="width: 72px; height: 72px;"
+          :style="{ background: gift.img }"
+        />
         <div class="ms-3 flex-grow-1 overflow-hidden">
           <div class="small fw-bold mb-1 text-primary">禮物</div>
           <h3 class="h6 mb-1 text-truncate fw-bold">{{ gift.title }}</h3>

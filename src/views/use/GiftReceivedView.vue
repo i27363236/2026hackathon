@@ -80,7 +80,7 @@ const actions = [
               v-for="a in actions"
               :key="a.label"
               type="button"
-              class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-0"
+              class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
             >
               <Icon :icon="a.icon" class="text-body-secondary" width="24" height="24" />
               <span class="flex-grow-1 text-start">{{ a.label }}</span>
@@ -104,6 +104,11 @@ const actions = [
 <style scoped>
 .card-wrap {
   max-width: 320px;
+}
+/* hover/active 高亮向外擴 12px(=px-4),文字仍與上方標題對齊 */
+.action-list .list-group-item {
+  margin-inline: -12px;
+  width: calc(100% + 24px);
 }
 .avatar {
   width: 40px;

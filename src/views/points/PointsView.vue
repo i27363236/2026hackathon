@@ -1,20 +1,9 @@
 <script setup>
-import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { storeToRefs } from 'pinia'
+import { usePointsStore } from '@/stores/points.js'
 
-const points = ref(1250)
-const expiringSoon = ref({
-  amount: 320,
-  date: '2026/06/30'
-})
-
-const transactions = ref([
-  { id: 1, type: 'earn', title: '搭乘捷運 - 板南線', date: '2026/05/20 08:30', amount: 5 },
-  { id: 2, type: 'redeem', title: '兌換大冰拿鐵 (中)', date: '2026/05/19 15:45', amount: -55 },
-  { id: 3, type: 'earn', title: '每日簽到獎勵', date: '2026/05/19 07:00', amount: 10 },
-  { id: 4, type: 'earn', title: '搭乘捷運 - 淡水信義線', date: '2026/05/18 18:20', amount: 5 },
-  { id: 5, type: 'redeem', title: '兌換捷運一日票', date: '2026/05/15 10:00', amount: -150 }
-])
+const { balance, expiringPoints, expiringDate, transactions } = storeToRefs(usePointsStore())
 </script>
 
 <template>
@@ -38,7 +27,7 @@ const transactions = ref([
         <!-- Balance Display -->
         <div class="text-center py-4 mb-6">
           <div class="d-flex align-items-baseline justify-content-center">
-            <span class="display-4 fw-bold text-dark">{{ points.toLocaleString() }}</span>
+            <span class="display-4 fw-bold text-dark">{{ balance.toLocaleString() }}</span>
             <span class="h6 ms-2 text-secondary fw-bold">P</span>
           </div>
           
@@ -46,7 +35,7 @@ const transactions = ref([
           <div class="mt-5 bg-light rounded-pill px-4 py-2 d-inline-flex align-items-center border border-white">
             <Icon icon="ph:clock-countdown-light" class="text-warning me-2" width="24" height="24" />
             <span class="small text-secondary">
-              <strong>{{ expiringSoon.amount }} P</strong> 將於 {{ expiringSoon.date }} 到期
+              <strong>{{ expiringPoints }} P</strong> 將於 {{ expiringDate }} 到期
             </span>
           </div>
         </div>

@@ -8,6 +8,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGiftsStore } from '@/stores/gifts.js'
+import { usePointsStore } from '@/stores/points.js'
 import CheckoutOptionGroup from '@/components/checkout/CheckoutOptionGroup.vue'
 import CheckoutFooter from '@/components/checkout/CheckoutFooter.vue'
 import PointsStepper from '@/components/checkout/PointsStepper.vue'
@@ -15,17 +16,17 @@ import coinImg from '@/img/coin.png'
 
 const router = useRouter()
 const gifts = useGiftsStore()
+const points = usePointsStore()
 
 const draft = computed(() => gifts.draftGift)
 const subtotal = computed(() => gifts.draftTotal)
 const isMoney = computed(() => draft.value?.purchaseType === 'money')
 
-// 捷運點 balance — illustrative, like the source mockup. 1 點 = NT$1 discount.
-const POINTS_BALANCE = 115
-const maxApplicable = computed(() => Math.min(POINTS_BALANCE, subtotal.value))
+// 捷運點餘額來自單一來源 stores/points.js。1 點 = NT$1 discount。
+const maxApplicable = computed(() => Math.min(points.balance, subtotal.value))
 
 // money mode: how many 捷運點 to apply, adjustable via a stepper (defaults to full discount).
-const pointsApplied = ref(Math.min(POINTS_BALANCE, gifts.draftTotal))
+const pointsApplied = ref(Math.min(points.balance, gifts.draftTotal))
 
 // points mode: simple on/off toggle for the discount.
 const usePoints = ref(true)
@@ -59,6 +60,9 @@ const confirmLabel = computed(() => {
 })
 
 function confirm() {
+  // points 模式扣商品全額(小計);money 模式只扣折抵掉的點數 — 讓餘額真的隨消費變動。
+  const spent = isMoney.value ? discount.value : subtotal.value
+  if (spent > 0) points.spend(spent, `兌換 ${draft.value?.name ?? ''}`)
   gifts.purchaseDraft()
   router.push({ name: draft.value?.isGift ? 'use-gift-setup' : 'purchase-success' })
 }
@@ -109,7 +113,7 @@ function confirm() {
             <h3 class="mb-3">捷運點折抵</h3>
             <div class="d-flex align-items-center gap-1 mb-3">
               <img :src="coinImg" alt="" width="20" height="20" />
-              <span class="caption-1 text-body-secondary">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
+              <span class="caption-1 text-body-secondary">您目前有 {{ points.balance }} 捷運點</span>
             </div>
             <div class="co-row align-items-center">
               <span class="text-body">數量</span>
@@ -139,7 +143,7 @@ function confirm() {
       <div class="content flex-grow-1 overflow-auto bg-body">
         <div class="one-col px-4 py-4 d-flex flex-column gap-3">
           <!-- line item -->
-          <div class="bg-body p-4 d-flex align-items-center gap-3">
+          <div class="bg-body p-5 d-flex align-items-center gap-3">
             <div class="item-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
             <div class="min-w-0">
               <h2 class="m-0 text-truncate">{{ draft?.name || '—' }}</h2>
@@ -162,7 +166,7 @@ function confirm() {
               <span>捷運點折抵</span>
               <span class="text-success">-捷運點 {{ discount }}</span>
             </div>
-            <div class="d-flex justify-content-between fw-bold text-body mt-3 fs-5">
+            <div class="d-flex justify-content-between fw-bold text-body mt-3">
               <span>總計</span>
               <span class="text-primary">捷運點 {{ total }}</span>
             </div>
@@ -184,11 +188,7 @@ function confirm() {
             </div>
             <div class="d-flex align-items-center gap-1 my-2">
               <img :src="coinImg" alt="" width="20" height="20" />
-              <span class="text-body small">您目前有 {{ POINTS_BALANCE }} 捷運點</span>
-            </div>
-            <div v-if="usePoints" class="d-flex justify-content-between text-body pt-2 caption-1">
-              <span>本次折抵 {{ discount }} 捷運點</span>
-              <span class="text-success">-捷運點 {{ discount }}</span>
+              <span class="text-body small">您目前有 {{ points.balance }} 捷運點</span>
             </div>
           </div>
 

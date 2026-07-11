@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import { usePointsStore } from '@/stores/points.js'
 import metroPointImg from '@/img/metro-point.png'
 
 const props = defineProps({
@@ -8,7 +9,9 @@ const props = defineProps({
   goal: { type: Object, required: true }, // 集點目標商品
 })
 
-const goalPct = computed(() => Math.min(100, Math.round((props.profile.points / props.goal.price) * 100)))
+const points = usePointsStore()
+
+const goalPct = computed(() => Math.min(100, Math.round((points.balance / props.goal.price) * 100)))
 </script>
 
 <template>
@@ -19,10 +22,10 @@ const goalPct = computed(() => Math.min(100, Math.round((props.profile.points / 
           <div class="card-body px-5 py-4 d-flex flex-column justify-content-between">
             <div class="d-flex justify-content-between align-items-center">
               <img :src="metroPointImg" class="w-8 h-8 mt-1" style="width:32px;height:32px;object-fit:contain" alt="捷運點" />
-              <div class="display-3">{{ profile.points }}</div>
+              <div class="display-3">{{ points.balance }}</div>
             </div>
             <h4 class="mt-2 mb-0">捷運點</h4>
-            <div class="caption-2 mt-1 text-body-secondary">{{ profile.expiringPoints }}點將於{{ profile.expiringDate }}到期</div>
+            <div class="caption-2 mt-1 text-body-secondary">{{ points.expiringPoints }}點將於{{ points.expiringDate }}到期</div>
           </div>
         </div>
       </div>
@@ -35,7 +38,7 @@ const goalPct = computed(() => Math.min(100, Math.round((props.profile.points / 
               <span class="display-3">{{ profile.coupons }}</span>
             </div>
             <h4 class="mt-2 mb-0">優惠券</h4>
-            <div class="caption-2 mt-1 text-body-secondary">{{ profile.expiringCoupons }}張將於{{ profile.expiringDate }}到期</div>
+            <div class="caption-2 mt-1 text-body-secondary">{{ profile.expiringCoupons }}張將於{{ profile.couponExpiringDate }}到期</div>
           </div>
         </RouterLink>
       </div>
@@ -45,7 +48,7 @@ const goalPct = computed(() => Math.min(100, Math.round((props.profile.points / 
             <div class="flex-grow-1 px-5 py-4 gap-3 d-flex flex-column justify-content-between">
               <div class="d-flex justify-content-between align-items-center">
                 <Icon icon="ph:target-light" width="32" height="32" class="text-body-secondary"/>
-                <span class="display-4 ms-auto">{{ profile.points }}/{{ goal.price }}
+                <span class="display-4 ms-auto">{{ points.balance }}/{{ goal.price }}
                 </span>
               </div>
               <div class="progress rounded-pill bg-warning-subtle" style="height: 4px;">

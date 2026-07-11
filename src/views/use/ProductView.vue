@@ -10,8 +10,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { getProductById, getShelfByProductId } from '@/data/catalog.js'
-import { getProfile } from '@/data/profile.js'
 import { useGiftsStore } from '@/stores/gifts.js'
+import { usePointsStore } from '@/stores/points.js'
 import { useCardColors } from '@/utils/imageColor.js'
 import coinImg from '@/img/coin.png'
 
@@ -51,9 +51,9 @@ function increase() {
   gifts.updateDraft({ qty: qty.value + 1 })
 }
 
-const userPoints = computed(() => getProfile().points)
+const points = usePointsStore()
 const insufficientPoints = computed(
-  () => !isMoney.value && !!product.value && userPoints.value < product.value.price * qty.value,
+  () => !isMoney.value && !!product.value && points.balance < product.value.price * qty.value,
 )
 
 function onPrimary() {
@@ -153,6 +153,9 @@ function onPrimary() {
             <div class="pv-summary-price text-warning fw-bold">
               <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
               <span>{{ priceText }}</span>
+            </div>
+            <div v-if="!isMoney" class="caption-2 mt-1 text-body-secondary">
+              目前擁有 {{ points.balance }} 捷運點
             </div>
             <div v-if="insufficientPoints" class="text-danger caption-2 mt-1">
               捷運點不足，無法兌換

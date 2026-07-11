@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-// img 是給 <img :src> 用的「裸 URL」(和 catalog 的 CSS background 簡寫不同)。
-// 原相對路徑字串在執行期解析不到,改為 Vite 匯入的實際資產 + Unsplash 示意圖。
-import esliteCouponImg from '@/img/誠品100元抵用券.png'
+// img 與 catalog/coupons 同一契約:CSS background 簡寫(url(...) center/cover no-repeat),
+// 消費端以 :style="{ background: img }" 呈現(見 docs/data-and-stores.md)。
+import esliteCouponPng from '@/img/誠品100元抵用券.png'
 
+const esliteCouponImg = `url('${esliteCouponPng}') center/cover no-repeat`
 const sevenElevenImg =
-  'https://images.unsplash.com/photo-1481070555726-e2fe8357725c?w=600&h=400&fit=crop&q=80'
+  "url('https://images.unsplash.com/photo-1481070555726-e2fe8357725c?w=600&h=400&fit=crop&q=80') center/cover no-repeat"
 
 // 注意:store id 不能用 'gifts' — stores/gifts.js(購買流程)已使用,重複會共用實例。
 export const useGiftStore = defineStore('gifts-mock', () => {
