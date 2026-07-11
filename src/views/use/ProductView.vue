@@ -10,7 +10,9 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { getProductById, getShelfByProductId } from '@/data/catalog.js'
+import { getProfile } from '@/data/profile.js'
 import { useGiftsStore } from '@/stores/gifts.js'
+import { useCardColors } from '@/utils/imageColor.js'
 import coinImg from '@/img/coin.png'
 
 const route = useRoute()
@@ -24,6 +26,11 @@ const priceText = computed(() =>
   isMoney.value ? `NT$ ${product.value?.price ?? 0}` : `${product.value?.price ?? 0} 捷運點`,
 )
 const actionLabel = computed(() => (isMoney.value ? '購買' : '兌換'))
+
+// image-derived card background (extends the product photo's own color rather than a
+// generic fixed gradient) — same utility already used by gift/ProductFace.vue + QrFace.vue.
+const productImg = computed(() => product.value?.img ?? '')
+const { gradient } = useCardColors(productImg)
 
 onMounted(() => {
   if (route.query.id && gifts.draftGift?.productId !== route.query.id) {
@@ -44,7 +51,13 @@ function increase() {
   gifts.updateDraft({ qty: qty.value + 1 })
 }
 
+const userPoints = computed(() => getProfile().points)
+const insufficientPoints = computed(
+  () => !isMoney.value && !!product.value && userPoints.value < product.value.price * qty.value,
+)
+
 function onPrimary() {
+  if (insufficientPoints.value) return
   if (!sheetOpen.value) {
     sheetOpen.value = true
     return
@@ -60,7 +73,7 @@ function onPrimary() {
       <div class="pv-container one-col">
         <!-- product image -->
         <div class="pv-image-wrap">
-          <div class="pv-image-card">
+          <div class="pv-image-card" :style="{ background: gradient }">
             <div class="pv-image" :style="product?.img ? { background: product.img } : {}" />
           </div>
         </div>
@@ -141,11 +154,14 @@ function onPrimary() {
               <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
               <span>{{ priceText }}</span>
             </div>
+            <div v-if="insufficientPoints" class="text-danger caption-2 mt-1">
+              捷運點不足，無法兌換
+            </div>
           </div>
           <button
             type="button"
             class="btn btn-primary fw-bold w-100"
-            :disabled="!product"
+            :disabled="!product || insufficientPoints"
             @click="onPrimary"
           >
             {{ sheetOpen ? actionLabel : '選擇數量' }}
@@ -172,10 +188,8 @@ function onPrimary() {
   }
 }
 
-/* product image — full-bleed on phone */
-.pv-image-card {
-  background: var(--bs-secondary-bg);
-}
+/* product image — full-bleed on phone; background is bound inline to the
+   image-derived gradient (see productImg/useCardColors in <script setup>) */
 .pv-image {
   width: 100%;
   height: 262px;
@@ -294,7 +308,7 @@ function onPrimary() {
   grid-template-columns: 3fr 2fr;
   gap: 12px;
   align-items: center;
-  padding: 12px 16px;
+  padding: 20px 16px 12px;
 }
 .pv-summary {
   min-width: 0;
@@ -331,13 +345,12 @@ function onPrimary() {
   opacity: 0;
 }
 
-/* tablet / iPad — image in a dark gradient card (.one-col caps the width) */
+/* tablet / iPad — image in an image-color gradient card (.one-col caps the width) */
 @media (min-width: 768px) {
   .pv-image-wrap {
     padding: 24px 16px 0;
   }
   .pv-image-card {
-    background: linear-gradient(180deg, #1d1b1b 0%, #4b4544 100%);
     border-radius: 4px;
     box-shadow: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
     padding: 24px;

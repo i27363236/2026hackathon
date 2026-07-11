@@ -54,10 +54,21 @@ test('禮物卡片編輯器載入 Konva 畫布(lazy chunk)', async ({ page }) =>
 
 test('商品頁可走到結帳', async ({ page }) => {
   const errors = trackErrors(page)
-  await page.goto('/#/use/product?id=cat-001')
+  // cat-001 是捷運點商品(180 點),而測試帳號僅有 15 點,會觸發新增的點數不足鎖定;
+  // 改用 cat-041(NT$ 購買商品)驗證結帳流程本身仍可正常走通。
+  await page.goto('/#/use/product?id=cat-041')
   await page.getByRole('button', { name: '選擇數量' }).click()
-  await page.getByRole('button', { name: '兌換' }).click()
+  await page.getByRole('button', { name: '購買' }).click()
   await expect(page).toHaveURL(/use\/checkout/)
   await expect(page.getByText('訂單明細')).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test('捷運點不足時,商品頁鎖定結帳', async ({ page }) => {
+  const errors = trackErrors(page)
+  // cat-001 需要 180 捷運點,測試帳號只有 15 點 — 應顯示不足提示且無法進入結帳。
+  await page.goto('/#/use/product?id=cat-001')
+  await expect(page.getByText('捷運點不足，無法兌換')).toBeVisible()
+  await expect(page.getByRole('button', { name: '選擇數量' })).toBeDisabled()
   expect(errors).toEqual([])
 })
