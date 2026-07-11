@@ -36,7 +36,9 @@ function createGift(product) {
     bgColor: '',
     recipient: '',
     sentAt: '',
-    status: 'draft',
+    status: 'draft', // 'draft' | 'purchased' | 'sent' | 'redeemed'
+    redeemedAt: '',
+    reminderEnabled: false,
   }
 }
 
@@ -110,6 +112,20 @@ export const useGiftsStore = defineStore('gifts', () => {
     return gifts.value.find((g) => g.id === id)
   }
 
+  // 收禮端:兌換後不可再操作(sent → redeemed,蓋時戳)。
+  function redeemGift(id) {
+    const g = getGiftById(id)
+    if (!g || g.status !== 'sent') return
+    g.status = 'redeemed'
+    g.redeemedAt = new Date().toISOString()
+  }
+
+  // 收禮端:到期提醒開關(回應「LINE 提醒被淹沒、禮物過期退回」痛點)。
+  function toggleReminder(id) {
+    const g = getGiftById(id)
+    if (g) g.reminderEnabled = !g.reminderEnabled
+  }
+
   watch(
     gifts,
     (val) => {
@@ -137,5 +153,7 @@ export const useGiftsStore = defineStore('gifts', () => {
     attachCardImage,
     sendGift,
     getGiftById,
+    redeemGift,
+    toggleReminder,
   }
 })

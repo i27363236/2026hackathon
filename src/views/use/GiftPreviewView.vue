@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import FlipCard from '@/components/gift/FlipCard.vue'
@@ -21,10 +21,20 @@ const SAMPLE = {
 }
 const gift = computed(() => gifts.draftGift ?? SAMPLE)
 
+// 收禮人必填(訪談洞察:送禮不能沒有對象);SAMPLE 預覽(無草稿)時不擋,讓頁面可獨立載入。
+const recipientName = ref('')
+const message = ref('')
+const canSend = computed(() => !gifts.draftGift || recipientName.value.trim().length > 0)
+
 function send() {
   // Persist the draft into the gifts list (if one is in progress) and carry its id forward
   // to the purchase-success page (the buyer's end of the flow; it links on to the recipient view).
-  const id = gifts.draftGift ? gifts.sendGift('') : null
+  if (!canSend.value) return
+  let id = null
+  if (gifts.draftGift) {
+    gifts.updateDraft({ message: message.value.trim() })
+    id = gifts.sendGift(recipientName.value.trim())
+  }
   router.push({ name: 'purchase-success', query: id ? { id } : {} })
 }
 </script>
@@ -65,14 +75,38 @@ function send() {
     </div>
 
     <div class="footer border-top bg-body p-5">
-      <button
-        type="button"
-        class="btn btn-primary rounded-pill py-3 d-flex align-items-center justify-content-center gap-2 mx-auto w-100"
-        style="max-width: 380px"
-        @click="send"
-      >
-        <Icon icon="ph:share-network" width="20" height="20" /> 送出禮物
-      </button>
+      <div class="mx-auto w-100 d-flex flex-column gap-4" style="max-width: 380px">
+        <div>
+          <label for="gift-recipient" class="form-label small fw-bold mb-2">收禮人暱稱</label>
+          <input
+            id="gift-recipient"
+            v-model="recipientName"
+            type="text"
+            class="form-control"
+            placeholder="這份禮物要送給誰？"
+            maxlength="20"
+          />
+        </div>
+        <div>
+          <label for="gift-message" class="form-label small fw-bold mb-2">想說的話（選填）</label>
+          <textarea
+            id="gift-message"
+            v-model="message"
+            class="form-control"
+            rows="2"
+            placeholder="給對方的一句話，會顯示在收禮頁"
+            maxlength="60"
+          />
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary rounded-pill py-3 d-flex align-items-center justify-content-center gap-2 w-100"
+          :disabled="!canSend"
+          @click="send"
+        >
+          <Icon icon="ph:share-network" width="20" height="20" /> 送出禮物
+        </button>
+      </div>
     </div>
   </div>
 </template>

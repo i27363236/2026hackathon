@@ -83,7 +83,9 @@ const gifts = useGiftsStore()
   cardImage,              // 編輯器輸出的 PNG dataURL
   background, bgColor,    // 序列化的背景選擇 + 快取主色
   recipient, sentAt,      // sendGift() 設定
-  status,                 // 'draft' | 'purchased' | 'sent'
+  status,                 // 'draft' | 'purchased' | 'sent' | 'redeemed'
+  redeemedAt,             // ISO,redeemGift() 設定
+  reminderEnabled,        // 收禮端到期提醒開關
 }
 ```
 
@@ -97,6 +99,8 @@ GiftSetupView(編輯器)  gifts.ensureDraft()
                        gifts.updateDraft({ background })
 GiftPreviewView        const id = gifts.sendGift(recipient) // status: sent → received?id=…
 GiftReceivedView       gifts.getGiftById(id)
+                       gifts.toggleReminder(id)             // 到期提醒開關
+                       gifts.redeemGift(id)                 // status: redeemed,之後不可再操作
 ```
 
 ### 主要 action / getter
@@ -110,6 +114,8 @@ GiftReceivedView       gifts.getGiftById(id)
 | `attachCardImage(dataUrl)` | 設 `draftGift.cardImage`                                 |
 | `sendGift(recipient)`      | 推入 `gifts[]`,status → `sent`,回傳 gift id            |
 | `getGiftById(id)`          | 依 id 查已送出禮物                                       |
+| `redeemGift(id)`           | 收禮端兌換,status `sent` → `redeemed`,蓋 `redeemedAt`  |
+| `toggleReminder(id)`       | 切換 `reminderEnabled`(到期提醒)                       |
 | `expireDuration`(getter)   | 草稿到期倒數的人性化字串(如「還剩 2 個月」)            |
 
 ### localStorage 影像護欄

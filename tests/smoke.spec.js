@@ -84,6 +84,58 @@ test('捷運點餘額單一來源:首頁/點數頁/商品頁一致', async ({ pa
   expect(errors).toEqual([])
 })
 
+test('送禮閉環E2E:商品→結帳→編輯→送出→收禮→兌換', async ({ page }) => {
+  const errors = trackErrors(page)
+  // 商品頁:選數量、切到送禮
+  await page.goto('/#/use/product?id=cat-001')
+  await page.getByRole('button', { name: '選擇數量' }).click()
+  await page.getByRole('button', { name: '送禮' }).click()
+  await page.getByRole('button', { name: '兌換' }).click()
+  // 結帳(points 模式,送禮 → 結帳並包裝)
+  await expect(page).toHaveURL(/use\/checkout/)
+  await page.getByRole('button', { name: '結帳並包裝' }).click()
+  // 編輯器:等 Konva 畫布載入後按工具列「完成」
+  await expect(page).toHaveURL(/use\/gift\/setup/)
+  await expect(page.locator('canvas').first()).toBeVisible({ timeout: 15_000 })
+  await page.getByRole('button', { name: '完成' }).click()
+  // 預覽:收禮人必填 — 空白時送出鎖定
+  await expect(page).toHaveURL(/use\/gift\/preview/)
+  await expect(page.getByRole('button', { name: '送出禮物' })).toBeDisabled()
+  await page.getByLabel('收禮人暱稱').fill('小美')
+  await page.getByLabel('想說的話（選填）').fill('辛苦了，喝杯咖啡！')
+  await page.getByRole('button', { name: '送出禮物' }).click()
+  // 購買成功 → 預覽收禮畫面
+  await expect(page.getByRole('heading', { name: '禮物已送出！' })).toBeVisible()
+  await page.getByRole('button', { name: '預覽收禮畫面' }).click()
+  // 收禮頁:留言可見、開提醒、兌換後鎖定
+  await expect(page.getByText('送了一個禮物給你')).toBeVisible()
+  await expect(page.getByText('辛苦了，喝杯咖啡！')).toBeVisible()
+  await page.getByRole('button', { name: '開啟到期提醒' }).click()
+  await expect(page.getByText('已開啟到期提醒')).toBeVisible()
+  await page.getByRole('button', { name: '使用禮物' }).click()
+  await expect(page.getByRole('button', { name: '已兌換' })).toBeDisabled()
+  expect(errors).toEqual([])
+})
+
+test('收禮頁附近店家 bottom sheet', async ({ page }) => {
+  const errors = trackErrors(page)
+  // 先送出一份禮物,收禮頁動作才可用(無禮物時按鈕 disabled)
+  await page.goto('/#/use/product?id=cat-007')
+  await page.getByRole('button', { name: '選擇數量' }).click()
+  await page.getByRole('button', { name: '送禮' }).click()
+  await page.getByRole('button', { name: '兌換' }).click()
+  await page.getByRole('button', { name: '結帳並包裝' }).click()
+  await expect(page.locator('canvas').first()).toBeVisible({ timeout: 15_000 })
+  await page.getByRole('button', { name: '完成' }).click()
+  await page.getByLabel('收禮人暱稱').fill('阿方')
+  await page.getByRole('button', { name: '送出禮物' }).click()
+  await page.getByRole('button', { name: '預覽收禮畫面' }).click()
+  await page.getByRole('button', { name: '搜尋附近可使用店家' }).click()
+  await expect(page.getByRole('heading', { name: '附近可使用店家' })).toBeVisible()
+  await expect(page.getByRole('link', { name: '查看完整使用地點' })).toBeVisible()
+  expect(errors).toEqual([])
+})
+
 test('空白禮物頁路徑轉址到禮物紀錄', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/profile/gifts/available')
