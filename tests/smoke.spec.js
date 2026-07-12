@@ -136,6 +136,32 @@ test('收禮頁附近店家 bottom sheet', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
+test('每日簽到:點數 +10 且按鈕鎖定', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/points')
+  await expect(page.getByText('每日簽到', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: /今日簽到/ }).click()
+  // 餘額 320 → 330,按鈕翻成已簽到
+  await expect(page.getByText('330')).toBeVisible()
+  await expect(page.getByRole('button', { name: '今日已簽到' })).toBeDisabled()
+  // 最近紀錄出現簽到交易
+  await expect(page.getByText('每日簽到獎勵').first()).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test('點數紀錄頁:三分頁與即將到期提示', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/points/history')
+  await expect(page.getByRole('button', { name: '即將到期' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '累點明細' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '銷點明細' })).toBeVisible()
+  await expect(page.getByText('近 6 週累/銷點')).toBeVisible()
+  await expect(page.getByText(/30 天內到期/)).toBeVisible()
+  await page.getByRole('button', { name: '銷點明細' }).click()
+  await expect(page.getByText(/兌換/).first()).toBeVisible()
+  expect(errors).toEqual([])
+})
+
 test('空白禮物頁路徑轉址到禮物紀錄', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/profile/gifts/available')

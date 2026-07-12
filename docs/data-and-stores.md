@@ -11,6 +11,7 @@
 | `events.js`           | `getEvents()`;累點活動卡                                          |
 | `recommendations.js`  | `getRecommendations()`;首頁智慧推薦                              |
 | `profile.js`          | `getProfile()` / `getAchievements()` / `getSentGifts()`           |
+| `pointsHistory.js`    | `getPointsHistory()`;近 45 天點數交易種子(以今天為基準決定性產生)|
 | `stationPhotos.js`    | `stationPhotos`;捷運回憶照片                                     |
 | `giftEditorPresets.js`| `STICKERS` / `BG_PRESETS` / `TOOLS`;編輯器預設                    |
 | `stampIcons.js`       | 印章可選圖示登錄表                                                |
@@ -31,17 +32,29 @@
 ## Points store(`src/stores/points.js`)
 
 `usePointsStore`(Pinia id `'points'`)是**捷運點餘額的單一來源** — Home 摘要卡、
-我的點數頁、商品頁不足判斷、結帳折抵都讀這裡,不要再各自寫死餘額。
+我的點數頁、商品頁不足判斷、結帳折抵、點數紀錄頁都讀這裡,不要再各自寫死餘額。
+
+交易紀錄 = `data/pointsHistory.js` 種子(每次載入依今天重新產生)+ 使用者操作產生的
+`runtime` 交易;只有 `balance` 與 runtime 交易持久化(localStorage 鍵 `metro:points`)。
 
 | 名稱                  | 說明                                                       |
 | --------------------- | ---------------------------------------------------------- |
 | `balance`             | 目前餘額(demo 預設 320)                                  |
-| `expiringPoints` / `expiringDate` | 即將到期點數與日期                            |
-| `transactions`        | 交易紀錄(近期在前)                                       |
-| `earn(amount, title)` | 加點並寫入一筆 `earn` 交易                                 |
+| `expiringPoints` / `expiringDate` / `expiringSoon` | 30 天內到期的點數(由 earn 交易的 `expiresAt` 推導)|
+| `transactions`        | 全部交易(近期在前)                                       |
+| `earnTransactions` / `burnTransactions` | 累點/銷點明細                        |
+| `weeklyTotals`        | 近 6 週每週累/銷點合計(給 PointsTrendChart)              |
+| `earn(amount, title, category?)` | 加點並寫入一筆 `earn` 交易(簽到用)          |
 | `spend(amount, title)`| 扣點並寫入一筆 `redeem` 交易(結帳 confirm 時呼叫)        |
 
-尚未持久化(Phase 3 簽到功能加上 localStorage watch)。
+---
+
+## Check-in store(`src/stores/checkin.js`)
+
+`useCheckinStore`(Pinia id `'checkin'`,localStorage 鍵 `metro:checkin`):
+`days`(已簽日期 `YYYY-MM-DD`)、`checkedToday`、`streak`(連續天數)、
+`checkIn()`(簽到 +10,連續 7 天當日額外 +50,透過 `points.earn()` 入帳)。
+無存檔時種子為「過去三天已簽」,讓 demo 一打開就有連續天數動機。
 
 ---
 

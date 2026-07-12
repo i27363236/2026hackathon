@@ -62,13 +62,15 @@ tests/smoke.spec.js      冒煙測試(見 verification.md)
 
 ## 兌換 / 送禮動線
 
+- 首頁**摘要卡**的「捷運點」→ `{ name: 'points' }`(我的點數:餘額 + 每日簽到 + 最近紀錄)
+- 我的點數 → 點數紀錄(`points-history`,`/points/history`:即將到期 / 累點 / 銷點 + 週趨勢圖)
 - 首頁**摘要卡**的「優惠券」→ `{ name: 'coupons' }`(兌換總覽:禮物在上 + 優惠券)
 - 首頁**功能磚**與**側欄**的「優惠券」→ `{ name: 'coupon-trade' }`(`/coupons/trade` 交換中心)
 - 首頁功能磚與側欄的「送禮」→ `{ name: 'gift-home' }`(`/use/gift` 送禮中心)
-- 送禮中心 → 商品頁(`use-product`)→ 結帳(`purchase-checkout`)→ 編輯器(`use-gift-setup`)→ 預覽(`use-gift-preview`)→ 收禮(`use-gift-received`)
+- 送禮中心 → 商品頁(`use-product`)→ 結帳(`purchase-checkout`)→ 編輯器(`use-gift-setup`)→ 預覽(`use-gift-preview`,收禮人必填)→ 收禮(`use-gift-received`,可開提醒 / 兌換後蓋「已兌換」章)
 
-## 未接線的隊友 WIP
+## 前隊友檔案現況(2026-07 起可編輯,仍勿刪除)
 
-`views/coupons/MyCoupon.vue` 與 `MyCouponUsed.vue` 尚未接進路由,是隊友進行中的檔案 —
-**請勿刪除**。同理 `views/profile/` 下的 `GiftsView` / `GiftsAvailableView` /
-`GiftsHistoryView` / `GiftsSentView` 已接線但屬隊友負責範圍。
+`views/coupons/MyCoupon.vue` 與 `MyCouponUsed.vue` 未接路由(優惠券詳情/核銷完成的設計稿實作)。
+`views/profile/` 下:`GiftsHistoryView` 是「我的禮物」實際頁面;`profile/gifts`、
+`profile/gifts/available`、`profile/gifts/sent` 三條路由**轉址**到它(舊 stub 檔保留未刪)。

@@ -1,9 +1,15 @@
 <script setup>
+import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { storeToRefs } from 'pinia'
 import { usePointsStore } from '@/stores/points.js'
+import CheckinCard from '@/components/points/CheckinCard.vue'
+import TransactionRow from '@/components/points/TransactionRow.vue'
 
 const { balance, expiringPoints, expiringDate, transactions } = storeToRefs(usePointsStore())
+
+// 最近紀錄只列前 5 筆,完整明細在 /points/history
+const recentTransactions = computed(() => transactions.value.slice(0, 5))
 </script>
 
 <template>
@@ -43,52 +49,50 @@ const { balance, expiringPoints, expiringDate, transactions } = storeToRefs(useP
         <!-- Main Action Buttons -->
         <div class="row g-4">
           <div class="col-6">
-            <button class="btn btn-primary w-100 py-5 rounded-6 d-flex flex-column align-items-center gap-2 shadow-sm">
+            <RouterLink :to="{ name: 'earn-events' }" class="btn btn-primary w-100 py-5 rounded-6 d-flex flex-column align-items-center gap-2 shadow-sm">
               <Icon icon="ph:hand-coins-light" width="24" height="24" />
               <span class="fw-bold">累積點數</span>
-            </button>
+            </RouterLink>
           </div>
           <div class="col-6">
-            <button class="btn btn-outline-primary w-100 py-5 rounded-6 d-flex flex-column align-items-center gap-2 border-2">
+            <RouterLink :to="{ name: 'coupons' }" class="btn btn-outline-primary w-100 py-5 rounded-6 d-flex flex-column align-items-center gap-2 border-2">
               <Icon icon="ph:gift-light" width="24" height="24" />
               <span class="fw-bold">兌換贈品</span>
-            </button>
+            </RouterLink>
           </div>
         </div>
       </div>
 
       <!-- Footer Quick Link -->
-      <div class="card-footer bg-light-subtle py-5 px-7 border-top d-flex justify-content-between align-items-center cursor-pointer">
+      <RouterLink
+        :to="{ name: 'points-history' }"
+        class="card-footer bg-light-subtle py-5 px-7 border-top d-flex justify-content-between align-items-center cursor-pointer text-decoration-none"
+      >
         <span class="small fw-medium text-dark">查看完整點數歷史紀錄</span>
         <Icon icon="ph:caret-right-light" class="text-muted" width="24" height="24" />
-      </div>
+      </RouterLink>
+    </div>
+
+    <!-- 每日簽到 -->
+    <div class="mt-7">
+      <CheckinCard />
     </div>
 
     <!-- Transaction History Section -->
     <div class="mt-7 px-2">
       <div class="d-flex justify-content-between align-items-center mb-5">
         <h3 class="h6 fw-bold mb-0">最近紀錄</h3>
-        <div class="dropdown">
-          <button class="btn btn-sm btn-light rounded-pill px-3 py-1 dropdown-toggle border-0 small text-secondary" type="button">
-            全部
-          </button>
-        </div>
+        <RouterLink
+          :to="{ name: 'points-history' }"
+          class="btn btn-sm btn-light rounded-pill px-3 py-1 border-0 small text-secondary text-decoration-none"
+        >
+          全部
+        </RouterLink>
       </div>
 
       <div class="action-list">
         <div class="list-group list-group-flush">
-          <div v-for="tx in transactions" :key="tx.id" class="list-group-item d-flex align-items-center gap-4">
-            <div class="flex-shrink-0 icon-box-sm rounded-circle d-flex align-items-center justify-content-center" :class="tx.type === 'earn' ? 'bg-primary-subtle' : 'bg-light'">
-              <Icon :icon="tx.type === 'earn' ? 'ph:train-light' : 'ph:gift-light'" :class="tx.type === 'earn' ? 'text-primary' : 'text-secondary'" width="20" height="20" />
-            </div>
-            <div class="flex-grow-1 min-w-0">
-              <div class="fw-bold text-dark small mb-1">{{ tx.title }}</div>
-              <div class="text-muted smaller">{{ tx.date }}</div>
-            </div>
-            <div class="flex-shrink-0 fw-bold" :class="tx.type === 'earn' ? 'text-primary' : 'text-dark'">
-              {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount }} P
-            </div>
-          </div>
+          <TransactionRow v-for="tx in recentTransactions" :key="tx.id" :tx="tx" />
         </div>
       </div>
     </div>

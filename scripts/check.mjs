@@ -25,6 +25,7 @@ const VIEWPORTS = {
 const ROUTES = [
   '/',
   '/points',
+  '/points/history',
   '/points/events',
   '/coupons',
   '/coupons/trade',

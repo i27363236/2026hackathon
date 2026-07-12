@@ -18,7 +18,7 @@ const goalPct = computed(() => Math.min(100, Math.round((points.balance / props.
   <section class="summary-col px-default py-5">
     <div class="summary-row row g-3">
       <div class="col-6 col-md-4">
-        <div class="card border-0 rounded-4 text-decoration-none text-body h-100">
+        <RouterLink :to="{ name: 'points' }" class="card border-0 rounded-4 text-decoration-none text-body h-100">
           <div class="card-body px-5 py-4 d-flex flex-column justify-content-between">
             <div class="d-flex justify-content-between align-items-center">
               <img :src="metroPointImg" class="w-8 h-8 mt-1" style="width:32px;height:32px;object-fit:contain" alt="捷運點" />
@@ -27,7 +27,7 @@ const goalPct = computed(() => Math.min(100, Math.round((points.balance / props.
             <h4 class="mt-2 mb-0">捷運點</h4>
             <div class="caption-2 mt-1 text-body-secondary">{{ points.expiringPoints }}點將於{{ points.expiringDate }}到期</div>
           </div>
-        </div>
+        </RouterLink>
       </div>
       <div class="col-6 col-md-4">
         <!-- 摘要卡導向 /coupons(兌換總覽:優惠券+禮物);功能磚的優惠券則導向交換中心 -->

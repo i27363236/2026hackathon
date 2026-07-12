@@ -4,6 +4,7 @@ import AppLayout from '@/components/AppLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 
 import PointsView from '@/views/points/PointsView.vue'
+import PointsHistoryView from '@/views/points/PointsHistoryView.vue'
 
 import CouponsView from '@/views/coupons/CouponsView.vue'
 import CouponTradeCenter from '@/views/coupons/CouponTradeCenter.vue'
@@ -31,6 +32,7 @@ const routes = [
       { path: '', name: 'home', component: HomeView, meta: { showSidebar: true, showHomeActions: true, showProfile: true, heroTop: true } },
 
       { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
+      { path: 'points/history', name: 'points-history', component: PointsHistoryView, meta: { title: '點數紀錄', back: true } },
 
       { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
       { path: 'coupons/trade', name: 'coupon-trade', component: CouponTradeCenter, meta: { title: '優惠券', back: true, showCouponActions: true } },
