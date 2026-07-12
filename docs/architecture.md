@@ -62,8 +62,8 @@ tests/smoke.spec.js      冒煙測試(見 verification.md)
 
 ## 兌換 / 送禮動線
 
-- 首頁**摘要卡**的「捷運點」→ `{ name: 'points' }`(我的點數:餘額 + 每日簽到 + 最近紀錄)
-- 我的點數 → 點數紀錄(`points-history`,`/points/history`:即將到期 / 累點 / 銷點 + 週趨勢圖)
+- 首頁**摘要卡**的「捷運點」→ `{ name: 'points' }`(我的捷運點,Figma 2184-10248:餘額 + 每日簽到 + 完整點數歷史紀錄內嵌單頁,不再分頁)
+- 我的捷運點 →「點數趨勢」連到 `points-history`(`/points/history`:即將到期 / 累點 / 銷點 + 週趨勢圖)
 - 首頁**摘要卡**的「優惠券」→ `{ name: 'coupons' }`(兌換總覽:禮物在上 + 優惠券)
 - 首頁**功能磚**與**側欄**的「優惠券」→ `{ name: 'coupon-trade' }`(`/coupons/trade` 交換中心)
 - 首頁功能磚與側欄的「送禮」→ `{ name: 'gift-home' }`(`/use/gift` 送禮中心)

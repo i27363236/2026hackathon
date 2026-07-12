@@ -23,7 +23,7 @@ test('首頁:點數摘要卡正常渲染', async ({ page }) => {
 test('我的點數頁可到達', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/points')
-  await expect(page).toHaveTitle(/我的點數/)
+  await expect(page).toHaveTitle(/我的捷運點/)
   expect(errors).toEqual([])
 })
 
@@ -139,12 +139,11 @@ test('收禮頁附近店家 bottom sheet', async ({ page }) => {
 test('每日簽到:點數 +10 且按鈕鎖定', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/points')
-  await expect(page.getByText('每日簽到', { exact: true })).toBeVisible()
-  await page.getByRole('button', { name: /今日簽到/ }).click()
+  await page.getByRole('button', { name: '每日簽到領取捷運點數' }).click()
   // 餘額 320 → 330,按鈕翻成已簽到
   await expect(page.getByText('330')).toBeVisible()
   await expect(page.getByRole('button', { name: '今日已簽到' })).toBeDisabled()
-  // 最近紀錄出現簽到交易
+  // 歷史紀錄出現簽到交易
   await expect(page.getByText('每日簽到獎勵').first()).toBeVisible()
   expect(errors).toEqual([])
 })

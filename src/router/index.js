@@ -31,7 +31,7 @@ const routes = [
     children: [
       { path: '', name: 'home', component: HomeView, meta: { showSidebar: true, showHomeActions: true, showProfile: true, heroTop: true } },
 
-      { path: 'points', name: 'points', component: PointsView, meta: { title: '我的點數', back: true } },
+      { path: 'points', name: 'points', component: PointsView, meta: { title: '我的捷運點', back: true } },
       { path: 'points/history', name: 'points-history', component: PointsHistoryView, meta: { title: '點數紀錄', back: true } },
 
       { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
