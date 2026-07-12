@@ -2,9 +2,11 @@
 // 單純靜態畫面，不寫任何資料庫邏輯
 import MedalSection from '@/components/profile/MedalSection.vue'
 import { getAchievements, getSentGifts } from '@/data/profile.js'
+import { useSettingsStore } from '@/stores/settings.js'
 
 const achievements = getAchievements()
 const sentGifts = getSentGifts()
+const settings = useSettingsStore()
 </script>
 
 <template>
@@ -70,6 +72,18 @@ const sentGifts = getSentGifts()
         <div class="button-group">
           <button class="action-button">修改支付密碼</button>
           <button class="action-button">設定綁定帳號</button>
+          <div class="action-button setting-switch-row">
+            <span>情境推薦</span>
+            <div class="form-check form-switch p-0 m-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                v-model="settings.contextualRecs"
+                style="width: 2.5em; height: 1.25em; cursor: pointer"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -327,5 +341,12 @@ const sentGifts = getSentGifts()
 
 .action-button:hover {
   background-color: #f1f3f5;
+}
+
+.setting-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: default;
 }
 </style>

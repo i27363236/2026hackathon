@@ -58,6 +58,16 @@
 
 ---
 
+## Settings store(`src/stores/settings.js`)
+
+`useSettingsStore`(Pinia id `'settings'`,localStorage 鍵 `metro:settings`):
+`contextualRecs`(情境推薦開關,預設 `true`)、`setContextualRecs(on)`。
+`SmartRecommendations.vue`(Home「為什麼推薦？」bottom sheet)與 `ProfileView.vue`
+(設定區開關)共用同一份狀態;關閉後推薦區換成靜態卡,呼應提案書「不蒐集資料」的
+隱私承諾。
+
+---
+
 ## 兩個同名但不同用途的 gifts
 
 - **`src/data/gifts.js`** — mock store(Pinia id `'gifts-mock'`),展示 / 假資料用。

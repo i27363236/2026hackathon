@@ -169,3 +169,26 @@ test('空白禮物頁路徑轉址到禮物紀錄', async ({ page }) => {
   await expect(page.getByText('其他優惠券')).toBeVisible() // 可使用分頁內容
   expect(errors).toEqual([])
 })
+
+test('智慧推薦說明 sheet 可見，關閉後首頁顯示已關閉狀態', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/')
+  await page.getByRole('button', { name: '為什麼推薦？' }).click()
+  await expect(page.getByRole('heading', { name: '為什麼推薦這個？' })).toBeVisible()
+  await expect(page.getByText('怎麼推薦')).toBeVisible()
+  await expect(page.getByText('不蒐集什麼')).toBeVisible()
+  await expect(page.getByText('你可以關閉')).toBeVisible()
+  // sheet 內的開關關閉情境推薦 → 首頁換成靜態卡(手機/平板各一份,取可見的那份)
+  await page.getByRole('switch').click()
+  await expect(page.getByText('已關閉情境推薦').last()).toBeVisible()
+  await expect(page.getByRole('button', { name: '重新開啟' })).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test('Profile 頁可見情境推薦開關', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/profile')
+  await expect(page.getByText('情境推薦', { exact: true })).toBeVisible()
+  await expect(page.getByRole('switch')).toBeVisible()
+  expect(errors).toEqual([])
+})
