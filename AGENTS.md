@@ -26,18 +26,6 @@ Do this proactively rather than asking the user to re-explain what's already doc
 | [docs/verification.md](docs/verification.md) | `npm run check` + `npm test` workflow |
 | [docs/icons.md](docs/icons.md) | Phosphor + Iconify icon tutorial |
 
-### Directory map (short)
-```
-src/components/   AppLayout shell + per-page section components
-  home/ checkout/ profile/ editor/ cards/ gift/   (grouped by domain)
-src/views/        route targets (home / points / coupons / use / profile)
-src/data/         pure data modules            src/stores/gifts.js  purchase/gift flow
-src/nav.js        sidebar + home-tile source   src/router/index.js  routes + meta flags
-src/assets/styles SCSS token pipeline          composables/         useUndoHistory
-scripts/check.mjs route health CLI             tests/smoke.spec.js  smoke tests
-docs/             architecture / tokens / data / verification / icons
-```
-
 ---
 
 ## Project Context
