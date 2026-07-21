@@ -19,11 +19,13 @@ export const BG_PRESETS = [
 ]
 
 // Toolbar config consumed by EditToolbar. 'select'/'pen' switch the drawing
-// tool; the rest toggle a contextual options panel.
+// tool; 'upload' fires the device file picker directly (no panel);
+// the rest toggle a contextual options panel.
 export const TOOLS = [
   { key: 'select', icon: 'ph:cursor-light', label: '選取' },
   { key: 'pen', icon: 'ph:pencil-simple-light', label: '塗鴉' },
   { key: 'photo', icon: 'ph:subway-light', label: '捷運回憶' },
+  { key: 'upload', icon: 'ph:image-square-light', label: '上傳照片' },
   { key: 'sticker', icon: 'ph:sticker-light', label: '貼紙' },
   { key: 'stamp', icon: 'ph:seal-light', label: '印章' },
   { key: 'bg', icon: 'ph:paint-bucket-light', label: '背景' },

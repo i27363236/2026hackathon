@@ -20,7 +20,23 @@ const props = defineProps({
   selectedId: { type: String, default: '' },
   penColor: { type: String, required: true },
   penWidth: { type: Number, required: true },
+  penStyle: { type: String, default: 'pen' }, // 'pen' | 'highlighter'
 })
+
+// 螢光筆:半透明、方頭、加粗,並用 multiply 疊色 — 疊到一起會變深,像真的螢光筆。
+function lineConfig(l) {
+  const highlight = l.style === 'highlighter'
+  return {
+    points: l.points,
+    stroke: l.stroke,
+    strokeWidth: highlight ? l.strokeWidth * 3 : l.strokeWidth,
+    lineCap: highlight ? 'square' : 'round',
+    lineJoin: 'round',
+    tension: highlight ? 0 : 0.4,
+    opacity: highlight ? 0.4 : 1,
+    globalCompositeOperation: highlight ? 'multiply' : 'source-over',
+  }
+}
 const lines = defineModel('lines', { type: Array, required: true })
 const emit = defineEmits(['select', 'line-committed'])
 
@@ -156,7 +172,13 @@ function onStageDown(e) {
   if (props.tool === 'pen') {
     drawing = true
     const pos = stage.getPointerPosition()
-    lines.value.push({ id: `line-${lineUid++}`, points: [pos.x, pos.y], stroke: props.penColor, strokeWidth: props.penWidth })
+    lines.value.push({
+      id: `line-${lineUid++}`,
+      points: [pos.x, pos.y],
+      stroke: props.penColor,
+      strokeWidth: props.penWidth,
+      style: props.penStyle,
+    })
     return
   }
   // select tool: clicking empty space deselects
@@ -206,18 +228,7 @@ defineExpose({ toDataURL })
         <Image v-if="bg.type === 'image' && bgImage" :config="bgImageConfig()" />
         <Rect v-else :config="bgConfig()" />
 
-        <Line
-          v-for="l in lines"
-          :key="l.id"
-          :config="{
-            points: l.points,
-            stroke: l.stroke,
-            strokeWidth: l.strokeWidth,
-            lineCap: 'round',
-            lineJoin: 'round',
-            tension: 0.4,
-          }"
-        />
+        <Line v-for="l in lines" :key="l.id" :config="lineConfig(l)" />
 
         <template v-for="it in items" :key="it.id">
           <Text

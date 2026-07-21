@@ -30,8 +30,20 @@ const reminderOn = computed(() => !!gift.value?.reminderEnabled)
 function redeem() {
   if (gift.value) gifts.redeemGift(gift.value.id)
 }
-function toggleReminder() {
-  if (gift.value) gifts.toggleReminder(gift.value.id)
+
+// 到期提醒要真的能通知,所以這裡向瀏覽器要通知權限;被封鎖時開關不該假裝成功。
+const notifyPerm = ref(typeof Notification === 'undefined' ? 'unsupported' : Notification.permission)
+const notifyBlocked = computed(
+  () => notifyPerm.value === 'denied' || notifyPerm.value === 'unsupported',
+)
+
+async function toggleReminder() {
+  if (!gift.value) return
+  if (!reminderOn.value && notifyPerm.value === 'default') {
+    notifyPerm.value = await Notification.requestPermission()
+  }
+  if (notifyBlocked.value) return // 保持關閉,列表改顯示被封鎖狀態
+  gifts.toggleReminder(gift.value.id)
 }
 
 // 附近可使用店家 bottom sheet(資料先用捷運站示意)
@@ -43,8 +55,9 @@ const addedToCalendar = ref(false)
 </script>
 
 <template>
-  <div class="gift-received overflow-auto h-100 p-5">
-    <div class="row g-6 justify-content-center mx-auto" style="max-width: 920px">
+  <!-- 內容垂直置中(內容過長時 my-auto 會退讓,仍可正常捲動) -->
+  <div class="gift-received overflow-auto h-100 p-5 d-flex flex-column">
+    <div class="row g-6 justify-content-center mx-auto my-auto w-100" style="max-width: 920px">
       <!-- Card -->
       <div class="col-12 col-md-6">
         <div class="card-wrap mx-auto w-100 position-relative">
@@ -138,22 +151,29 @@ const addedToCalendar = ref(false)
             <button
               type="button"
               class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
-              :disabled="redeemed"
+              :disabled="redeemed || notifyBlocked"
               @click="toggleReminder"
             >
               <Icon
-                :icon="reminderOn ? 'ph:check-circle-light' : 'ph:bell-light'"
-                :class="reminderOn ? 'text-success' : 'text-body-secondary'"
+                :icon="notifyBlocked ? 'ph:bell-slash-light' : reminderOn ? 'ph:check-circle-light' : 'ph:bell-light'"
+                :class="reminderOn && !notifyBlocked ? 'text-success' : 'text-body-secondary'"
                 width="24" height="24"
               />
               <span class="flex-grow-1 text-start">
-                <template v-if="reminderOn">
+                <template v-if="notifyBlocked">
+                  通知已封鎖
+                  <span class="d-block caption-2 text-body-secondary">請至瀏覽器設定開啟本站通知</span>
+                </template>
+                <template v-else-if="reminderOn">
                   已開啟到期提醒
                   <span class="d-block caption-2 text-body-secondary">到期前 7 天與 1 天提醒你</span>
                 </template>
                 <template v-else>開啟到期提醒</template>
               </span>
-              <Icon v-if="!reminderOn" icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24" />
+              <Icon
+                v-if="!reminderOn && !notifyBlocked"
+                icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24"
+              />
             </button>
 
             <button

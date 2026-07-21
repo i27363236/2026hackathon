@@ -14,7 +14,7 @@ const sidebarOpen = ref(true)
 </script>
 
 <template>
-  <div class="app-shell d-flex overflow-hidden bg-body-secondary">
+  <div class="app-shell d-flex overflow-hidden bg-body">
     <AppSidebar
       v-if="meta.showSidebar"
       :open="sidebarOpen"
@@ -44,7 +44,8 @@ const sidebarOpen = ref(true)
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto mt-11 mt-sm-0" style="min-height: 0">
+      <!-- TopToolbar 疊在內容上方,除首頁(沉浸式輪播)外都要讓開工具列高度 -->
+      <main class="flex-grow-1 overflow-auto" :class="{ 'has-toolbar': !meta.heroTop }" style="min-height: 0">
         <RouterView />
       </main>
 
@@ -61,6 +62,11 @@ const sidebarOpen = ref(true)
 <style scoped>
 .app-shell {
   height: 100dvh;
+}
+
+/* 讓內容從工具列下方開始(--toolbar-h 定義於 _style-overrides.scss) */
+.has-toolbar {
+  padding-top: var(--toolbar-h);
 }
 
 .pill-enter-active,

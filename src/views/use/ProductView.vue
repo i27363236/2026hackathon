@@ -9,7 +9,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { getProductById, getShelfByProductId } from '@/data/catalog.js'
+import { getProductById } from '@/data/catalog.js'
 import { useGiftsStore } from '@/stores/gifts.js'
 import { usePointsStore } from '@/stores/points.js'
 import { useCardColors } from '@/utils/imageColor.js'
@@ -20,7 +20,8 @@ const router = useRouter()
 const gifts = useGiftsStore()
 
 const product = computed(() => getProductById(route.query.id) ?? null)
-const merchant = computed(() => getShelfByProductId(route.query.id)?.title ?? '')
+const merchant = computed(() => product.value?.merchant ?? '')
+const validDays = computed(() => product.value?.validDays ?? 0)
 const isMoney = computed(() => product.value?.purchaseType === 'money')
 const priceText = computed(() =>
   isMoney.value ? `NT$ ${product.value?.price ?? 0}` : `${product.value?.price ?? 0} 捷運點`,
@@ -43,18 +44,26 @@ onMounted(() => {
 const sheetOpen = ref(false)
 const giftMode = ref(false) // false → 自己使用; true → 送禮
 
+const points = usePointsStore()
+
 const qty = computed(() => gifts.draftGift?.qty ?? 1)
+
+// 點數商品:數量上限就是餘額買得起的件數 — 讓「加不上去」取代事後的紅字警告。
+const maxQty = computed(() => {
+  const price = product.value?.price ?? 0
+  if (isMoney.value || !price) return Infinity
+  return Math.floor(points.balance / price)
+})
+// 連一件都買不起 → 主按鈕直接停用。
+const insufficientPoints = computed(() => !isMoney.value && !!product.value && maxQty.value < 1)
+
 function decrease() {
   gifts.updateDraft({ qty: Math.max(1, qty.value - 1) })
 }
 function increase() {
+  if (qty.value >= maxQty.value) return
   gifts.updateDraft({ qty: qty.value + 1 })
 }
-
-const points = usePointsStore()
-const insufficientPoints = computed(
-  () => !isMoney.value && !!product.value && points.balance < product.value.price * qty.value,
-)
 
 function onPrimary() {
   if (insufficientPoints.value) return
@@ -94,6 +103,12 @@ function onPrimary() {
           <h2 class="h3 fw-bold mb-3">商品說明</h2>
           <p class="text-body-secondary mb-0">{{ product?.desc }}</p>
         </div>
+
+        <!-- 有效期限 — 效期自購買日起算 -->
+        <div v-if="validDays" class="pv-intro pt-0">
+          <h2 class="h3 fw-bold mb-3">有效期限</h2>
+          <p class="text-body-secondary mb-0">購買後 {{ validDays }} 天內使用</p>
+        </div>
       </div>
     </div>
 
@@ -112,11 +127,23 @@ function onPrimary() {
               <div class="pv-qty-row">
                 <span class="text-body">數量</span>
                 <div class="pv-stepper">
-                  <button type="button" class="pv-step-btn" :disabled="qty <= 1" @click="decrease">
+                  <button
+                    type="button"
+                    class="pv-step-btn"
+                    aria-label="減少數量"
+                    :disabled="qty <= 1"
+                    @click="decrease"
+                  >
                     <Icon icon="ph:minus-light" width="20" height="20" />
                   </button>
                   <span class="pv-step-val fw-bold">{{ qty }}</span>
-                  <button type="button" class="pv-step-btn pv-step-plus" @click="increase">
+                  <button
+                    type="button"
+                    class="pv-step-btn pv-step-plus"
+                    aria-label="增加數量"
+                    :disabled="qty >= maxQty"
+                    @click="increase"
+                  >
                     <Icon icon="ph:plus-light" width="20" height="20" />
                   </button>
                 </div>
@@ -157,13 +184,10 @@ function onPrimary() {
             <div v-if="!isMoney" class="caption-1 mt-1 text-body-tertiary">
               目前擁有 {{ points.balance }} 捷運點
             </div>
-            <div v-if="insufficientPoints" class="text-danger caption-2 mt-1">
-              捷運點不足，無法兌換
-            </div>
           </div>
           <button
             type="button"
-            class="btn btn-primary btn-lg fw-bold w-100 flex-shrink-1"
+            class="btn btn-primary fw-bold w-100 flex-shrink-1"
             :disabled="!product || insufficientPoints"
             @click="onPrimary"
           >
@@ -206,11 +230,11 @@ function onPrimary() {
 .pv-merchant {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: .5rem;
 }
 .pv-merchant-logo {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--bs-secondary-bg);
   color: var(--bs-secondary-color);
@@ -311,7 +335,7 @@ function onPrimary() {
   grid-template-columns: 3fr 2fr;
   gap: 12px;
   align-items: end;
-  padding: 16px 16px 12px;
+  padding: 16px;
 }
 .pv-summary {
   min-width: 0;

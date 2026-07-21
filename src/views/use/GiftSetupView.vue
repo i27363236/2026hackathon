@@ -34,6 +34,18 @@ const tool = ref('select') // 'select' | 'pen'
 const panel = ref('') // '' | 'sticker' | 'photo' | 'stamp' | 'bg'
 const penColor = ref('#e3002c')
 const penWidth = ref(4)
+const penStyle = ref('pen') // 'pen' | 'highlighter'
+
+// 上傳照片是工具列的獨立功能(不開面板)— 直接叫出裝置的檔案選擇器。
+const fileInput = ref(null)
+function onPhotoUpload(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => addPhoto(reader.result)
+  reader.readAsDataURL(file)
+  e.target.value = '' // 讓同一張照片可以再選一次
+}
 
 const bg = ref({ type: 'color', value: '#ffffff' })
 const bgImage = ref(null) // loaded HTMLImageElement when bg.type === 'image'
@@ -74,7 +86,9 @@ function togglePanel(p) {
   panel.value = panel.value === p ? '' : p
 }
 function onToolSelect(key) {
-  if (key === 'select' || key === 'pen') {
+  if (key === 'upload') {
+    fileInput.value?.click()
+  } else if (key === 'select' || key === 'pen') {
     panel.value = ''
     setTool(key)
   } else {
@@ -239,6 +253,9 @@ async function done() {
 
 <template>
   <div class="gift-editor d-flex flex-column h-100 position-relative">
+    <!-- 工具列「上傳照片」用的隱藏檔案選擇器 -->
+    <input ref="fileInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload" />
+
     <!-- Top-toolbar actions injected into the app shell's TopToolbar: 復原 + 完成. -->
     <Teleport v-if="toolbarReady" to="#top-toolbar-actions">
       <ToolbarButton
@@ -289,6 +306,7 @@ async function done() {
           :selected-id="selectedId"
           :pen-color="penColor"
           :pen-width="penWidth"
+          :pen-style="penStyle"
           @select="select"
           @line-committed="onLineCommitted"
         />
@@ -301,6 +319,7 @@ async function done() {
         :panel="panel"
         v-model:pen-color="penColor"
         v-model:pen-width="penWidth"
+        v-model:pen-style="penStyle"
         @add-sticker="addSticker"
         @add-photo="addPhoto"
         @add-stamp="addStamp"

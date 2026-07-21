@@ -110,6 +110,18 @@ h5 {
   }
 }
 
+// ── Top toolbar 高度 ────────────────────────────────────────────────────────
+// TopToolbar 是 position:absolute 疊在內容上，所以內容需要自行讓開這段高度。
+// 手機:pt-4(12) + min-height(40) + pb-3(8) = 60px;≥md 因 pt-md-0 少 12px。
+// AppLayout 的 <main class="has-toolbar"> 會吃這個值(首頁 heroTop 除外)。
+:root {
+  --toolbar-h: 60px;
+
+  @media (min-width: 48rem) {
+    --toolbar-h: 48px;
+  }
+}
+
 // 預設的左右padding class，手機版16px，平板版24px
 .px-default {
   padding-left: $px-phone;

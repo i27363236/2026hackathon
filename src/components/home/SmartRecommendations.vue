@@ -26,7 +26,7 @@ onUnmounted(() => { clearInterval(timer) })
     <div class="rec-header d-flex align-items-center justify-content-between mb-4">
       <h3 class="mb-0">智慧推薦</h3>
       <button type="button" class="btn btn-link p-0 text-body-secondary d-flex align-items-center gap-1" @click="sheetOpen = true">
-        <Icon icon="ph:info-light" width="24" height="24" />
+        <Icon icon="ph:info-light" width="16" />
         <span class="caption-2">為什麼推薦？</span>
       </button>
     </div>

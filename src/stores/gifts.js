@@ -22,9 +22,12 @@ function createGift(product) {
     id: 'gift-' + Date.now(),
     productId: product?.id ?? '',
     name: product?.name ?? '',
+    merchant: product?.merchant ?? '',
     price: product?.price ?? 0,
     img: product?.img ?? '',
     purchaseType: product?.purchaseType ?? 'points',
+    // 效期天數隨商品而異(catalog.js 的 validDays),購買時才換算成 expiredDate。
+    validDays: product?.validDays ?? DEFAULT_VALID_DAYS,
     qty: 1,
     isGift: true,
     purchaseDate: '',
@@ -85,9 +88,8 @@ export const useGiftsStore = defineStore('gifts', () => {
     if (!draftGift.value) return
     const now = new Date()
     draftGift.value.purchaseDate = now.toISOString()
-    draftGift.value.expiredDate = new Date(
-      now.getTime() + DEFAULT_VALID_DAYS * 86400000,
-    ).toISOString()
+    const days = draftGift.value.validDays || DEFAULT_VALID_DAYS
+    draftGift.value.expiredDate = new Date(now.getTime() + days * 86400000).toISOString()
     draftGift.value.status = 'purchased'
   }
 

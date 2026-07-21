@@ -39,12 +39,12 @@ const model = defineModel({ type: String, required: true })
     <div
       v-for="opt in options"
       :key="opt.id"
-      class="form-check d-flex align-items-start gap-2 py-2 border-bottom border-light-subtle"
+      class="co-list-item form-check d-flex align-items-start gap-2 py-2 border-bottom border-light-subtle"
     >
       <input class="form-check-input mt-1" type="radio" :name="name" :id="`${name}-${opt.id}`" :value="opt.id" v-model="model" />
       <label class="form-check-label w-100" :for="`${name}-${opt.id}`">
-        <span class="d-block fw-bold text-body small">{{ opt.label }}</span>
-        <span v-if="opt.sub" class="caption-1 text-body-secondary">{{ opt.sub }}</span>
+        <span class="d-block fw-bold text-body">{{ opt.label }}</span>
+        <span v-if="opt.sub" class="text-body-secondary">{{ opt.sub }}</span>
       </label>
     </div>
   </template>
@@ -59,6 +59,10 @@ const model = defineModel({ type: String, required: true })
 }
 .co-option:last-child {
   margin-bottom: 0;
+}
+/* 清單最後一項不畫下框線 — 區塊本身已有間距,多一條線只會像斷掉的表格 */
+.co-list-item:last-child {
+  border-bottom: 0 !important;
 }
 .co-option-label {
   flex: 1;

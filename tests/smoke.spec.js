@@ -64,10 +64,21 @@ test('商品頁可走到結帳', async ({ page }) => {
 
 test('捷運點不足時,商品頁鎖定結帳', async ({ page }) => {
   const errors = trackErrors(page)
-  // cat-014 需要 480 捷運點,餘額(stores/points.js)為 320 — 應顯示不足提示且無法進入結帳。
+  // cat-014 需要 480 捷運點,餘額(stores/points.js)為 320 — 連一件都買不起,主按鈕直接鎖住
+  // (不再事後跳紅字警告)。
   await page.goto('/#/use/product?id=cat-014')
-  await expect(page.getByText('捷運點不足，無法兌換')).toBeVisible()
   await expect(page.getByRole('button', { name: '選擇數量' })).toBeDisabled()
+  expect(errors).toEqual([])
+})
+
+test('捷運點只夠買一件時,數量加不上去', async ({ page }) => {
+  const errors = trackErrors(page)
+  // cat-021 需要 400 捷運點,餘額 320… 改用 cat-002(320 點)剛好只買得起 1 件。
+  await page.goto('/#/use/product?id=cat-002')
+  await page.getByRole('button', { name: '選擇數量' }).click()
+  // 數量停在 1,加號停用 — 使用者不會先加到買不起才被擋。
+  await expect(page.getByRole('button', { name: '增加數量' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: '兌換' })).toBeEnabled()
   expect(errors).toEqual([])
 })
 
@@ -86,27 +97,43 @@ test('捷運點餘額單一來源:首頁/點數頁/商品頁一致', async ({ pa
 
 test('送禮閉環E2E:商品→結帳→編輯→送出→收禮→兌換', async ({ page }) => {
   const errors = trackErrors(page)
+  // headless Chromium 一律把 Notification.permission 回報為 denied(連 grantPermissions 也無效),
+  // 所以這裡把它換成「可授權」的版本,才測得到到期提醒開啟成功的分支。
+  // 被封鎖的分支由另一個測試涵蓋。
+  await page.addInitScript(() => {
+    let state = 'default'
+    Object.defineProperty(window, 'Notification', {
+      configurable: true,
+      value: {
+        get permission() {
+          return state
+        },
+        requestPermission: async () => (state = 'granted'),
+      },
+    })
+  })
   // 商品頁:選數量、切到送禮
   await page.goto('/#/use/product?id=cat-001')
   await page.getByRole('button', { name: '選擇數量' }).click()
   await page.getByRole('button', { name: '送禮' }).click()
   await page.getByRole('button', { name: '兌換' }).click()
-  // 結帳(points 模式,送禮 → 結帳並包裝)
+  // 結帳(points 模式):送禮資訊在這裡填,收禮人必填 — 空白時確認鍵鎖定
   await expect(page).toHaveURL(/use\/checkout/)
+  await expect(page.getByRole('button', { name: '結帳並包裝' })).toBeDisabled()
+  await page.getByLabel('收禮人暱稱').fill('小美')
+  await page.getByLabel('想說的話（選填）').fill('辛苦了，喝杯咖啡！')
   await page.getByRole('button', { name: '結帳並包裝' }).click()
   // 編輯器:等 Konva 畫布載入後按工具列「完成」
   await expect(page).toHaveURL(/use\/gift\/setup/)
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 15_000 })
   await page.getByRole('button', { name: '完成' }).click()
-  // 預覽:收禮人必填 — 空白時送出鎖定
+  // 預覽 → 送出(headless 無 Web Share API,走複製連結後續導頁)
   await expect(page).toHaveURL(/use\/gift\/preview/)
-  await expect(page.getByRole('button', { name: '送出禮物' })).toBeDisabled()
-  await page.getByLabel('收禮人暱稱').fill('小美')
-  await page.getByLabel('想說的話（選填）').fill('辛苦了，喝杯咖啡！')
   await page.getByRole('button', { name: '送出禮物' }).click()
-  // 購買成功 → 預覽收禮畫面
+  // 購買成功:文案帶收禮人名字;Demo 版才有的收禮頁預覽入口
   await expect(page.getByRole('heading', { name: '禮物已送出！' })).toBeVisible()
-  await page.getByRole('button', { name: '預覽收禮畫面' }).click()
+  await expect(page.getByText('已經收到你的禮物與卡片')).toBeVisible()
+  await page.getByRole('button', { name: '預覽收禮頁面' }).click()
   // 收禮頁:留言可見、開提醒、兌換後鎖定
   await expect(page.getByText('送了一個禮物給你')).toBeVisible()
   await expect(page.getByText('辛苦了，喝杯咖啡！')).toBeVisible()
@@ -117,6 +144,16 @@ test('送禮閉環E2E:商品→結帳→編輯→送出→收禮→兌換', asyn
   expect(errors).toEqual([])
 })
 
+test('收禮頁:瀏覽器封鎖通知時,到期提醒顯示封鎖狀態且不可按', async ({ page }) => {
+  const errors = trackErrors(page)
+  // headless Chromium 預設就是 denied — 不 stub 即為封鎖情境。
+  await page.goto('/#/use/gift/received')
+  const row = page.getByRole('button', { name: /通知已封鎖/ })
+  await expect(row).toBeVisible()
+  await expect(row).toBeDisabled()
+  expect(errors).toEqual([])
+})
+
 test('收禮頁附近店家 bottom sheet', async ({ page }) => {
   const errors = trackErrors(page)
   // 先送出一份禮物,收禮頁動作才可用(無禮物時按鈕 disabled)
@@ -124,12 +161,12 @@ test('收禮頁附近店家 bottom sheet', async ({ page }) => {
   await page.getByRole('button', { name: '選擇數量' }).click()
   await page.getByRole('button', { name: '送禮' }).click()
   await page.getByRole('button', { name: '兌換' }).click()
+  await page.getByLabel('收禮人暱稱').fill('阿方')
   await page.getByRole('button', { name: '結帳並包裝' }).click()
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 15_000 })
   await page.getByRole('button', { name: '完成' }).click()
-  await page.getByLabel('收禮人暱稱').fill('阿方')
   await page.getByRole('button', { name: '送出禮物' }).click()
-  await page.getByRole('button', { name: '預覽收禮畫面' }).click()
+  await page.getByRole('button', { name: '預覽收禮頁面' }).click()
   await page.getByRole('button', { name: '搜尋附近可使用店家' }).click()
   await expect(page.getByRole('heading', { name: '附近可使用店家' })).toBeVisible()
   await expect(page.getByRole('link', { name: '查看完整使用地點' })).toBeVisible()

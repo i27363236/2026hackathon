@@ -25,7 +25,7 @@ const goal = getProductById(profile.goalProductId)
 </script>
 
 <template>
-  <div class="home mx-auto d-flex flex-column">
+  <div class="home mx-auto d-flex flex-column bg-body">
     <HeroCarousel :banners="banners" />
 
     <!-- Points summary + smart recommendation: stacked on mobile, side-by-side on tablet+ -->

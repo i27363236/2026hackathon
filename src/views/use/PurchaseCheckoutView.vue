@@ -2,7 +2,9 @@
 // 結帳 — two modes driven by the draft's purchaseType:
 //  • money (Figma 2362-1849): NT$ subtotal, 捷運點 applied as an NT$ discount via a stepper,
 //    payment + invoice cards, total in NT$.
-//  • points: the original points-based layout (小計 / 折抵 / 總計 in 捷運點).
+//  • points: 純點數兌換 — 沒有金流,所以不顯示「捷運點折抵」與「發票資訊」。
+// 送禮時(isGift)在這裡收「收禮人暱稱 / 想說的話」— 這是使用者決定要送誰的時間點,
+// 比放在卡片預覽頁更早也更合理(預覽頁只負責看成品)。
 // Both stamp the purchase via purchaseDraft(); isGift then decides the next step:
 // gift → card editor; self → success.
 import { ref, computed } from 'vue'
@@ -11,6 +13,7 @@ import { useGiftsStore } from '@/stores/gifts.js'
 import { usePointsStore } from '@/stores/points.js'
 import CheckoutOptionGroup from '@/components/checkout/CheckoutOptionGroup.vue'
 import CheckoutFooter from '@/components/checkout/CheckoutFooter.vue'
+import CheckoutGiftFields from '@/components/checkout/CheckoutGiftFields.vue'
 import PointsStepper from '@/components/checkout/PointsStepper.vue'
 import coinImg from '@/img/coin.png'
 
@@ -28,17 +31,19 @@ const maxApplicable = computed(() => Math.min(points.balance, subtotal.value))
 // money mode: how many 捷運點 to apply, adjustable via a stepper (defaults to full discount).
 const pointsApplied = ref(Math.min(points.balance, gifts.draftTotal))
 
-// points mode: simple on/off toggle for the discount.
-const usePoints = ref(true)
-
+// 折抵只存在於金流結帳;純點數兌換直接付小計。
 const discount = computed(() =>
-  isMoney.value
-    ? Math.min(pointsApplied.value, maxApplicable.value)
-    : usePoints.value
-      ? maxApplicable.value
-      : 0,
+  isMoney.value ? Math.min(pointsApplied.value, maxApplicable.value) : 0,
 )
 const total = computed(() => subtotal.value - discount.value)
+
+// 送禮資訊 — 收禮人必填(訪談洞察:送禮不能沒有對象)。
+const isGift = computed(() => !!draft.value?.isGift)
+const recipientName = ref('')
+const message = ref('')
+const canConfirm = computed(
+  () => !!draft.value && (!isGift.value || recipientName.value.trim().length > 0),
+)
 
 const paymentMethod = ref('credit_card')
 const invoiceType = ref('electronic')
@@ -60,9 +65,13 @@ const confirmLabel = computed(() => {
 })
 
 function confirm() {
+  if (!canConfirm.value) return
   // points 模式扣商品全額(小計);money 模式只扣折抵掉的點數 — 讓餘額真的隨消費變動。
   const spent = isMoney.value ? discount.value : subtotal.value
   if (spent > 0) points.spend(spent, `兌換 ${draft.value?.name ?? ''}`)
+  if (isGift.value) {
+    gifts.updateDraft({ recipient: recipientName.value.trim(), message: message.value.trim() })
+  }
   gifts.purchaseDraft()
   router.push({ name: draft.value?.isGift ? 'use-gift-setup' : 'purchase-success' })
 }
@@ -126,6 +135,12 @@ function confirm() {
             <h3 class="mb-4">發票資訊</h3>
             <CheckoutOptionGroup v-model="invoiceType" name="invoice" :options="invoiceOptions" />
           </section>
+
+          <!-- 送禮資訊 -->
+          <section v-if="isGift" class="co-section">
+            <h3 class="mb-4">送禮資訊</h3>
+            <CheckoutGiftFields v-model:recipient="recipientName" v-model:message="message" />
+          </section>
         </div>
       </div>
 
@@ -133,7 +148,7 @@ function confirm() {
         label="總計"
         :value="`NT$ ${total}`"
         :confirm-label="confirmLabel"
-        :disabled="!draft"
+        :disabled="!canConfirm"
         @confirm="confirm"
       />
     </template>
@@ -162,51 +177,33 @@ function confirm() {
               <span>數量</span>
               <span>{{ draft?.qty ?? 1 }} 件</span>
             </div>
-            <div class="d-flex justify-content-between small text-body pb-3 border-bottom">
-              <span>捷運點折抵</span>
-              <span class="text-success">-捷運點 {{ discount }}</span>
-            </div>
-            <div class="d-flex justify-content-between fw-bold text-body mt-3">
+            <div class="d-flex justify-content-between fw-bold text-body pt-3 border-top">
               <span>總計</span>
               <span class="text-primary">捷運點 {{ total }}</span>
             </div>
-          </div>
-
-          <!-- 捷運點折抵 -->
-          <div class="bg-body p-5">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h3 class="m-0">捷運點折抵</h3>
-              <div class="form-check form-switch p-0 m-0">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  v-model="usePoints"
-                  style="width: 2.5em; height: 1.25em; cursor: pointer"
-                />
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-1 my-2">
+            <div class="d-flex align-items-center gap-1 mt-4">
               <img :src="coinImg" alt="" width="20" height="20" />
               <span class="text-body small">您目前有 {{ points.balance }} 捷運點</span>
             </div>
           </div>
 
-          <!-- 發票資訊 -->
-          <div class="bg-body p-5">
-            <h3 class="mb-4">發票資訊</h3>
-            <CheckoutOptionGroup v-model="invoiceType" name="invoice-pt" :options="invoiceOptions" variant="list" />
+          <!-- 送禮資訊 -->
+          <div v-if="isGift" class="bg-body p-5">
+            <h3 class="mb-4">送禮資訊</h3>
+            <CheckoutGiftFields v-model:recipient="recipientName" v-model:message="message" />
+          </div>
+          <div class="p-5">
+            <button
+              type="button"
+              class="btn btn-primary fw-bold w-100"
+              :disabled="!canConfirm"
+              @click="confirm"
+            >
+              {{ confirmLabel }}
+            </button>
           </div>
         </div>
       </div>
-
-      <CheckoutFooter
-        label="應付金額"
-        :value="`捷運點 ${total}`"
-        :confirm-label="confirmLabel"
-        :disabled="!draft"
-        @confirm="confirm"
-      />
     </template>
   </div>
 </template>
