@@ -149,12 +149,12 @@ function onPrimary() {
         <!-- summary + primary action -->
         <div class="pv-action-row">
           <div class="pv-summary">
-            <div class="caption-1 text-body text-truncate">{{ product?.name }}</div>
+            <div class="text-body text-truncate">{{ product?.name }}</div>
             <div class="pv-summary-price text-warning fw-bold">
               <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
               <span>{{ priceText }}</span>
             </div>
-            <div v-if="!isMoney" class="caption-2 mt-1 text-body-secondary">
+            <div v-if="!isMoney" class="caption-1 mt-1 text-body-tertiary">
               目前擁有 {{ points.balance }} 捷運點
             </div>
             <div v-if="insufficientPoints" class="text-danger caption-2 mt-1">
@@ -163,7 +163,7 @@ function onPrimary() {
           </div>
           <button
             type="button"
-            class="btn btn-primary fw-bold w-100"
+            class="btn btn-primary btn-lg fw-bold w-100 flex-shrink-1"
             :disabled="!product || insufficientPoints"
             @click="onPrimary"
           >
@@ -310,8 +310,8 @@ function onPrimary() {
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 12px;
-  align-items: center;
-  padding: 20px 16px 12px;
+  align-items: end;
+  padding: 16px 16px 12px;
 }
 .pv-summary {
   min-width: 0;
