@@ -35,18 +35,18 @@ const target = computed(() => (props.disabled ? null : props.to))
 }
 
 .action-tile--blue {
-  background: linear-gradient(to top, #005886, #0079a9);
-  color: #fff;
+  background: var(--tile-gradient-blue);
+  color: var(--bs-white);
 }
 
 .action-tile--green {
-  background: linear-gradient(to top, #005f00, #007e00);
-  color: #fff;
+  background: var(--tile-gradient-green);
+  color: var(--bs-white);
 }
 
 .action-tile--gray {
-  background: linear-gradient(to bottom, var(--gray-100), var(--gray-300));
-  color: #000;
+  background: var(--tile-gradient-gray);
+  color: var(--bs-black);
 }
 
 .action-tile--disabled {

@@ -1,4 +1,33 @@
 /* _style-overrides — last layer, loaded after Bootstrap to patch component specifics. */
+body {
+  text-wrap: pretty;
+  text-autospace: normal;
+}
+
+h1 {
+  line-height: 2.5625rem;
+  letter-spacing: .025rem;
+}
+
+h2 {
+  line-height: 2.125rem;
+  letter-spacing: -.025rem;
+}
+
+h3 {
+  line-height: 1.75rem;
+  letter-spacing: .0281rem;
+}
+
+h4 {
+  line-height: 1.625rem;
+  letter-spacing: .0281rem;
+}
+
+h5 {
+  line-height: 1.375rem;
+  letter-spacing: -0.0269rem;
+}
 
 // ── Carousel: frosted pill indicator container ──────────────────────────────
 
@@ -8,10 +37,13 @@
   right: auto;
   width: fit-content;
   transform: translateX(-50%);
-  margin: 0 0 10px;
+  margin: 0 0 16px;
   gap: 8px;
-  // background: rgba(255, 255, 255, 0.25);
   border-radius: $border-radius-pill;
+  
+  @media (min-width: 48rem) {
+    margin: 0 0 32px;
+  }
 }
 
 // Inactive dot
@@ -76,4 +108,42 @@
     background: transparent;
     border-color: $border-color;
   }
+}
+
+// ── Top toolbar 高度 ────────────────────────────────────────────────────────
+// TopToolbar 是 position:absolute 疊在內容上，所以內容需要自行讓開這段高度。
+// 手機:pt-4(12) + min-height(40) + pb-3(8) = 60px;≥md 因 pt-md-0 少 12px。
+// AppLayout 的 <main class="has-toolbar"> 會吃這個值(首頁 heroTop 除外)。
+:root {
+  --toolbar-h: 60px;
+
+  @media (min-width: 48rem) {
+    --toolbar-h: 48px;
+  }
+}
+
+// 預設的左右padding class，手機版16px，平板版24px
+.px-default {
+  padding-left: $px-phone;
+  padding-right: $px-phone;
+
+  @media (min-width: 48rem) {
+    padding-left: $px-tablet-content;
+    padding-right: $px-tablet-content;
+  }
+}
+
+// 頁面內容欄的置中 + 最大寬(只管寬度,不含左右padding)。
+// 左右內距請另外組合 .px-default(或由內部 section 自行 padding),與既有 .home 寫法一致。
+// .container-content：一般內容頁(720px)；.container-form：表單/結帳窄欄(630px)。
+// 全螢幕編輯/預覽畫面(GiftSetupView/GiftPreviewView/GiftReceivedView/PurchaseSuccessView)
+// 刻意不套用 — 那些是滿版置中畫面。
+.container-content {
+  max-width: $tablet-container;
+  margin-inline: auto;
+}
+
+.container-form {
+  max-width: $container-form;
+  margin-inline: auto;
 }

@@ -1,5 +1,12 @@
 <script setup>
 // 單純靜態畫面，不寫任何資料庫邏輯
+import MedalSection from '@/components/profile/MedalSection.vue'
+import { getAchievements, getSentGifts } from '@/data/profile.js'
+import { useSettingsStore } from '@/stores/settings.js'
+
+const achievements = getAchievements()
+const sentGifts = getSentGifts()
+const settings = useSettingsStore()
 </script>
 
 <template>
@@ -36,30 +43,7 @@
           </div>
         </div>
 
-        <div class="section-title-bar">
-          <h2>我的成就</h2>
-          <div class="circle-arrow-btn">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23868e96' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'></polyline></svg>" alt="更多" class="arrow-icon" />
-          </div>
-        </div>
-
-        <div class="card activity-card">
-          <div class="activity-text-left">
-            <p class="sub-title">北捷認證的好鄰居</p>
-            <h3>參加過10次台北捷運舉辦的活動</h3>
-            <p class="date">2026-04-30 達成</p>
-          </div>
-          <img src="../../img/award-1.png" alt="活動勳章" class="activity-badge-right" />
-        </div>
-
-        <div class="card activity-card">
-          <div class="activity-text-left">
-            <p class="sub-title">北捷認證的好鄰居</p>
-            <h3>參加過10次台北捷運舉辦的活動</h3>
-            <p class="date">2026-04-30 達成</p>
-          </div>
-          <img src="../../img/award-1.png" alt="活動勳章" class="activity-badge-right" />
-        </div>
+        <MedalSection title="我的成就" :items="achievements" />
 
         <div class="section-title-bar">
           <h2>最近參加的活動</h2>
@@ -79,39 +63,7 @@
       </div>
 
       <div class="right-column">
-        <div class="section-title-bar">
-          <h2>我的禮物</h2>
-          <div class="circle-arrow-btn">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23868e96' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'></polyline></svg>" alt="更多" class="arrow-icon" />
-          </div>
-        </div>
-
-        <div class="card gift-card">
-          <div class="gift-text-left">
-            <p class="sender">送給 阿理 的禮物</p>
-            <p class="gift-title">誠品生活|100元優惠券</p>
-            <p class="expiry">使用期限 2026-06-30</p>
-          </div>
-          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
-        </div>
-
-        <div class="card gift-card">
-          <div class="gift-text-left">
-            <p class="sender">送給 大明 的禮物</p>
-            <p class="gift-title">全家便利商店|300元購物券</p>
-            <p class="expiry">使用期限 2024-11-15</p>
-          </div>
-          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
-        </div>
-
-        <div class="card gift-card">
-          <div class="gift-text-left">
-            <p class="sender">送給 小美 的禮物</p>
-            <p class="gift-title">星巴克|50元飲品兌換券</p>
-            <p class="expiry">使用期限 2025-12-31</p>
-          </div>
-          <img src="../../img/Frame 116.png" alt="禮物" class="gift-img-right" />
-        </div>
+        <MedalSection title="我的禮物" :items="sentGifts" />
 
         <div class="section-title-bar setting-margin">
           <h2>設定</h2>
@@ -120,6 +72,18 @@
         <div class="button-group">
           <button class="action-button">修改支付密碼</button>
           <button class="action-button">設定綁定帳號</button>
+          <div class="action-button setting-switch-row">
+            <span>情境推薦</span>
+            <div class="form-check form-switch p-0 m-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                v-model="settings.contextualRecs"
+                style="width: 2.5em; height: 1.25em; cursor: pointer"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -174,7 +138,7 @@
 .section-title-bar h2 {
   font-size: 20px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   margin: 0;
 }
 
@@ -182,7 +146,7 @@
 .circle-arrow-btn {
   width: 32px;
   height: 32px;
-  background-color: #f1f3f5; 
+  background-color: var(--bs-gray-100); 
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -192,7 +156,7 @@
 }
 
 .circle-arrow-btn:hover {
-  background-color: #e9ecef;
+  background-color: var(--bs-gray-200);
 }
 
 /* 🌟 開源內聯 SVG 箭頭圖標樣式 */
@@ -208,8 +172,8 @@
 
 /* 🌟 統一卡片底座：換上與設計圖一致的高質感輕柔陰影 (Shadow) */
 .card {
-  background-color: #ffffff;
-  border-radius: 24px;
+  background-color: var(--bs-white);
+  border-radius: var(--bs-border-radius-xl); /* 20px,對齊 rounded-4 卡片圓角 */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 輕柔且深邃的摩登陰影 */
   box-sizing: border-box;
   border: none;
@@ -244,7 +208,7 @@
 .profile-name {
   font-size: 22px;
   font-weight: 700;
-  color: #000000;
+  color: var(--bs-black);
 }
 
 /* 數據欄位包覆區 */
@@ -270,12 +234,12 @@
 .stat-item .value {
   font-size: 18px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
 }
 
 .stat-item .unit {
   font-size: 13px;
-  color: #495057;
+  color: var(--bs-gray-700);
   font-weight: 500;
   margin-left: 4px;
 }
@@ -294,20 +258,23 @@
 }
 
 .tag {
-  color: #ffffff;
+  color: var(--bs-white);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
   font-weight: 700;
   font-size: 10px;
 }
 
-.tag-r { background-color: #e64980; } 
-.tag-g { background-color: #12b886; } 
+/* 捷運路線識別色(站點徽章)— 刻意保留品牌色字面值,非設計 token */
+/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+.tag-r { background-color: #e64980; }
+/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+.tag-g { background-color: #12b886; }
 
 .station-name {
   font-size: 18px;
   font-weight: 700;
-  color: #000000;
+  color: var(--bs-black);
 }
 
 /* ================= 2. 活動成就卡片 ================= */
@@ -336,7 +303,7 @@
 .activity-text-left h3 {
   font-size: 16px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   margin: 2px 0;
 }
 
@@ -345,62 +312,11 @@
   margin: 0;
 }
 
-.activity-badge-right {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 50%;           
-  flex-shrink: 0;
-  margin-left: 12px;
-}
-
 .stamp-img-right {
   width: 72px;
   object-fit: cover;
   flex-shrink: 0;
   margin-left: 12px;
-}
-
-/* ================= 3. 右側禮物卡片 ================= */
-.gift-card {
-  display: flex;
-  flex-direction: row;          
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  min-height: 95px;
-}
-
-.gift-text-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;       
-  gap: 2px;
-}
-
-.gift-text-left .sender {
-  font-size: 12px;
-  margin: 0;
-}
-
-.gift-text-left .gift-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #111111;
-  margin: 2px 0;
-}
-
-.gift-text-left .expiry {
-  font-size: 11px;
-  margin: 0;
-}
-
-.gift-img-right {
-  width: 44px;
-  height: 44px;
-  object-fit: cover;
-  flex-shrink: 0;
-  margin-left: 8px;
 }
 
 /* 右側按鈕組 */
@@ -412,13 +328,13 @@
 
 /* 🌟 按鈕同步換上高規格陰影與圓角 */
 .action-button {
-  background-color: #ffffff;
+  background-color: var(--bs-white);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--bs-border-radius-lg); /* 12px */
   padding: 16px 20px;
   font-size: 15px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   text-align: left;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* 與卡片一致的陰影 */
@@ -427,6 +343,13 @@
 }
 
 .action-button:hover {
-  background-color: #f1f3f5;
+  background-color: var(--bs-gray-100);
+}
+
+.setting-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: default;
 }
 </style>

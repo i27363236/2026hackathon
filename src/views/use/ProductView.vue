@@ -9,21 +9,29 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { getProductById, getShelfByProductId } from '../../data/catalog.js'
-import { useGiftsStore } from '../../stores/gifts.js'
-import coinImg from '../../img/coin.png'
+import { getProductById } from '@/data/catalog.js'
+import { useGiftsStore } from '@/stores/gifts.js'
+import { usePointsStore } from '@/stores/points.js'
+import { useCardColors } from '@/utils/imageColor.js'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const route = useRoute()
 const router = useRouter()
 const gifts = useGiftsStore()
 
 const product = computed(() => getProductById(route.query.id) ?? null)
-const merchant = computed(() => getShelfByProductId(route.query.id)?.title ?? '')
+const merchant = computed(() => product.value?.merchant ?? '')
+const validDays = computed(() => product.value?.validDays ?? 0)
 const isMoney = computed(() => product.value?.purchaseType === 'money')
 const priceText = computed(() =>
   isMoney.value ? `NT$ ${product.value?.price ?? 0}` : `${product.value?.price ?? 0} 捷運點`,
 )
 const actionLabel = computed(() => (isMoney.value ? '購買' : '兌換'))
+
+// image-derived card background (extends the product photo's own color rather than a
+// generic fixed gradient) — same utility already used by gift/ProductFace.vue + QrFace.vue.
+const productImg = computed(() => product.value?.img ?? '')
+const { gradient } = useCardColors(productImg)
 
 onMounted(() => {
   if (route.query.id && gifts.draftGift?.productId !== route.query.id) {
@@ -36,15 +44,29 @@ onMounted(() => {
 const sheetOpen = ref(false)
 const giftMode = ref(false) // false → 自己使用; true → 送禮
 
+const points = usePointsStore()
+
 const qty = computed(() => gifts.draftGift?.qty ?? 1)
+
+// 點數商品:數量上限就是餘額買得起的件數 — 讓「加不上去」取代事後的紅字警告。
+const maxQty = computed(() => {
+  const price = product.value?.price ?? 0
+  if (isMoney.value || !price) return Infinity
+  return Math.floor(points.balance / price)
+})
+// 連一件都買不起 → 主按鈕直接停用。
+const insufficientPoints = computed(() => !isMoney.value && !!product.value && maxQty.value < 1)
+
 function decrease() {
   gifts.updateDraft({ qty: Math.max(1, qty.value - 1) })
 }
 function increase() {
+  if (qty.value >= maxQty.value) return
   gifts.updateDraft({ qty: qty.value + 1 })
 }
 
 function onPrimary() {
+  if (insufficientPoints.value) return
   if (!sheetOpen.value) {
     sheetOpen.value = true
     return
@@ -57,10 +79,10 @@ function onPrimary() {
 <template>
   <div class="product-view d-flex flex-column h-100 bg-body">
     <div class="content flex-grow-1 overflow-auto">
-      <div class="pv-container one-col">
+      <div class="pv-container container-form">
         <!-- product image -->
         <div class="pv-image-wrap">
-          <div class="pv-image-card">
+          <div class="pv-image-card" :style="{ background: gradient }">
             <div class="pv-image" :style="product?.img ? { background: product.img } : {}" />
           </div>
         </div>
@@ -81,6 +103,12 @@ function onPrimary() {
           <h2 class="h3 fw-bold mb-3">商品說明</h2>
           <p class="text-body-secondary mb-0">{{ product?.desc }}</p>
         </div>
+
+        <!-- 有效期限 — 效期自購買日起算 -->
+        <div v-if="validDays" class="pv-intro pt-0">
+          <h2 class="h3 fw-bold mb-3">有效期限</h2>
+          <p class="text-body-secondary mb-0">購買後 {{ validDays }} 天內使用</p>
+        </div>
       </div>
     </div>
 
@@ -91,7 +119,7 @@ function onPrimary() {
 
     <!-- sticky bottom bar / expandable sheet -->
     <div class="pv-bottom bg-body">
-      <div class="pv-bottom-inner one-col">
+      <div class="pv-bottom-inner container-form">
         <!-- expanded sheet content -->
         <Transition name="sheet">
           <div v-if="sheetOpen" class="pv-sheet-wrap">
@@ -99,11 +127,23 @@ function onPrimary() {
               <div class="pv-qty-row">
                 <span class="text-body">數量</span>
                 <div class="pv-stepper">
-                  <button type="button" class="pv-step-btn" :disabled="qty <= 1" @click="decrease">
+                  <button
+                    type="button"
+                    class="pv-step-btn"
+                    aria-label="減少數量"
+                    :disabled="qty <= 1"
+                    @click="decrease"
+                  >
                     <Icon icon="ph:minus-light" width="20" height="20" />
                   </button>
                   <span class="pv-step-val fw-bold">{{ qty }}</span>
-                  <button type="button" class="pv-step-btn pv-step-plus" @click="increase">
+                  <button
+                    type="button"
+                    class="pv-step-btn pv-step-plus"
+                    aria-label="增加數量"
+                    :disabled="qty >= maxQty"
+                    @click="increase"
+                  >
                     <Icon icon="ph:plus-light" width="20" height="20" />
                   </button>
                 </div>
@@ -136,16 +176,19 @@ function onPrimary() {
         <!-- summary + primary action -->
         <div class="pv-action-row">
           <div class="pv-summary">
-            <div class="caption-1 text-body text-truncate">{{ product?.name }}</div>
+            <div class="text-body text-truncate">{{ product?.name }}</div>
             <div class="pv-summary-price text-warning fw-bold">
-              <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
-              <span>{{ priceText }}</span>
+              <PointsAmount v-if="!isMoney" :value="product?.price ?? 0" tone="cost" />
+              <span v-else>{{ priceText }}</span>
+            </div>
+            <div v-if="!isMoney" class="caption-1 mt-1 text-body-tertiary">
+              目前擁有 {{ points.balance }} 捷運點
             </div>
           </div>
           <button
             type="button"
-            class="btn btn-primary fw-bold w-100"
-            :disabled="!product"
+            class="btn btn-primary fw-bold w-100 flex-shrink-1"
+            :disabled="!product || insufficientPoints"
             @click="onPrimary"
           >
             {{ sheetOpen ? actionLabel : '選擇數量' }}
@@ -161,21 +204,8 @@ function onPrimary() {
   width: 100%;
 }
 
-/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
-.one-col {
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .one-col {
-    max-width: 630px;
-    margin-inline: auto;
-  }
-}
-
-/* product image — full-bleed on phone */
-.pv-image-card {
-  background: var(--bs-secondary-bg);
-}
+/* product image — full-bleed on phone; background is bound inline to the
+   image-derived gradient (see productImg/useCardColors in <script setup>) */
 .pv-image {
   width: 100%;
   height: 262px;
@@ -189,11 +219,11 @@ function onPrimary() {
 .pv-merchant {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: .5rem;
 }
 .pv-merchant-logo {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--bs-secondary-bg);
   color: var(--bs-secondary-color);
@@ -273,7 +303,7 @@ function onPrimary() {
 .pv-usage-tile {
   flex: 1;
   border: 1px solid var(--bs-border-color);
-  border-radius: 12px;
+  border-radius: var(--bs-border-radius-lg);
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -293,8 +323,8 @@ function onPrimary() {
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 12px;
-  align-items: center;
-  padding: 12px 16px;
+  align-items: end;
+  padding: 16px;
 }
 .pv-summary {
   min-width: 0;
@@ -331,14 +361,13 @@ function onPrimary() {
   opacity: 0;
 }
 
-/* tablet / iPad — image in a dark gradient card (.one-col caps the width) */
+/* tablet / iPad — image in an image-color gradient card (.container-form caps the width) */
 @media (min-width: 768px) {
   .pv-image-wrap {
     padding: 24px 16px 0;
   }
   .pv-image-card {
-    background: linear-gradient(180deg, #1d1b1b 0%, #4b4544 100%);
-    border-radius: 4px;
+    border-radius: var(--bs-border-radius-sm);
     box-shadow: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
     padding: 24px;
     display: flex;
@@ -348,7 +377,7 @@ function onPrimary() {
     width: 310px;
     height: auto;
     aspect-ratio: 320 / 215;
-    border-radius: 4px;
+    border-radius: var(--bs-border-radius-sm);
   }
   .pv-info {
     text-align: center;

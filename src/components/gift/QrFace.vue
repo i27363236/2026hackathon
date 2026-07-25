@@ -3,8 +3,8 @@
 // Big white QR area + a coupon stub and title/expiry below.
 // Shares the image-derived lighter gradient background with ProductFace.
 import { computed, toRef } from 'vue'
-import { useCardColors } from '../../utils/imageColor.js'
-import qrCodeImg from '../../img/qr-code-example.png'
+import { useCardColors } from '@/utils/imageColor.js'
+import qrCodeImg from '@/img/qr-code-example.png'
 
 const props = defineProps({
   name: { type: String, default: '' },
@@ -75,7 +75,7 @@ const expiryDate = computed(() => {
 .thumb {
   width: 73px;
   aspect-ratio: 109 / 73;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
 }
 .dot {
   width: 4px;
@@ -86,7 +86,7 @@ const expiryDate = computed(() => {
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 0.45px;
-  color: white;
+  color: var(--bs-white);
 }
 .qr-expiry {
   font-size: 14px;

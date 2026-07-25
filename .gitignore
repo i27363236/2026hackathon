@@ -23,6 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Route-check screenshots (scripts/check.mjs)
+/screenshots/
+
 # Playwright
 /test-results/
 /playwright-report/

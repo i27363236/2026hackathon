@@ -63,7 +63,8 @@ $focus-ring-color: #0079A940;
 $focus-ring-blur: 0px;
 $Songshan: #018659FF;
 $button-max-width: 272px;
-$tablet-container: 720px;
+$tablet-container: 720px;  // 內容頁最大寬 → .container-content
+$container-form: 630px;    // 表單/結帳頁窄欄 → .container-form
 
 $box-shadow-sm: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
 $box-shadow:    0 3px 12px 2px rgba(0, 0, 0, 0.07);
@@ -85,9 +86,27 @@ $px-phone:          16px;
 $px-tablet-tools:   10px;
 $px-tablet-content: 24px;
 
+$enable-negative-margins: true;
+
+// Cream surface behind product thumbnails (cards, checkout thumbs).
+$cream: #F2EDE7;
+
 :root {
   --px-phone:           #{$px-phone};
   --px-tablet-content:  #{$px-tablet-content};
+  --tablet-container:   #{$tablet-container};
+  --container-form:     #{$container-form};
   --overlay:            #{$overlay};
   --component-hover-bg: #{$component-hover-bg};
+
+  // Component tokens — scoped SFC styles can't see SCSS variables, so anything a
+  // component needs is emitted here as a CSS custom property.
+  --surface-cream:        #{$cream};
+  --tile-gradient-blue:   linear-gradient(to top, #{$blue-700}, #{$blue-600});
+  --tile-gradient-green:  linear-gradient(to top, #{$green-700}, #{$green-600});
+  --tile-gradient-gray:   linear-gradient(to bottom, var(--gray-100), var(--gray-300));
+  // Gift note-card sky gradient — close to but intentionally not $blue-100.
+  --gift-note-gradient:   linear-gradient(160deg, #cdeefe 0%, #e7f7ff 100%);
+  --badge-size-bg:        #ffd60a;
+  --badge-size-color:     #3a2e00;
 }

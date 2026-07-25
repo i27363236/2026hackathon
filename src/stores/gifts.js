@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import { getProductById } from '../data/catalog.js'
+import { getProductById } from '@/data/catalog.js'
 
 const STORAGE_KEY = 'metro:gifts'
 const DEFAULT_VALID_DAYS = 60
@@ -22,9 +22,12 @@ function createGift(product) {
     id: 'gift-' + Date.now(),
     productId: product?.id ?? '',
     name: product?.name ?? '',
+    merchant: product?.merchant ?? '',
     price: product?.price ?? 0,
     img: product?.img ?? '',
     purchaseType: product?.purchaseType ?? 'points',
+    // 效期天數隨商品而異(catalog.js 的 validDays),購買時才換算成 expiredDate。
+    validDays: product?.validDays ?? DEFAULT_VALID_DAYS,
     qty: 1,
     isGift: true,
     purchaseDate: '',
@@ -36,7 +39,9 @@ function createGift(product) {
     bgColor: '',
     recipient: '',
     sentAt: '',
-    status: 'draft',
+    status: 'draft', // 'draft' | 'purchased' | 'sent' | 'redeemed'
+    redeemedAt: '',
+    reminderEnabled: false,
   }
 }
 
@@ -83,9 +88,8 @@ export const useGiftsStore = defineStore('gifts', () => {
     if (!draftGift.value) return
     const now = new Date()
     draftGift.value.purchaseDate = now.toISOString()
-    draftGift.value.expiredDate = new Date(
-      now.getTime() + DEFAULT_VALID_DAYS * 86400000,
-    ).toISOString()
+    const days = draftGift.value.validDays || DEFAULT_VALID_DAYS
+    draftGift.value.expiredDate = new Date(now.getTime() + days * 86400000).toISOString()
     draftGift.value.status = 'purchased'
   }
 
@@ -108,6 +112,20 @@ export const useGiftsStore = defineStore('gifts', () => {
 
   function getGiftById(id) {
     return gifts.value.find((g) => g.id === id)
+  }
+
+  // 收禮端:兌換後不可再操作(sent → redeemed,蓋時戳)。
+  function redeemGift(id) {
+    const g = getGiftById(id)
+    if (!g || g.status !== 'sent') return
+    g.status = 'redeemed'
+    g.redeemedAt = new Date().toISOString()
+  }
+
+  // 收禮端:到期提醒開關(回應「LINE 提醒被淹沒、禮物過期退回」痛點)。
+  function toggleReminder(id) {
+    const g = getGiftById(id)
+    if (g) g.reminderEnabled = !g.reminderEnabled
   }
 
   watch(
@@ -137,5 +155,7 @@ export const useGiftsStore = defineStore('gifts', () => {
     attachCardImage,
     sendGift,
     getGiftById,
+    redeemGift,
+    toggleReminder,
   }
 })

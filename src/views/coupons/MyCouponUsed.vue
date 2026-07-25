@@ -18,7 +18,7 @@ const goBackToCoupons = () => router.back()
 </script>
 
 <template>
-  <div class="my-coupon-used min-vh-100 d-flex flex-column bg-white">
+  <div class="my-coupon-used d-flex flex-column bg-white">
     <!-- Header -->
     <header class="p-3 d-flex align-items-center">
       <button class="btn btn-link text-dark p-0" @click="goBackToCoupons">
@@ -76,6 +76,7 @@ const goBackToCoupons = () => router.back()
 
 <style lang="scss" scoped>
 .my-coupon-used {
+  min-height: 100dvh;
   .success-visual {
     .check-container {
       z-index: 1;
@@ -94,8 +95,8 @@ const goBackToCoupons = () => router.back()
   }
 
   .details-card {
-    background-color: #fafafa;
-    border-color: rgba(0,0,0,0.05) !important;
+    background-color: var(--bs-light);
+    border-color: rgba(0,0,0,0.05);
   }
 
   .smaller {

@@ -89,5 +89,14 @@ $cyan-950: #000F10FF;
   --gray-400: #{$gray-400};
   --gray-500: #{$gray-500};
   --gray-600: #{$gray-600};
-  --gray-700: #{$gray-700}; 
+  --gray-700: #{$gray-700};
+
+  // iOS 27 "Liquid Glass" toolbar surface — shared by ToolbarButton + toolbar title pill.
+  // The border ring + soft drop shadow keep the pill legible on both dark and light backgrounds.
+  --toolbar-glass-fill: rgba(255, 255, 255, 0.72);
+  --toolbar-glass-blur: blur(12px);
+  --toolbar-glass-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 8px 15px rgba(0, 0, 0, 0.06),
+    inset 0 40px 30px -40px rgba(230, 230, 230, 0.9);
 }

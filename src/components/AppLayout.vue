@@ -14,7 +14,7 @@ const sidebarOpen = ref(true)
 </script>
 
 <template>
-  <div class="app-shell vh-100 d-flex overflow-hidden bg-body-secondary">
+  <div class="app-shell d-flex overflow-hidden bg-body">
     <AppSidebar
       v-if="meta.showSidebar"
       :open="sidebarOpen"
@@ -29,13 +29,23 @@ const sidebarOpen = ref(true)
         :hero="!!meta.heroTop"
         @back="router.back()"
       >
-        <template v-if="meta.showHomeActions" #actions>
-          <ToolbarButton :size="44" icon="ph:scan-light" aria-label="掃描" />
-          <ToolbarButton :size="44" icon="ph:qr-code-light" aria-label="QR碼" />
+        <template v-if="meta.showHomeActions || meta.showCouponActions || meta.showEventActions" #actions>
+          <template v-if="meta.showHomeActions">
+            <ToolbarButton icon="ph:scan-light" aria-label="掃描" />
+            <ToolbarButton icon="ph:qr-code-light" aria-label="QR碼" />
+          </template>
+          <template v-else-if="meta.showCouponActions">
+            <ToolbarButton icon="ph:map-trifold-light" aria-label="地圖" />
+            <ToolbarButton icon="ph:magnifying-glass-light" aria-label="搜尋" />
+          </template>
+          <template v-else-if="meta.showEventActions">
+            <ToolbarButton icon="ph:map-trifold-light" aria-label="地圖" />
+          </template>
         </template>
       </TopToolbar>
 
-      <main class="flex-grow-1 overflow-auto" style="min-height: 0" :style="meta.heroTop ? {} : { paddingTop: '40px' }">
+      <!-- TopToolbar 疊在內容上方,除首頁(沉浸式輪播)外都要讓開工具列高度 -->
+      <main class="flex-grow-1 overflow-auto" :class="{ 'has-toolbar': !meta.heroTop }" style="min-height: 0">
         <RouterView />
       </main>
 
@@ -52,6 +62,11 @@ const sidebarOpen = ref(true)
 <style scoped>
 .app-shell {
   height: 100dvh;
+}
+
+/* 讓內容從工具列下方開始(--toolbar-h 定義於 _style-overrides.scss) */
+.has-toolbar {
+  padding-top: var(--toolbar-h);
 }
 
 .pill-enter-active,

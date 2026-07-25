@@ -1,135 +1,145 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { Icon } from '@iconify/vue'
+import ContentCard from '@/components/cards/ContentCard.vue'
+import { getCoupons } from '@/data/coupons.js'
 
-const categories = ['全部', '美食', '購物', '生活', '交通']
-const activeCategory = ref('全部')
+const coupons = getCoupons()
 
-const coupons = ref([
-  { id: 1, category: '美食', store: '路易莎咖啡', title: '50元現金折價券', points: 500, image: 'https://placehold.co/400x400?text=Louisa', tag: '熱門' },
-  { id: 2, category: '美食', store: '全家便利商店', title: '中杯美式咖啡', points: 350, image: 'https://placehold.co/400x400?text=FamilyMart', tag: '限量' },
-  { id: 3, category: '交通', store: '台北捷運', title: '24小時旅遊票', points: 1500, image: 'https://placehold.co/400x400?text=Metro', tag: '推薦' },
-  { id: 4, category: '生活', store: '屈臣氏', title: '滿500現折100', points: 800, image: 'https://placehold.co/400x400?text=Watsons', tag: null },
-  { id: 5, category: '購物', store: '誠品書店', title: '圖書商品9折券', points: 200, image: 'https://placehold.co/400x400?text=Eslite', tag: null },
-  { id: 6, category: '美食', store: 'Mister Donut', title: '甜甜圈買一送一', points: 300, image: 'https://placehold.co/400x400?text=MisterDonut', tag: null },
-])
+const categoryItems = [
+  { icon: 'ph:ticket-light',            label: '折價券' },
+  { icon: 'ph:hamburger-light',         label: '速食券' },
+  { icon: 'ph:coffee-light',            label: '咖啡券' },
+  { icon: 'ph:palette-light',           label: '活動券' },
+  { icon: 'ph:shopping-cart-light',     label: '購物券' },
+  { icon: 'ph:suitcase-rolling-light',  label: '旅遊券' },
+]
 
-const filteredCoupons = computed(() => {
-  if (activeCategory.value === '全部') return coupons.value
-  return coupons.value.filter(c => c.category === activeCategory.value)
-})
+const sections = [
+  { id: 'fast-food', label: '速食券' },
+  { id: 'discount',  label: '折價券' },
+  { id: 'travel',    label: '旅遊券' },
+]
 </script>
 
 <template>
-  <div>
-  <!-- Banner carousel — replace carousel-item content with <img> when assets are ready -->
-  <div id="couponBannerCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="3000">
-    <div class="carousel-inner">
-      <div v-for="i in 3" :key="i" class="carousel-item" :class="{ active: i === 1 }" />
-    </div>
-    <div class="carousel-indicators">
-      <button
-        v-for="i in 3"
-        :key="i"
-        type="button"
-        data-bs-target="#couponBannerCarousel"
-        :data-bs-slide-to="i - 1"
-        :class="{ active: i === 1 }"
-      />
-    </div>
-  </div>
+  <div class="coupon-trade-center">
 
-  <section class="coupon-trade-center py-6">
-    <div class="d-flex justify-content-between align-items-center mb-5 px-2">
-      <h2 class="h5 fw-bold mb-0">優惠券媒合中心</h2>
-      <button class="btn btn-link text-primary p-0 text-decoration-none small fw-bold">
-        我的兌換
-      </button>
-    </div>
-
-    <!-- Category Filter -->
-    <div class="category-scroll d-flex gap-2 overflow-auto pb-4 mb-4">
-      <button 
-        v-for="cat in categories" 
-        :key="cat"
-        class="btn rounded-pill px-4 py-1 text-nowrap transition-all"
-        :class="activeCategory === cat ? 'btn-primary shadow-sm' : 'btn-light text-secondary border'"
-        @click="activeCategory = cat"
-      >
-        {{ cat }}
-      </button>
-    </div>
-
-    <!-- Coupon Grid -->
-    <div class="row g-4">
-      <div v-for="coupon in filteredCoupons" :key="coupon.id" class="col-6">
-        <div class="card h-100 border-0 shadow-sm rounded-5 overflow-hidden coupon-card">
-          <div class="position-relative">
-            <img :src="coupon.image" class="card-img-top aspect-ratio-1-1 object-fit-cover" :alt="coupon.title">
-            <span v-if="coupon.tag" class="position-absolute top-0 start-0 m-3 badge rounded-pill bg-danger shadow-sm">
-              {{ coupon.tag }}
-            </span>
-          </div>
-          <div class="card-body p-4">
-            <div class="text-muted smaller mb-1">{{ coupon.store }}</div>
-            <h3 class="h6 fw-bold text-dark mb-3 text-truncate-2">{{ coupon.title }}</h3>
-            <div class="d-flex align-items-center justify-content-between mt-auto">
-              <div class="d-flex align-items-baseline">
-                <span class="h6 fw-bold text-primary mb-0">{{ coupon.points }}</span>
-                <span class="smaller text-secondary ms-1">P</span>
-              </div>
-              <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                兌換
-              </button>
-            </div>
+    <!-- Banner carousel -->
+    <div
+      id="couponBannerCarousel"
+      class="carousel slide mx-default mt-3 mb-2 rounded-4 overflow-hidden"
+      data-bs-ride="carousel"
+      data-bs-interval="3000"
+    >
+      <div class="carousel-inner">
+        <div v-for="i in 3" :key="i" class="carousel-item" :class="{ active: i === 1 }">
+          <div class="banner-frame">
+            <img src="https://placehold.co/390x133?text=Banner" class="banner-main d-block w-100" alt="">
           </div>
         </div>
       </div>
+      <div class="carousel-indicators">
+        <button
+          v-for="i in 3"
+          :key="i"
+          type="button"
+          data-bs-target="#couponBannerCarousel"
+          :data-bs-slide-to="i - 1"
+          :class="{ active: i === 1 }"
+        />
+      </div>
     </div>
-  </section>
+
+    <!-- Category icon grid -->
+    <div class="py-4">
+      <div class="d-flex justify-content-center">
+        <div v-for="item in categoryItems.slice(0, 3)" :key="item.label" class="cat-item">
+          <Icon :icon="item.icon" width="32" height="32" />
+          <span class="cat-label">{{ item.label }}</span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div v-for="item in categoryItems.slice(3)" :key="item.label" class="cat-item">
+          <Icon :icon="item.icon" width="32" height="32" />
+          <span class="cat-label">{{ item.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category sections -->
+    <section v-for="section in sections" :key="section.id" class="mb-2">
+      <div class="d-flex align-items-center justify-content-between px-default mb-3">
+        <h2 class="section-heading mb-0">{{ section.label }}</h2>
+        <button class="btn icon-circle-btn">
+          <Icon icon="ph:arrow-right-light" width="24" height="24" />
+        </button>
+      </div>
+      <div class="card-row d-flex gap-4 px-default pb-2">
+        <ContentCard
+          v-for="c in coupons"
+          :key="c.id"
+          :subtitle="c.point + ' 捷運點'"
+          :title="c.title"
+          :detail="c.sub"
+          :img="c.img"
+          :color-key="c.colorKey"
+        />
+      </div>
+    </section>
+
   </div>
 </template>
 
 <style lang="scss" scoped>
 .coupon-trade-center {
-  .category-scroll {
+  .mx-default { margin-inline: var(--px-phone); }
+
+  .icon-circle-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: rgba(249, 247, 243, 0.8);
+    border: none;
+    border-radius: var(--bs-border-radius-pill);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: inherit;
+  }
+
+  .cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 20px;
+    color: var(--bs-secondary-color);
+  }
+  .cat-label { font-size: 1.0625rem; line-height: 22px; }
+
+  .section-heading {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    line-height: 28px;
+  }
+
+  .card-row {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline-start: var(--px-phone);
+    -ms-overflow-style: none;
     scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
+    margin-inline-end: calc(-1 * var(--px-phone));
+    padding-inline-end: var(--px-phone);
+    @media (min-width: 48rem) {
+      scroll-padding-inline-start: var(--px-tablet-content);
+      margin-inline-end: calc(-1 * var(--px-tablet-content));
+      padding-inline-end: var(--px-tablet-content);
     }
-  }
-
-  .rounded-5 { border-radius: 16px !important; }
-
-  .coupon-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-
-  .aspect-ratio-1-1 {
-    aspect-ratio: 1 / 1;
-  }
-
-  .text-truncate-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.5em;
-  }
-
-  .smaller {
-    font-size: 0.75rem;
-  }
-
-  .transition-all {
-    transition: all 0.2s ease;
-  }
-
-  .badge {
-    font-size: 0.7rem;
-    padding: 0.4em 0.8em;
+    &::-webkit-scrollbar { display: none; }
+    > * { scroll-snap-align: start; }
   }
 }
 </style>

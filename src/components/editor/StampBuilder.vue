@@ -7,7 +7,7 @@
 import { ref, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { STAMP_SHAPES } from './stampShapes.js'
-import { stampIcons } from '../../data/stampIcons.js'
+import { stampIcons } from '@/data/stampIcons.js'
 
 const emit = defineEmits(['add'])
 
@@ -108,7 +108,7 @@ function add() {
         :key="w.key"
         type="button"
         class="btn btn-sm flex-fill px-1"
-        :class="weight === w.key ? 'btn-primary' : 'btn-outline-secondary'"
+        :class="weight === w.key ? 'btn-primary' : 'btn-outline-dark'"
         @click="weight = w.key"
       >
         {{ w.label }}
@@ -117,7 +117,7 @@ function add() {
 
     <!-- icon grid -->
     <div class="small fw-bold mb-1">圖示</div>
-    <div class="d-flex gap-2 flex-wrap mb-3">
+    <div class="icon-grid mb-3">
       <button
         v-for="ic in stampIcons"
         :key="ic.id"
@@ -175,7 +175,7 @@ function add() {
   height: 36px;
   padding: 2px;
   border: 1px solid var(--bs-border-color);
-  border-radius: 10px;
+  border-radius: var(--bs-border-radius);
   background: none;
   cursor: pointer;
 }
@@ -185,13 +185,24 @@ function add() {
 .shape-row::-webkit-scrollbar {
   display: none;
 }
+/* 圖示格撐滿面板寬度,不再是固定 40px 的零散排列 */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.icon-grid .icon-btn {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
 .shape-btn,
 .icon-btn {
   width: 40px;
   height: 36px;
   padding: 0;
   border: 1px solid var(--bs-border-color);
-  border-radius: 10px;
+  border-radius: var(--bs-border-radius);
   background: var(--bs-body-bg);
   color: var(--bs-body-color);
   cursor: pointer;

@@ -1,29 +1,26 @@
 <script setup>
-// Gift card editor — a Konva canvas (via vue-konva) for the personalized card "note" side.
-// Features: handwrite (pen), stickers, MRT station photos, custom stamps, background select.
+// Gift card editor — orchestrates the Konva canvas (GiftCanvas) and its options panel
+// (EditorOptionsPanel), owning tool/panel state, item creation and undo history.
 // On finish, the canvas is flattened to a PNG dataURL and stored on the draft gift.
+// Konva lives inside GiftCanvas so it stays in this lazy chunk (not the Home bundle).
 import { ref, computed, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon, loadIcon } from '@iconify/vue'
-// Local vue-konva imports keep Konva in this lazy chunk (not the Home bundle).
-import { Stage, Layer, Rect, Line, Text, Image, Group, Path, Transformer } from 'vue-konva'
-import StampBuilder from '../../components/editor/StampBuilder.vue'
-import EditToolbar from '../../components/editor/EditToolbar.vue'
-import ToolbarButton from '../../components/ToolbarButton.vue'
-import { SHAPE_BY_KEY } from '../../components/editor/stampShapes.js'
-import { useGiftsStore } from '../../stores/gifts.js'
-import { stationPhotos } from '../../data/stationPhotos.js'
-import { giftBackgrounds } from '../../data/giftBackgrounds.js'
+import EditToolbar from '@/components/editor/EditToolbar.vue'
+import GiftCanvas from '@/components/editor/GiftCanvas.vue'
+import EditorOptionsPanel from '@/components/editor/EditorOptionsPanel.vue'
+import ToolbarButton from '@/components/ToolbarButton.vue'
+import { TOOLS } from '@/data/giftEditorPresets.js'
+import { useUndoHistory } from '@/composables/useUndoHistory.js'
+import { useGiftsStore } from '@/stores/gifts.js'
+
+const STAGE_W = 300
+const STAGE_H = 450
 
 const router = useRouter()
 const gifts = useGiftsStore()
 
-const STAGE_W = 300
-const STAGE_H = 450 // 2:3, matching the Figma postcard (316×474) and the bg assets
-const STAMP_COLOR = '#0079a9'
-
-const stageRef = ref(null)
-const transformerRef = ref(null)
+const canvasRef = ref(null)
 
 // Gate the Teleport until the shell's TopToolbar (#top-toolbar-actions) is in
 // the document — on first load it isn't committed yet when this view mounts.
@@ -37,47 +34,44 @@ const tool = ref('select') // 'select' | 'pen'
 const panel = ref('') // '' | 'sticker' | 'photo' | 'stamp' | 'bg'
 const penColor = ref('#e3002c')
 const penWidth = ref(4)
+const penStyle = ref('pen') // 'pen' | 'highlighter'
+
+// 上傳照片是工具列的獨立功能(不開面板)— 直接叫出裝置的檔案選擇器。
+const fileInput = ref(null)
+function onPhotoUpload(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => addPhoto(reader.result)
+  reader.readAsDataURL(file)
+  e.target.value = '' // 讓同一張照片可以再選一次
+}
 
 const bg = ref({ type: 'color', value: '#ffffff' })
 const bgImage = ref(null) // loaded HTMLImageElement when bg.type === 'image'
 const lines = ref([]) // { id, points, stroke, strokeWidth }
 const items = ref([]) // { id, type, ... }
 const selectedId = ref('')
-// Undo/redo: each entry is { op: 'add' | 'del', kind: 'line' | 'item', data } holding the
-// full object so a redo can restore it. A new action clears the redo stack.
-const undoStack = ref([])
-const redoStack = ref([])
-function pushUndo(entry) {
-  undoStack.value.push(entry)
-  redoStack.value = []
-}
 
-let drawing = false
 let uid = 0
 const nextId = (p) => `${p}-${uid++}`
 
-const STICKERS = ['🎁', '🎀', '⭐', '❤️', '🌸', '☕', '🍰', '✨', '🎉', '🥐']
-const BG_PRESETS = [
-  { type: 'color', value: '#ffffff' },
-  { type: 'color', value: '#ffe9ec' },
-  { type: 'color', value: '#e7f7ff' },
-  { type: 'color', value: '#eafbe7' },
-  { type: 'gradient', value: ['#cdeefe', '#e7f7ff'] },
-  { type: 'gradient', value: ['#ffd9e8', '#fff0d9'] },
-  // real background assets get merged in once data/giftBackgrounds.js is populated
-  ...giftBackgrounds.map((b) => ({ type: 'image', value: b.src, name: b.name })),
-]
+// ---- undo/redo ----
+// removeData undoes an add / redoes a delete; addData undoes a delete / redoes an add.
+function removeData(entry) {
+  if (entry.kind === 'line') lines.value = lines.value.filter((l) => l.id !== entry.data.id)
+  else items.value = items.value.filter((i) => i.id !== entry.data.id)
+  if (selectedId.value === entry.data.id) select('')
+}
+function addData(entry) {
+  if (entry.kind === 'line') lines.value.push(entry.data)
+  else items.value.push(entry.data)
+}
+const { undoStack, redoStack, pushUndo, undo, redo } = useUndoHistory({ add: addData, remove: removeData })
 
-// Toolbar config consumed by EditToolbar. 'select'/'pen' switch the drawing
-// tool; the rest toggle a contextual options panel.
-const TOOLS = [
-  { key: 'select', icon: 'ph:cursor-light', label: '選取' },
-  { key: 'pen', icon: 'ph:pencil-simple-light', label: '塗鴉' },
-  { key: 'photo', icon: 'ph:subway-light', label: '捷運回憶' },
-  { key: 'sticker', icon: 'ph:sticker-light', label: '貼紙' },
-  { key: 'stamp', icon: 'ph:seal-light', label: '印章' },
-  { key: 'bg', icon: 'ph:paint-bucket-light', label: '背景' },
-]
+function onLineCommitted(line) {
+  pushUndo({ op: 'add', kind: 'line', data: line })
+}
 
 // Which toolbar key reads as active: an open panel wins, otherwise the tool.
 const activeTool = computed(() => panel.value || tool.value)
@@ -91,9 +85,10 @@ function setTool(t) {
 function togglePanel(p) {
   panel.value = panel.value === p ? '' : p
 }
-
 function onToolSelect(key) {
-  if (key === 'select' || key === 'pen') {
+  if (key === 'upload') {
+    fileInput.value?.click()
+  } else if (key === 'select' || key === 'pen') {
     panel.value = ''
     setTool(key)
   } else {
@@ -101,23 +96,7 @@ function onToolSelect(key) {
     togglePanel(key)
   }
 }
-// ---- background config ----
-function bgConfig() {
-  const base = { x: 0, y: 0, width: STAGE_W, height: STAGE_H, name: 'bg' }
-  if (bg.value.type === 'gradient') {
-    return {
-      ...base,
-      fillLinearGradientStartPoint: { x: 0, y: 0 },
-      fillLinearGradientEndPoint: { x: STAGE_W, y: STAGE_H },
-      fillLinearGradientColorStops: [0, bg.value.value[0], 1, bg.value.value[1]],
-    }
-  }
-  return { ...base, fill: bg.value.type === 'color' ? bg.value.value : '#ffffff' }
-}
-// Image backgrounds are drawn as a full-stage Konva Image (so they export with the card).
-function bgImageConfig() {
-  return { x: 0, y: 0, width: STAGE_W, height: STAGE_H, image: bgImage.value, name: 'bg' }
-}
+
 function setBg(preset) {
   bg.value = preset
   if (preset.type === 'image') {
@@ -237,114 +216,10 @@ function addPhoto(src) {
   img.src = src
 }
 
-// User uploads their own photo from the device (捷運回憶 panel).
-function onPhotoUpload(e) {
-  const file = e.target.files?.[0]
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = () => addPhoto(reader.result)
-  reader.readAsDataURL(file)
-  e.target.value = '' // allow re-selecting the same file
-}
-
-// ---- node configs ----
-const draggable = () => tool.value === 'select'
-
-function stickerConfig(it) {
-  return {
-    name: it.id,
-    text: it.text,
-    x: it.x,
-    y: it.y,
-    fontSize: it.fontSize,
-    rotation: it.rotation,
-    scaleX: it.scaleX,
-    scaleY: it.scaleY,
-    offsetX: it.fontSize / 2,
-    offsetY: it.fontSize / 2,
-    draggable: draggable(),
-  }
-}
-function photoConfig(it) {
-  return {
-    name: it.id,
-    image: it.image,
-    x: it.x,
-    y: it.y,
-    width: it.width,
-    height: it.height,
-    offsetX: it.width / 2,
-    offsetY: it.height / 2,
-    rotation: it.rotation,
-    scaleX: it.scaleX,
-    scaleY: it.scaleY,
-    cornerRadius: 8,
-    draggable: draggable(),
-  }
-}
-// Stamp geometry is authored in a 100×100 box (see stampShapes.js); the group is
-// offset by 50 so it rotates/scales around its centre.
-function stampGroupConfig(it) {
-  return {
-    name: it.id,
-    x: it.x,
-    y: it.y,
-    offsetX: 50,
-    offsetY: 50,
-    rotation: it.rotation,
-    scaleX: it.scaleX,
-    scaleY: it.scaleY,
-    draggable: draggable(),
-  }
-}
-// Invisible hit area so the transparent interior is still clickable/draggable.
-const stampHitConfig = () => ({ x: 0, y: 0, width: 100, height: 100, fill: '#000', opacity: 0 })
-// Outlined frame: stamp colour on the stroke, transparent fill.
-const stampFrameConfig = (it) => ({
-  data: (SHAPE_BY_KEY[it.shape] || SHAPE_BY_KEY.circle).d,
-  stroke: it.color,
-  strokeWidth: 2,
-  lineJoin: 'round',
-})
-const stampIconConfig = (it) => ({
-  image: it.iconImage,
-  x: 34,
-  y: 26,
-  width: 32,
-  height: 32,
-})
-const stampLabelConfig = (it) => ({
-  text: it.label,
-  x: 0,
-  y: 62,
-  width: 100,
-  align: 'center',
-  fontSize: 13,
-  fontStyle: 'bold',
-  fill: it.color,
-})
-
-// ---- selection / transformer ----
+// ---- selection ----
 function select(id) {
   if (tool.value !== 'select') return
   selectedId.value = id
-  nextTick(() => {
-    const stage = stageRef.value?.getStage()
-    const tr = transformerRef.value?.getNode()
-    if (!stage || !tr) return
-    const node = id ? stage.findOne('.' + id) : null
-    tr.nodes(node ? [node] : [])
-    tr.getLayer()?.batchDraw()
-  })
-}
-
-function persistTransform(it, e) {
-  const n = e.target
-  it.x = n.x()
-  it.y = n.y()
-  it.rotation = n.rotation()
-  it.scaleX = n.scaleX()
-  it.scaleY = n.scaleY()
 }
 
 function removeSelected() {
@@ -362,69 +237,13 @@ function removeSelected() {
   select('')
 }
 
-// undo/redo share the same two primitives: removeData undoes an add / redoes a delete;
-// addData undoes a delete / redoes an add.
-function removeData(entry) {
-  if (entry.kind === 'line') lines.value = lines.value.filter((l) => l.id !== entry.data.id)
-  else items.value = items.value.filter((i) => i.id !== entry.data.id)
-  if (selectedId.value === entry.data.id) select('')
-}
-function addData(entry) {
-  if (entry.kind === 'line') lines.value.push(entry.data)
-  else items.value.push(entry.data)
-}
-function undo() {
-  const entry = undoStack.value.pop()
-  if (!entry) return
-  if (entry.op === 'add') removeData(entry)
-  else addData(entry)
-  redoStack.value.push(entry)
-}
-function redo() {
-  const entry = redoStack.value.pop()
-  if (!entry) return
-  if (entry.op === 'add') addData(entry)
-  else removeData(entry)
-  undoStack.value.push(entry)
-}
-
-// ---- stage pointer (drawing + deselect) ----
-function onStageDown(e) {
-  const stage = e.target.getStage()
-  if (tool.value === 'pen') {
-    drawing = true
-    const pos = stage.getPointerPosition()
-    const id = nextId('line')
-    lines.value.push({ id, points: [pos.x, pos.y], stroke: penColor.value, strokeWidth: penWidth.value })
-    redoStack.value = [] // a fresh stroke invalidates the redo stack
-    return
-  }
-  // select tool: clicking empty space deselects
-  if (e.target === stage || e.target.name() === 'bg') select('')
-}
-function onStageMove(e) {
-  if (!drawing) return
-  const pos = e.target.getStage().getPointerPosition()
-  const line = lines.value[lines.value.length - 1]
-  line.points = line.points.concat([pos.x, pos.y])
-}
-function onStageUp() {
-  if (drawing) {
-    // Record the completed stroke as one undoable unit.
-    const line = lines.value[lines.value.length - 1]
-    if (line) undoStack.value.push({ op: 'add', kind: 'line', data: line })
-  }
-  drawing = false
-}
-
 // ---- finish: flatten to PNG and continue ----
 async function done() {
   select('')
   await nextTick()
-  const stage = stageRef.value?.getStage()
-  if (stage) {
+  const dataUrl = canvasRef.value?.toDataURL({ pixelRatio: 2 })
+  if (dataUrl) {
     gifts.ensureDraft() // editor may be opened without a seeded draft (e.g. 送禮 nav)
-    const dataUrl = stage.toDataURL({ pixelRatio: 2 })
     gifts.attachCardImage(dataUrl)
     gifts.updateDraft({ background: JSON.stringify(bg.value) })
   }
@@ -434,6 +253,9 @@ async function done() {
 
 <template>
   <div class="gift-editor d-flex flex-column h-100 position-relative">
+    <!-- 工具列「上傳照片」用的隱藏檔案選擇器 -->
+    <input ref="fileInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload" />
+
     <!-- Top-toolbar actions injected into the app shell's TopToolbar: 復原 + 完成. -->
     <Teleport v-if="toolbarReady" to="#top-toolbar-actions">
       <ToolbarButton
@@ -474,136 +296,35 @@ async function done() {
         >
           <Icon icon="ph:trash-light" width="24" height="24" />
         </button>
-        <div class="stage-frame rounded-1 shadow-sm overflow-hidden">
-        <Stage
-          ref="stageRef"
-          :config="{ width: STAGE_W, height: STAGE_H }"
-          @mousedown="onStageDown"
-          @touchstart="onStageDown"
-          @mousemove="onStageMove"
-          @touchmove="onStageMove"
-          @mouseup="onStageUp"
-          @touchend="onStageUp"
-        >
-          <Layer>
-            <Image v-if="bg.type === 'image' && bgImage" :config="bgImageConfig()" />
-            <Rect v-else :config="bgConfig()" />
-
-            <Line
-              v-for="l in lines"
-              :key="l.id"
-              :config="{
-                points: l.points,
-                stroke: l.stroke,
-                strokeWidth: l.strokeWidth,
-                lineCap: 'round',
-                lineJoin: 'round',
-                tension: 0.4,
-              }"
-            />
-
-            <template v-for="it in items" :key="it.id">
-              <Text
-                v-if="it.type === 'sticker'"
-                :config="stickerConfig(it)"
-                @click="select(it.id)"
-                @tap="select(it.id)"
-                @dragend="persistTransform(it, $event)"
-                @transformend="persistTransform(it, $event)"
-              />
-              <Image
-                v-else-if="it.type === 'photo'"
-                :config="photoConfig(it)"
-                @click="select(it.id)"
-                @tap="select(it.id)"
-                @dragend="persistTransform(it, $event)"
-                @transformend="persistTransform(it, $event)"
-              />
-              <Group
-                v-else-if="it.type === 'stamp'"
-                :config="stampGroupConfig(it)"
-                @click="select(it.id)"
-                @tap="select(it.id)"
-                @dragend="persistTransform(it, $event)"
-                @transformend="persistTransform(it, $event)"
-              >
-                <Rect :config="stampHitConfig()" />
-                <Path :config="stampFrameConfig(it)" />
-                <Image v-if="it.iconImage" :config="stampIconConfig(it)" />
-                <Text :config="stampLabelConfig(it)" />
-              </Group>
-            </template>
-
-            <Transformer ref="transformerRef" :config="{ rotateEnabled: true, borderStroke: STAMP_COLOR }" />
-          </Layer>
-        </Stage>
-        </div>
+        <GiftCanvas
+          ref="canvasRef"
+          v-model:lines="lines"
+          :bg="bg"
+          :bg-image="bgImage"
+          :items="items"
+          :tool="tool"
+          :selected-id="selectedId"
+          :pen-color="penColor"
+          :pen-width="penWidth"
+          :pen-style="penStyle"
+          @select="select"
+          @line-committed="onLineCommitted"
+        />
       </div>
 
       <!-- detail menu: right column on tablet (full height), bottom strip on mobile -->
-      <div v-if="showOptions" class="detail-col flex-shrink-0">
-      <!-- pen options -->
-      <div v-if="tool === 'pen'" class="px-4 py-3 d-flex align-items-center gap-3">
-      <span class="small fw-bold">畫筆</span>
-      <input v-model="penColor" type="color" class="form-control form-control-color form-control-sm p-0 border-0" />
-      <input v-model.number="penWidth" type="range" min="2" max="14" class="form-range flex-grow-1" />
-    </div>
-
-    <!-- contextual panels -->
-    <div v-else class="panel p-4">
-      <div v-if="panel === 'sticker'" class="d-flex gap-2 flex-wrap">
-        <button
-          v-for="s in STICKERS"
-          :key="s"
-          type="button"
-          class="sticker-btn btn btn-outline-secondary btn-sm"
-          @click="addSticker(s)"
-        >
-          {{ s }}
-        </button>
-      </div>
-
-      <div v-else-if="panel === 'photo'">
-        <label class="btn btn-outline-primary btn-sm rounded-pill w-100 mb-2 d-inline-flex align-items-center justify-content-center gap-2">
-          <Icon icon="ph:upload-simple-light" width="20" height="20" />
-          上傳自己的照片
-          <input type="file" accept="image/*" class="d-none" @change="onPhotoUpload" />
-        </label>
-        <div v-if="stationPhotos.length" class="d-flex gap-2 flex-wrap">
-          <button
-            v-for="p in stationPhotos"
-            :key="p.id"
-            type="button"
-            class="btn btn-outline-secondary btn-sm p-1"
-            @click="addPhoto(p.src)"
-          >
-            <img :src="p.src" :alt="p.name" width="56" height="56" style="object-fit: cover" />
-          </button>
-        </div>
-        <p v-else class="text-body-secondary small mb-0">車站照片即將推出，敬請期待。</p>
-      </div>
-
-      <StampBuilder v-else-if="panel === 'stamp'" @add="addStamp" />
-
-      <div v-else-if="panel === 'bg'" class="d-flex gap-2 flex-wrap">
-        <button
-          v-for="(p, i) in BG_PRESETS"
-          :key="i"
-          type="button"
-          class="bg-swatch"
-          :style="{
-            background:
-              p.type === 'gradient'
-                ? `linear-gradient(160deg, ${p.value[0]}, ${p.value[1]})`
-                : p.type === 'image'
-                  ? `center/cover url(${p.value})`
-                  : p.value,
-          }"
-          @click="setBg(p)"
-        />
-      </div>
-      </div>
-      </div>
+      <EditorOptionsPanel
+        v-if="showOptions"
+        :tool="tool"
+        :panel="panel"
+        v-model:pen-color="penColor"
+        v-model:pen-width="penWidth"
+        v-model:pen-style="penStyle"
+        @add-sticker="addSticker"
+        @add-photo="addPhoto"
+        @add-stamp="addStamp"
+        @set-bg="setBg"
+      />
     </div>
 
     <!-- mobile toolbar (bottom) -->
@@ -619,23 +340,6 @@ async function done() {
 </template>
 
 <style scoped>
-.stage-frame {
-  width: 300px;
-  height: 450px;
-  background: #fff;
-}
-.sticker-btn {
-  font-size: 22px;
-  width: 44px;
-  line-height: 1;
-}
-.bg-swatch {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid var(--bs-gray-300);
-  padding: 0;
-}
 /* Floating delete button, pinned to the top of the canvas while selecting. */
 .delete-fab {
   position: absolute;
@@ -656,23 +360,9 @@ async function done() {
 .toolbar-col {
   background: var(--bs-secondary-bg);
 }
-/* Detail menu: a bottom strip on mobile (capped + scroll)… */
-.detail-col {
-  border-top: 1px solid var(--bs-border-color);
-  background: var(--bs-body-bg);
-  max-height: 45vh;
-  overflow-y: auto;
-}
 @media (min-width: 768px) {
   .editor-stage {
     flex-direction: row;
-  }
-  /* …a full-height right rail on tablet+. */
-  .detail-col {
-    width: 320px;
-    max-height: none;
-    border-top: 0;
-    border-left: 1px solid var(--bs-border-color);
   }
 }
 </style>

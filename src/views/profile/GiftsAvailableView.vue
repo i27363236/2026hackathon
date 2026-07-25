@@ -1,12 +1,18 @@
 <script setup>
+import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import PointsAmount from '@/components/points/PointsAmount.vue'
+
+const paymentMethod = ref('credit_card')
+const usePoints = ref(true)
+const invoiceType = ref('electronic')
 </script>
 
 <template>
-  <div class="checkout-page bg-light min-vh-100 d-flex flex-column pb-5">
+  <div class="checkout-page bg-light d-flex flex-column pb-5">
     <div class="bg-white border-bottom sticky-top py-3">
       <div
-        class="container max-width-container px-3 d-flex align-items-center position-relative"
+        class="container-content px-3 d-flex align-items-center position-relative"
       >
         <a href="#" class="position-absolute start-0 ps-3 text-dark">
           <Icon icon="ph:caret-left-light" width="24" height="24" />
@@ -15,7 +21,7 @@ import { Icon } from '@iconify/vue'
       </div>
     </div>
 
-    <div class="container max-width-container py-4 px-3 flex-grow-1">
+    <div class="container-content py-4 px-3 flex-grow-1">
       <div
         class="bg-white rounded-3 p-5 shadow-sm d-flex align-items-center gap-3 mb-3"
       >
@@ -124,13 +130,10 @@ import { Icon } from '@iconify/vue'
           </div>
         </div>
 
-        <div class="d-flex align-items-center gap-1 my-2">
-          <img src="../../img/coin.png" alt="">
-          <span class="text-dark small">您目前有 115 捷運點</span>
-        </div>
+        <p class="text-dark small my-2">您目前有 <PointsAmount :value="115" tone="inherit" size="caption" /></p>
 
         <div class="d-flex justify-content-between x-small text-dark pt-2">
-          <span>本次折抵 100 捷運點</span>
+          <span>本次折抵 <PointsAmount :value="100" tone="inherit" size="caption" :show-icon="false" /></span>
           <span class="text-success">-NT$ 100</span>
         </div>
       </div>
@@ -194,7 +197,7 @@ import { Icon } from '@iconify/vue'
 
       <div class="fixed-bottom bg-white border-top p-3 shadow-sm">
         <div
-          class="container max-width-container d-flex align-items-center justify-content-between gap-3"
+          class="container-content d-flex align-items-center justify-content-between gap-3"
         >
           <div class="price-summary">
             <div class="x-small text-dark fw-bold">應付金額</div>
@@ -202,8 +205,8 @@ import { Icon } from '@iconify/vue'
           </div>
 
           <button
-            class="btn btn-info text-white fw-bold py-2 px-4 btn-confirm"
-            style="background-color: #007bbd; border: none; min-width: 140px"
+            class="btn btn-primary fw-bold py-2 px-4"
+            style="min-width: 140px"
           >
             確認購買
           </button>
@@ -215,33 +218,14 @@ import { Icon } from '@iconify/vue'
 </template>
 
 <style scoped>
-/* 限制卡片區塊在大螢幕（如 iPad）上的寬度與設計稿比例同步 */
-.max-width-container {
-  max-width: 720px;
-}
-
 /* 額外輔助的小字體 */
 .x-small {
   font-size: 0.75rem;
 }
 
-/* 覆寫 Bootstrap 預設的藍色調以對齊設計稿的捷運藍/純黑風格 */
-.text-primary {
-  color: #007bbd !important;
-}
-
-/* 修正 Radio 勾選時的顏色 */
-.form-check-input:checked {
-  background-color: #007bbd;
-  border-color: #007bbd;
-}
-
 /* 確保底部的固定欄不會擋到最後的發票選單內容 */
 .checkout-page {
-  padding-bottom: 100px !important;
-}
-
-.btn-confirm:hover {
-  background-color: #00669e !important;
+  padding-bottom: 100px;
+  min-height: 100dvh;
 }
 </style>
