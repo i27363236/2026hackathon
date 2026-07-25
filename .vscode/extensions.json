@@ -1,3 +1,12 @@
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "syler.sass-indented",
+    "cipchk.cssrem",
+    "usernamehw.errorlens",
+    "github.vscode-pull-request-github",
+    "ms-ceintl.vscode-language-pack-zh-hant"
+  ]
 }
+
