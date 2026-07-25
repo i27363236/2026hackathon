@@ -5,6 +5,8 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served as a GitHub Pages project page at /mpoints-assemble/.
+  base: '/mpoints-assemble/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
