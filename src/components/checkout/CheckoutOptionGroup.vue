@@ -62,7 +62,7 @@ const model = defineModel({ type: String, required: true })
 }
 /* 清單最後一項不畫下框線 — 區塊本身已有間距,多一條線只會像斷掉的表格 */
 .co-list-item:last-child {
-  border-bottom: 0 !important;
+  border-bottom: 0;
 }
 .co-option-label {
   flex: 1;

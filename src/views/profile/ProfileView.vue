@@ -138,7 +138,7 @@ const settings = useSettingsStore()
 .section-title-bar h2 {
   font-size: 20px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   margin: 0;
 }
 
@@ -146,7 +146,7 @@ const settings = useSettingsStore()
 .circle-arrow-btn {
   width: 32px;
   height: 32px;
-  background-color: #f1f3f5; 
+  background-color: var(--bs-gray-100); 
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -156,7 +156,7 @@ const settings = useSettingsStore()
 }
 
 .circle-arrow-btn:hover {
-  background-color: #e9ecef;
+  background-color: var(--bs-gray-200);
 }
 
 /* 🌟 開源內聯 SVG 箭頭圖標樣式 */
@@ -172,8 +172,8 @@ const settings = useSettingsStore()
 
 /* 🌟 統一卡片底座：換上與設計圖一致的高質感輕柔陰影 (Shadow) */
 .card {
-  background-color: #ffffff;
-  border-radius: 24px;
+  background-color: var(--bs-white);
+  border-radius: var(--bs-border-radius-xl); /* 20px,對齊 rounded-4 卡片圓角 */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 輕柔且深邃的摩登陰影 */
   box-sizing: border-box;
   border: none;
@@ -208,7 +208,7 @@ const settings = useSettingsStore()
 .profile-name {
   font-size: 22px;
   font-weight: 700;
-  color: #000000;
+  color: var(--bs-black);
 }
 
 /* 數據欄位包覆區 */
@@ -234,12 +234,12 @@ const settings = useSettingsStore()
 .stat-item .value {
   font-size: 18px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
 }
 
 .stat-item .unit {
   font-size: 13px;
-  color: #495057;
+  color: var(--bs-gray-700);
   font-weight: 500;
   margin-left: 4px;
 }
@@ -258,20 +258,23 @@ const settings = useSettingsStore()
 }
 
 .tag {
-  color: #ffffff;
+  color: var(--bs-white);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
   font-weight: 700;
   font-size: 10px;
 }
 
-.tag-r { background-color: #e64980; } 
-.tag-g { background-color: #12b886; } 
+/* 捷運路線識別色(站點徽章)— 刻意保留品牌色字面值,非設計 token */
+/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+.tag-r { background-color: #e64980; }
+/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+.tag-g { background-color: #12b886; }
 
 .station-name {
   font-size: 18px;
   font-weight: 700;
-  color: #000000;
+  color: var(--bs-black);
 }
 
 /* ================= 2. 活動成就卡片 ================= */
@@ -300,7 +303,7 @@ const settings = useSettingsStore()
 .activity-text-left h3 {
   font-size: 16px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   margin: 2px 0;
 }
 
@@ -325,13 +328,13 @@ const settings = useSettingsStore()
 
 /* 🌟 按鈕同步換上高規格陰影與圓角 */
 .action-button {
-  background-color: #ffffff;
+  background-color: var(--bs-white);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--bs-border-radius-lg); /* 12px */
   padding: 16px 20px;
   font-size: 15px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   text-align: left;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* 與卡片一致的陰影 */
@@ -340,7 +343,7 @@ const settings = useSettingsStore()
 }
 
 .action-button:hover {
-  background-color: #f1f3f5;
+  background-color: var(--bs-gray-100);
 }
 
 .setting-switch-row {

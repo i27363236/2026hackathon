@@ -30,9 +30,7 @@ Do this proactively rather than asking the user to re-explain what's already doc
 
 ## Project Context
 
-Vue 3 + Vite + Bootstrap 5 + SCSS hackathon project. No TypeScript. Hash routing.
 Design tokens flow from Figma → SCSS primitives → Bootstrap overrides → components.
-Commit messages are in Traditional Chinese (繁體中文).
 Icons: Phosphor via `@iconify/vue` — use `<Icon icon="ph:..." />`, import `{ Icon } from '@iconify/vue'` per SFC. Icon set package: `@iconify-json/ph`.
 
 ### Icon Conventions
@@ -51,6 +49,21 @@ commented out in `_typography.scss`; tune sizes/weights via the existing typogra
 - Phone horizontal padding: `$px-phone` (16 px)
 - Tablet tools / sidebar padding: `$px-tablet-tools` (10 px)
 - Tablet main content padding: `$px-tablet-content` (24 px)
+
+### UI Consistency Canon
+Repeated concepts have **one** canonical implementation. Reach for it — don't re-roll markup/styles inline. `npm run lint:css` (stylelint) mechanically blocks raw hex, off-scale px, and `!important` in component styles.
+
+| Concept | Use this — not an inline copy |
+| --- | --- |
+| 捷運點 point value | `<PointsAmount>` (`src/components/points/PointsAmount.vue`). Only icon is `metro-point.png`; only label is `捷運點`. Pick `tone` (`default`/`cost`/`credit`) + `size` — never hand-pick color/size. Never use `coin.png`, `ph:coin*`, or bare `P`. |
+| Page content width | `.container-content` (720 px) for normal pages; `.container-form` (630 px) for form/checkout columns. Width-only (max-width + centering) — compose with `.px-default` for the gutter. Never hand-type `max-width`. Exempt: full-bleed editor/preview screens (`GiftSetupView`/`GiftPreviewView`/`GiftReceivedView`/`PurchaseSuccessView`). |
+| Page horizontal gutter | `.px-default` (16→24 px). Don't hardcode `p-5`/`px-3` for page gutters. |
+| Standalone point value | `<PointsAmount>`. Inline sentence mentions ("您目前有 X 捷運點") may stay as text — but the value+unit still reads `X 捷運點`, never `X 點`/`X P`. |
+| Content / list / gift card | `ContentCard` (`src/components/cards/ContentCard.vue`) — variants `row`/`large`/`gift`/`row-horizontal`. |
+| White info card | Bootstrap `.card rounded-4 shadow-sm`. Don't hardcode `border-radius: 16/24px` or bespoke shadows. |
+| Rotated red badge | `<StampBadge>` (`src/components/common/StampBadge.vue`). |
+| Brand blue | `$primary` / `text-primary` = `#0079A9`. `#007bbd` / `#1e70a4` are wrong. |
+| Danger red | `$danger` / `text-danger` = `#C80000`. `#dc3545` / `#e64980` are wrong. |
 
 ---
 
@@ -85,12 +98,14 @@ last layer — use it only to patch Bootstrap specifics. Spacers are custom: 1=2
 4=12px, 5=16px, 6=20px, 7=24px, 8=32px. Don't assume Bootstrap's `rem`-based scale.
 
 ### Verification (no unit-test framework)
-Verify with the two tools, not by eyeballing ad-hoc screenshots — see [docs/verification.md](docs/verification.md):
+Verify with these tools, not by eyeballing ad-hoc screenshots — see [docs/verification.md](docs/verification.md):
+- `npm run lint:css` — stylelint guardrail; fails on raw hex / off-scale `border-radius` / `!important`
+  in component styles (enforces the UI Consistency Canon). Config: `stylelint.config.js`.
 - `npm run check [-- /route …]` — loads each route, fails on any console error / failed request,
   writes phone+tablet screenshots to `screenshots/check/` (read them with the Read tool).
 - `npm test` — Playwright smoke tests (assert visible text/roles, never class names).
 
-Run both after any change. "Done" is wrong if you skipped them.
+Run all three after any change. "Done" is wrong if you skipped them.
 
 ### Fail Loud
 Surface broken states; don't hide them behind fallback styling.

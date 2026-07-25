@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="gift-home mx-auto pb-8">
+  <div class="gift-home container-content pb-8">
     <Teleport v-if="toolbarReady" to="#top-toolbar-actions">
       <ToolbarButton
         icon="ph:clock-counter-clockwise-light"
@@ -102,9 +102,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.gift-home {
-  max-width: 720px;
-}
 .hero-banner {
   background: var(--tile-gradient-blue);
   min-height: 120px;

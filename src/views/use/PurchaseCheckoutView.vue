@@ -15,7 +15,7 @@ import CheckoutOptionGroup from '@/components/checkout/CheckoutOptionGroup.vue'
 import CheckoutFooter from '@/components/checkout/CheckoutFooter.vue'
 import CheckoutGiftFields from '@/components/checkout/CheckoutGiftFields.vue'
 import PointsStepper from '@/components/checkout/PointsStepper.vue'
-import coinImg from '@/img/coin.png'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const router = useRouter()
 const gifts = useGiftsStore()
@@ -82,7 +82,7 @@ function confirm() {
     <!-- ============================ money checkout ============================ -->
     <template v-if="isMoney">
       <div class="content flex-grow-1 overflow-auto bg-body">
-        <div class="one-col">
+        <div class="container-form">
           <!-- product -->
           <section class="co-section d-flex align-items-center gap-3">
             <div class="co-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
@@ -120,10 +120,7 @@ function confirm() {
           <!-- 捷運點折抵 -->
           <section class="co-section">
             <h3 class="mb-3">捷運點折抵</h3>
-            <div class="d-flex align-items-center gap-1 mb-3">
-              <img :src="coinImg" alt="" width="20" height="20" />
-              <span class="caption-1 text-body-secondary">您目前有 {{ points.balance }} 捷運點</span>
-            </div>
+            <p class="caption-1 text-body-secondary mb-3">您目前有 <PointsAmount :value="points.balance" tone="inherit" size="caption" /></p>
             <div class="co-row align-items-center">
               <span class="text-body">數量</span>
               <PointsStepper v-model="pointsApplied" :max="maxApplicable" />
@@ -156,13 +153,13 @@ function confirm() {
     <!-- ============================ points checkout ============================ -->
     <template v-else>
       <div class="content flex-grow-1 overflow-auto bg-body">
-        <div class="one-col px-4 py-4 d-flex flex-column gap-3">
+        <div class="container-form d-flex flex-column gap-3">
           <!-- line item -->
           <div class="bg-body p-5 d-flex align-items-center gap-3">
             <div class="item-thumb flex-shrink-0" :style="draft?.img ? { background: draft.img } : {}" />
             <div class="min-w-0">
               <h2 class="m-0 text-truncate">{{ draft?.name || '—' }}</h2>
-              <div class="small text-body-secondary">捷運點 {{ draft?.price ?? 0 }} × {{ draft?.qty ?? 1 }} 件</div>
+              <div class="small text-body-secondary"><PointsAmount :value="draft?.price ?? 0" tone="inherit" size="caption" :show-icon="false" /> × {{ draft?.qty ?? 1 }} 件</div>
             </div>
           </div>
 
@@ -171,7 +168,7 @@ function confirm() {
             <h3 class="mb-4">訂單明細</h3>
             <div class="d-flex justify-content-between small text-body mb-2">
               <span>小計</span>
-              <span>捷運點 {{ subtotal }}</span>
+              <PointsAmount :value="subtotal" tone="inherit" size="caption" :show-icon="false" />
             </div>
             <div class="d-flex justify-content-between small text-body mb-2">
               <span>數量</span>
@@ -179,12 +176,9 @@ function confirm() {
             </div>
             <div class="d-flex justify-content-between fw-bold text-body pt-3 border-top">
               <span>總計</span>
-              <span class="text-primary">捷運點 {{ total }}</span>
+              <PointsAmount :value="total" tone="credit" size="inline" :show-icon="false" />
             </div>
-            <div class="d-flex align-items-center gap-1 mt-4">
-              <img :src="coinImg" alt="" width="20" height="20" />
-              <span class="text-body small">您目前有 {{ points.balance }} 捷運點</span>
-            </div>
+            <p class="text-body small mt-4 mb-0">您目前有 <PointsAmount :value="points.balance" tone="inherit" size="caption" /></p>
           </div>
 
           <!-- 送禮資訊 -->
@@ -209,16 +203,6 @@ function confirm() {
 </template>
 
 <style scoped>
-/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
-.one-col {
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .one-col {
-    max-width: 630px;
-    margin-inline: auto;
-  }
-}
 .min-w-0 {
   min-width: 0;
 }
@@ -238,7 +222,7 @@ function confirm() {
 .co-thumb {
   width: 66px;
   height: 44px;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
   background: var(--surface-cream);
 }
 .co-row {

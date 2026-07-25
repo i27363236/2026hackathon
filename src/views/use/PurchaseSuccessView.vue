@@ -7,7 +7,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useGiftsStore } from '@/stores/gifts.js'
-import coinImg from '@/img/coin.png'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -62,12 +62,9 @@ function viewReceived() {
             <div class="fw-bold text-body text-truncate">{{ order?.name || '—' }}</div>
             <div class="small text-body-secondary">數量 {{ order?.qty ?? 1 }}</div>
           </div>
-          <div
-            class="d-flex align-items-center gap-1 flex-shrink-0"
-            :class="isMoney ? 'text-body' : 'text-warning'"
-          >
-            <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
-            <span>{{ totalText }}</span>
+          <div class="flex-shrink-0">
+            <PointsAmount v-if="!isMoney" :value="total" tone="cost" />
+            <span v-else class="text-body">{{ totalText }}</span>
           </div>
         </div>
       </div>

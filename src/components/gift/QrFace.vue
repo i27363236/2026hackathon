@@ -75,7 +75,7 @@ const expiryDate = computed(() => {
 .thumb {
   width: 73px;
   aspect-ratio: 109 / 73;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
 }
 .dot {
   width: 4px;
@@ -86,7 +86,7 @@ const expiryDate = computed(() => {
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 0.45px;
-  color: white;
+  color: var(--bs-white);
 }
 .qr-expiry {
   font-size: 14px;

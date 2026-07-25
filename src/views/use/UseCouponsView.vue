@@ -34,11 +34,11 @@ const handleBack = () => {
 </script>
 
 <template>
-  <div class="use-coupons-view d-flex flex-column mx-auto">
+  <div class="use-coupons-view container-content d-flex flex-column">
     <!-- 頂部導覽列 -->
     <TopToolbar title="使用優惠券" show-back @back="handleBack" />
 
-    <main class="flex-grow-1 p-5 d-flex flex-column gap-8">
+    <main class="flex-grow-1 px-default py-5 d-flex flex-column gap-8">
       <!-- 優惠券主題輪播 -->
       <section>
         <div id="couponCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -85,7 +85,7 @@ const handleBack = () => {
           <ContentCard
             v-for="c in coupons"
             :key="c.id"
-            :subtitle="c.point + ' 點'"
+            :subtitle="c.point + ' 捷運點'"
             :title="c.title"
             :detail="c.sub"
             :img="c.img"
@@ -99,7 +99,6 @@ const handleBack = () => {
 
 <style scoped>
 .use-coupons-view {
-  max-width: 720px;
   min-height: 100dvh;
 }
 
@@ -138,7 +137,7 @@ const handleBack = () => {
 
 .hero-indicators [data-bs-target].active {
   width: 20px;
-  border-radius: 800px;
+  border-radius: var(--bs-border-radius-pill);
   background: var(--bs-primary);
 }
 </style>

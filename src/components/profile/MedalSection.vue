@@ -31,8 +31,8 @@ defineProps({
 
 <style scoped>
 .medal-card {
-  background-color: #ffffff;
-  border-radius: 24px;
+  background-color: var(--bs-white);
+  border-radius: var(--bs-border-radius-xl);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   border: none;
@@ -50,19 +50,19 @@ defineProps({
 .medal-title {
   font-size: 20px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   margin: 0;
 }
 
 .circle-arrow-btn {
   width: 32px;
   height: 32px;
-  background-color: #f1f3f5;
+  background-color: var(--bs-gray-100);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #868e96;
+  color: var(--bs-secondary-color);
   flex-shrink: 0;
 }
 
@@ -98,12 +98,12 @@ defineProps({
 .medal-item-title {
   font-size: 13px;
   font-weight: 700;
-  color: #111111;
+  color: var(--bs-body-color);
   line-height: 1.3;
 }
 
 .medal-item-caption {
   font-size: 11px;
-  color: #868e96;
+  color: var(--bs-secondary-color);
 }
 </style>

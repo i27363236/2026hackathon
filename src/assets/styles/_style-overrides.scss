@@ -132,3 +132,18 @@ h5 {
     padding-right: $px-tablet-content;
   }
 }
+
+// 頁面內容欄的置中 + 最大寬(只管寬度,不含左右padding)。
+// 左右內距請另外組合 .px-default(或由內部 section 自行 padding),與既有 .home 寫法一致。
+// .container-content：一般內容頁(720px)；.container-form：表單/結帳窄欄(630px)。
+// 全螢幕編輯/預覽畫面(GiftSetupView/GiftPreviewView/GiftReceivedView/PurchaseSuccessView)
+// 刻意不套用 — 那些是滿版置中畫面。
+.container-content {
+  max-width: $tablet-container;
+  margin-inline: auto;
+}
+
+.container-form {
+  max-width: $container-form;
+  margin-inline: auto;
+}

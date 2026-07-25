@@ -109,7 +109,7 @@ const emit = defineEmits(['add-sticker', 'add-photo', 'add-stamp', 'set-bg'])
   aspect-ratio: 1;
   padding: 0;
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--bs-border-radius-sm);
   background: transparent;
   overflow: hidden;
 }

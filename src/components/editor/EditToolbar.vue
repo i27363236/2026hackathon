@@ -68,7 +68,7 @@ defineEmits(['select', 'action'])
   padding: 8px;
   border: 0;
   background: transparent;
-  border-radius: 12px;
+  border-radius: var(--bs-border-radius-lg);
   color: var(--bs-secondary-color);
   cursor: pointer;
 }

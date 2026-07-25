@@ -109,11 +109,11 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
 }
 .nav-link.router-link-active {
   background-color: var(--bs-primary);
-  color: var(--bs-white) !important;
+  color: var(--bs-white);
   cursor: default;
 
   .iconify {
-    color: var(--bs-white) !important;
+    color: var(--bs-white);
   }
 }
 

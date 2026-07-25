@@ -31,7 +31,7 @@ function expiryText(tx) {
 </script>
 
 <template>
-  <div class="points-history mx-auto px-default py-6">
+  <div class="points-history container-content px-default py-6">
     <PointsTrendChart class="mb-6" />
 
     <div class="nav nav-pills nav-fill bg-light rounded-pill p-1 shadow-sm mb-5">
@@ -67,9 +67,6 @@ function expiryText(tx) {
 </template>
 
 <style scoped>
-.points-history {
-  max-width: 720px;
-}
 .nav-pills .nav-link {
   color: var(--bs-secondary-color);
   font-size: 0.9375rem;

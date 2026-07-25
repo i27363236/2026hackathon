@@ -5,13 +5,13 @@ import { storeToRefs } from 'pinia'
 import { usePointsStore } from '@/stores/points.js'
 import CheckinCard from '@/components/points/CheckinCard.vue'
 import TransactionRow from '@/components/points/TransactionRow.vue'
-import metroPointImg from '@/img/metro-point.png'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const { balance, expiringPoints, expiringDate, transactions } = storeToRefs(usePointsStore())
 </script>
 
 <template>
-  <section class="my-point-section px-default py-5">
+  <section class="my-point-section container-content px-default py-5">
     <!-- 點數說明 -->
     <div class="d-flex justify-content-end mb-4">
       <button type="button" class="btn btn-link p-0 text-decoration-none text-body-secondary small d-flex align-items-center">
@@ -22,10 +22,7 @@ const { balance, expiringPoints, expiringDate, transactions } = storeToRefs(useP
 
     <!-- 捷運點餘額 -->
     <div class="d-flex justify-content-between align-items-center mb-6">
-      <div class="d-flex align-items-center gap-2">
-        <img :src="metroPointImg" width="32" height="32" alt="捷運點" />
-        <span class="display-3">{{ balance.toLocaleString() }}</span>
-      </div>
+      <PointsAmount :value="balance.toLocaleString()" size="hero" :show-label="false" />
       <span class="text-body">{{ expiringPoints }}點將於{{ expiringDate }}到期</span>
     </div>
 

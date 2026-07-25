@@ -30,7 +30,7 @@ defineEmits(['click'])
 .toolbar-btn {
   flex: 0 0 auto;
   border: 0;
-  border-radius: 800px;
+  border-radius: var(--bs-border-radius-pill);
   background: var(--toolbar-glass-fill);
   box-shadow: var(--toolbar-glass-shadow);
   backdrop-filter: var(--toolbar-glass-blur);
@@ -48,7 +48,7 @@ defineEmits(['click'])
 .toolbar-btn--accent {
   background: var(--bs-primary);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
-  color: #fff;
+  color: var(--bs-white);
 }
 .toolbar-btn--accent:hover,
 .toolbar-btn--accent:focus-visible {

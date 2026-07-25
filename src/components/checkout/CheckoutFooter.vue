@@ -11,7 +11,7 @@ defineEmits(['confirm'])
 
 <template>
   <div class="footer bg-body border-top">
-    <div class="one-col">
+    <div class="container-form">
       <div class="co-action-row">
         <div class="co-summary">
           <div class="caption-1 text-body fw-bold">{{ label }}</div>
@@ -26,16 +26,6 @@ defineEmits(['confirm'])
 </template>
 
 <style scoped>
-/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
-.one-col {
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .one-col {
-    max-width: 630px;
-    margin-inline: auto;
-  }
-}
 .footer {
   position: sticky;
   bottom: 0;

@@ -13,7 +13,7 @@ import { getProductById } from '@/data/catalog.js'
 import { useGiftsStore } from '@/stores/gifts.js'
 import { usePointsStore } from '@/stores/points.js'
 import { useCardColors } from '@/utils/imageColor.js'
-import coinImg from '@/img/coin.png'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -79,7 +79,7 @@ function onPrimary() {
 <template>
   <div class="product-view d-flex flex-column h-100 bg-body">
     <div class="content flex-grow-1 overflow-auto">
-      <div class="pv-container one-col">
+      <div class="pv-container container-form">
         <!-- product image -->
         <div class="pv-image-wrap">
           <div class="pv-image-card" :style="{ background: gradient }">
@@ -119,7 +119,7 @@ function onPrimary() {
 
     <!-- sticky bottom bar / expandable sheet -->
     <div class="pv-bottom bg-body">
-      <div class="pv-bottom-inner one-col">
+      <div class="pv-bottom-inner container-form">
         <!-- expanded sheet content -->
         <Transition name="sheet">
           <div v-if="sheetOpen" class="pv-sheet-wrap">
@@ -178,8 +178,8 @@ function onPrimary() {
           <div class="pv-summary">
             <div class="text-body text-truncate">{{ product?.name }}</div>
             <div class="pv-summary-price text-warning fw-bold">
-              <img v-if="!isMoney" :src="coinImg" alt="" width="19" height="20" />
-              <span>{{ priceText }}</span>
+              <PointsAmount v-if="!isMoney" :value="product?.price ?? 0" tone="cost" />
+              <span v-else>{{ priceText }}</span>
             </div>
             <div v-if="!isMoney" class="caption-1 mt-1 text-body-tertiary">
               目前擁有 {{ points.balance }} 捷運點
@@ -202,17 +202,6 @@ function onPrimary() {
 <style scoped>
 .pv-container {
   width: 100%;
-}
-
-/* one-column width: full-bleed on phone, capped + centred on tablet (≥md) */
-.one-col {
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .one-col {
-    max-width: 630px;
-    margin-inline: auto;
-  }
 }
 
 /* product image — full-bleed on phone; background is bound inline to the
@@ -314,7 +303,7 @@ function onPrimary() {
 .pv-usage-tile {
   flex: 1;
   border: 1px solid var(--bs-border-color);
-  border-radius: 12px;
+  border-radius: var(--bs-border-radius-lg);
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -372,13 +361,13 @@ function onPrimary() {
   opacity: 0;
 }
 
-/* tablet / iPad — image in an image-color gradient card (.one-col caps the width) */
+/* tablet / iPad — image in an image-color gradient card (.container-form caps the width) */
 @media (min-width: 768px) {
   .pv-image-wrap {
     padding: 24px 16px 0;
   }
   .pv-image-card {
-    border-radius: 4px;
+    border-radius: var(--bs-border-radius-sm);
     box-shadow: 0 6px 24px 2px rgba(0, 0, 0, 0.16);
     padding: 24px;
     display: flex;
@@ -388,7 +377,7 @@ function onPrimary() {
     width: 310px;
     height: auto;
     aspect-ratio: 320 / 215;
-    border-radius: 4px;
+    border-radius: var(--bs-border-radius-sm);
   }
   .pv-info {
     text-align: center;

@@ -281,7 +281,7 @@ const addedToCalendar = ref(false)
   color: var(--bs-danger);
   font-size: 28px;
   padding: 6px 16px;
-  border-radius: 8px;
+  border-radius: var(--bs-border-radius);
   background-color: rgba(255, 255, 255, 0.85);
   letter-spacing: 4px;
   z-index: 5;

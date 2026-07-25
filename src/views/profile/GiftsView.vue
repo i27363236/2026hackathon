@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const quantity = ref(1)
 const decrease = () => { if (quantity.value > 1) quantity.value-- }
@@ -9,7 +10,7 @@ const increase = () => { quantity.value++ }
 <template>
   
   <div class="ticket-header-bg py-4 d-flex justify-content-center align-items-center">
-    <div class="container max-width-container px-3 text-center">
+    <div class="container-content px-3 text-center">
       <img 
         src="../../img/誠品100元抵用券.png" 
         alt="誠品生活 100元抵用券" 
@@ -19,13 +20,13 @@ const increase = () => { quantity.value++ }
   </div>
 
   <div class="bg-white flex-grow-1">
-    <div class="container max-width-container py-4 px-3">
+    <div class="container-content py-4 px-3">
       </div>
   </div>
 
 
   <div class="bg-white flex-grow">
-    <div class="container max-width-container py-4 px-3">
+    <div class="container-content py-4 px-3">
       <h2 class="fs-4 fw-bold text-dark mb-3">誠品生活 │ 100元優惠券</h2>
 
       <div class="brand-row d-flex align-items-center gap-2 mb-3">
@@ -33,10 +34,8 @@ const increase = () => { quantity.value++ }
         <span class="text-dark small">誠品</span>
       </div>
 
-      <div class="points-row d-flex align-items-center gap-2 mb-4">
-        <img src="../../img/coin.png" alt="" />
-        <span class="fs-4 fw-bold text-warning">100</span>
-        <span class="small mt-1 text-dark">捷運點</span>
+      <div class="points-row mb-4">
+        <PointsAmount :value="100" tone="cost" size="price" />
       </div>
 
       <div class="quantity-section border-top border-bottom py-3 d-flex justify-content-between align-items-center my-4">
@@ -68,12 +67,11 @@ const increase = () => { quantity.value++ }
   </div>
 
   <div class="bg-white border-top p-3 shadow-sm">
-    <div class="container max-width-container d-flex align-items-center justify-content-between gap-3">
+    <div class="container-content d-flex align-items-center justify-content-between gap-3">
       <div class="price-summary flex-shrink-0">
         <div class="small fw-bold text-dark">誠品生活 │ 100元優惠券</div>
-        <div class="d-flex align-items-center gap-1 mt-1">
-          <img src="../../img/coin.png" alt="" />
-          <span class="text-warning fw-bold small">10捷運點</span>
+        <div class="mt-1">
+          <PointsAmount :value="10" tone="cost" size="caption" />
         </div>
       </div>
 
@@ -82,12 +80,12 @@ const increase = () => { quantity.value++ }
         style="max-width: 420px"
       >
         <button
-          class="btn btn-outline-light text-primary border-light-subtle flex-grow-1 fw-bold py-2 btn-gift"
+          class="btn btn-outline-primary flex-grow-1 fw-bold py-2"
         >
           送禮
         </button>
         <button
-          class="btn btn-info text-white flex-grow-1 fw-bold py-2 btn-exchange"
+          class="btn btn-primary flex-grow-1 fw-bold py-2"
         >
           兌換
         </button>
@@ -97,14 +95,10 @@ const increase = () => { quantity.value++ }
 </template>
 
 <style scoped>
-/* 限制主內容寬度，讓平板/電腦版視覺比例與設計稿一致 */
-.max-width-container {
-  max-width: 720px;
-}
-
-/* 上半部灰色區塊背景色 */
+/* 上半部票券圖底色 — 刻意的深灰黑,還原票券背後底色,非設計 token */
 .ticket-header-bg {
-  background-color: #2e2c2b; /* 還原圖片背後的深灰黑底色 */
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+  background-color: #2e2c2b;
 }
 
 /* 票券圖片寬度限制，避免太大 */
@@ -136,34 +130,16 @@ const increase = () => { quantity.value++ }
 .btn-counter {
   width: 32px;
   height: 32px;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 1px solid var(--bs-border-color);
+  background-color: var(--bs-gray-100);
   font-weight: bold;
 }
 .btn-counter:hover {
-  background-color: #f3f4f6;
-}
-
-/* 底部按鈕優化 */
-.btn-gift {
-  background-color: #fdfbf7;
-  border-color: #f1ede4;
-  color: #1e70a4 !important; /* 送禮的藍字 */
-}
-.btn-gift:hover {
-  background-color: #f5f1e6;
-}
-
-.btn-exchange {
-  background-color: #007bbd; /* 捷運藍 */
-  border: none;
-}
-.btn-exchange:hover {
-  background-color: #00669e;
+  background-color: var(--bs-gray-200);
 }
 
 /* 確保底部的 Fixed 欄位不會擋住內容 */
 .exchange-detail-page {
-  padding-bottom: 100px !important;
+  padding-bottom: 100px;
 }
 </style>

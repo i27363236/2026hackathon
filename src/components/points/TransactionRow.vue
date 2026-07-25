@@ -2,10 +2,13 @@
 // 點數交易列 — PointsView 最近紀錄與 PointsHistoryView 明細共用。
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const props = defineProps({
   tx: { type: Object, required: true },
 })
+
+const signedAmount = computed(() => `${props.tx.amount > 0 ? '+' : ''}${props.tx.amount}`)
 
 const CATEGORY_ICONS = {
   ride: 'ph:train-light',
@@ -32,9 +35,12 @@ const icon = computed(
         <slot name="caption">{{ tx.date }}</slot>
       </div>
     </div>
-    <div class="flex-shrink-0 fw-bold" :class="tx.type === 'earn' ? 'text-primary' : 'text-dark'">
-      {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount }} P
-    </div>
+    <PointsAmount
+      class="flex-shrink-0"
+      :value="signedAmount"
+      :tone="tx.type === 'earn' ? 'credit' : 'default'"
+      :show-icon="false"
+    />
   </div>
 </template>
 

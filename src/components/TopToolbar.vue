@@ -67,7 +67,7 @@ defineEmits(['back'])
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  border-radius: 800px;
+  border-radius: var(--bs-border-radius-pill);
   background: var(--toolbar-glass-fill);
   box-shadow: var(--toolbar-glass-shadow);
   backdrop-filter: var(--toolbar-glass-blur);

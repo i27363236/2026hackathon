@@ -63,7 +63,8 @@ $focus-ring-color: #0079A940;
 $focus-ring-blur: 0px;
 $Songshan: #018659FF;
 $button-max-width: 272px;
-$tablet-container: 720px;
+$tablet-container: 720px;  // 內容頁最大寬 → .container-content
+$container-form: 630px;    // 表單/結帳頁窄欄 → .container-form
 
 $box-shadow-sm: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
 $box-shadow:    0 3px 12px 2px rgba(0, 0, 0, 0.07);
@@ -93,6 +94,8 @@ $cream: #F2EDE7;
 :root {
   --px-phone:           #{$px-phone};
   --px-tablet-content:  #{$px-tablet-content};
+  --tablet-container:   #{$tablet-container};
+  --container-form:     #{$container-form};
   --overlay:            #{$overlay};
   --component-hover-bg: #{$component-hover-bg};
 

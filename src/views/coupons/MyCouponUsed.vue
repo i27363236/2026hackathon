@@ -95,8 +95,8 @@ const goBackToCoupons = () => router.back()
   }
 
   .details-card {
-    background-color: #fafafa;
-    border-color: rgba(0,0,0,0.05) !important;
+    background-color: var(--bs-light);
+    border-color: rgba(0,0,0,0.05);
   }
 
   .smaller {

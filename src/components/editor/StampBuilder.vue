@@ -175,7 +175,7 @@ function add() {
   height: 36px;
   padding: 2px;
   border: 1px solid var(--bs-border-color);
-  border-radius: 10px;
+  border-radius: var(--bs-border-radius);
   background: none;
   cursor: pointer;
 }
@@ -202,7 +202,7 @@ function add() {
   height: 36px;
   padding: 0;
   border: 1px solid var(--bs-border-color);
-  border-radius: 10px;
+  border-radius: var(--bs-border-radius);
   background: var(--bs-body-bg);
   color: var(--bs-body-color);
   cursor: pointer;

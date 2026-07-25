@@ -3,6 +3,7 @@
 // Image-derived lighter gradient background; text auto black/white for readability.
 import { computed, toRef } from 'vue'
 import { useCardColors } from '@/utils/imageColor.js'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const props = defineProps({
   name: { type: String, default: '' },
@@ -34,7 +35,7 @@ const expiry = computed(() => {
     <div class="pt-4">
       <p class="product-title fw-bold mb-1">{{ name }}</p>
       <p class="product-expiry mb-3 opacity-75">{{ expiry }}</p>
-      <p class="product-points fw-bold mb-0">捷運點 {{ price }} 點</p>
+      <PointsAmount class="product-points fw-bold mb-0" :value="price" tone="inherit" :show-icon="false" />
     </div>
   </div>
 </template>

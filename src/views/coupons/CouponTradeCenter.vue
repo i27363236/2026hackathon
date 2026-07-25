@@ -78,7 +78,7 @@ const sections = [
         <ContentCard
           v-for="c in coupons"
           :key="c.id"
-          :subtitle="c.point + ' 點'"
+          :subtitle="c.point + ' 捷運點'"
           :title="c.title"
           :detail="c.sub"
           :img="c.img"
@@ -100,7 +100,7 @@ const sections = [
     padding: 0;
     background: rgba(249, 247, 243, 0.8);
     border: none;
-    border-radius: 800px;
+    border-radius: var(--bs-border-radius-pill);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,7 +114,7 @@ const sections = [
     align-items: center;
     gap: 4px;
     padding: 4px 20px;
-    color: #48484a;
+    color: var(--bs-secondary-color);
   }
   .cat-label { font-size: 1.0625rem; line-height: 22px; }
 

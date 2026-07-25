@@ -3,6 +3,9 @@
 // variant: 'row'  = 160px,圖上(120px 高)文下 — 活動/優惠券橫列
 //          'large'= 300px,文上圖下(300/169) — 大型活動卡
 //          'gift' = 165px,圖上 + 名稱/徽章/價格列 — 商品卡
+//          'row-horizontal' = 滿版清單列,縮圖左 + 文字中 + 尾端(#trailing slot:箭頭或戳印)
+//            — 取代 CouponsView / GiftsHistoryView 各自複製的 .coupon-card 列。
+//            detail 線可用 detail prop(純文字)或 #detail slot(如放 <PointsAmount>)。
 // colorKey: variant-1…variant-6 → .card-subtitle--N(見 _card-colors.scss;
 //           row/large 上色 subtitle,gift 上色價格)
 // img: CSS background 簡寫(url(...) center/cover),直接綁到 :style
@@ -25,17 +28,37 @@ const VARIANTS = ['variant-1', 'variant-2', 'variant-3', 'variant-4', 'variant-5
 const subtitleClass = computed(() =>
   VARIANTS.includes(props.colorKey) ? `card-subtitle--${props.colorKey}` : '',
 )
+
+// row-horizontal 是滿版清單列(自帶 flex/border/padding);其餘 variant 是可橫向捲動的固定寬卡片。
+const rootClass = computed(() =>
+  props.variant === 'row-horizontal'
+    ? 'content-card content-card--row-horizontal d-flex align-items-center p-3 border rounded-3 bg-white text-decoration-none text-body'
+    : `content-card content-card--${props.variant} flex-shrink-0 text-decoration-none text-body`,
+)
 </script>
 
 <template>
   <component
     :is="to ? 'RouterLink' : 'div'"
     :to="to || undefined"
-    class="content-card flex-shrink-0 text-decoration-none text-body"
-    :class="`content-card--${variant}`"
+    :class="rootClass"
   >
+    <!-- row-horizontal:縮圖左、文字中、尾端 slot(箭頭/戳印) -->
+    <template v-if="variant === 'row-horizontal'">
+      <div class="chr-thumb rounded-2 bg-body-tertiary flex-shrink-0" :style="img ? { background: img } : {}" />
+      <div class="ms-3 flex-grow-1 overflow-hidden">
+        <p v-if="subtitle" class="caption-1 mb-1 fw-bold" :class="subtitleClass">{{ subtitle }}</p>
+        <h3 class="h6 fw-bold mb-1 text-truncate">{{ title }}</h3>
+        <p v-if="detail" class="caption-1 text-body-secondary mb-0 text-truncate">{{ detail }}</p>
+        <slot name="detail" />
+      </div>
+      <div v-if="$slots.trailing" class="ms-2 flex-shrink-0 d-flex align-items-center">
+        <slot name="trailing" />
+      </div>
+    </template>
+
     <!-- large:文字在上、圖在下 -->
-    <template v-if="variant === 'large'">
+    <template v-else-if="variant === 'large'">
       <div class="pb-3">
         <p v-if="subtitle" class="caption-1 mb-1 fw-bold" :class="subtitleClass">{{ subtitle }}</p>
         <h4 class="mb-1">{{ title }}</h4>
@@ -85,6 +108,15 @@ const subtitleClass = computed(() =>
 }
 .content-card--gift {
   width: 165px;
+}
+.content-card--row-horizontal {
+  width: 100%;
+}
+.chr-thumb {
+  width: 72px;
+  height: 72px;
+  background-size: cover;
+  background-position: center;
 }
 
 .card-img--row {

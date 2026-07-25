@@ -69,7 +69,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
 }
 .pill-btn--active {
   background: var(--bs-primary);
-  color: var(--bs-white) !important;
+  color: var(--bs-white);
   cursor: default;
 }
 
