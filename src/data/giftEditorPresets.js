@@ -30,3 +30,12 @@ export const TOOLS = [
   { key: 'stamp', icon: 'ph:seal-light', label: '印章' },
   { key: 'bg', icon: 'ph:paint-bucket-light', label: '背景' },
 ]
+
+// Pen sub-tools shown in the pen options rail (EditorOptionsPanel). 'pen'/'highlighter'
+// set penStyle on a shared 'pen' drawing tool; 'eraser' is its own tool mode that rubs out
+// only the drawing pixels it passes over. Icons are Phosphor -light per convention.
+export const PEN_TOOLS = [
+  { key: 'pen', icon: 'ph:pen-light', label: '一般筆' },
+  { key: 'highlighter', icon: 'ph:highlighter-light', label: '螢光筆' },
+  { key: 'eraser', icon: 'ph:eraser-light', label: '橡皮擦' },
+]

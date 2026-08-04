@@ -30,7 +30,7 @@ onMounted(async () => {
   toolbarReady.value = true
 })
 
-const tool = ref('select') // 'select' | 'pen'
+const tool = ref('select') // 'select' | 'pen' | 'eraser'
 const panel = ref('') // '' | 'sticker' | 'photo' | 'stamp' | 'bg'
 const penColor = ref('#e3002c')
 const penWidth = ref(4)
@@ -74,13 +74,27 @@ function onLineCommitted(line) {
 }
 
 // Which toolbar key reads as active: an open panel wins, otherwise the tool.
-const activeTool = computed(() => panel.value || tool.value)
-// Show the options strip when drawing with the pen or when a panel is open.
-const showOptions = computed(() => tool.value === 'pen' || panel.value !== '')
+// Eraser is a pen sub-mode, so keep the 塗鴉 rail item highlighted while erasing.
+const activeTool = computed(() => panel.value || (tool.value === 'eraser' ? 'pen' : tool.value))
+// Show the options strip when drawing / erasing or when a panel is open.
+const showOptions = computed(
+  () => tool.value === 'pen' || tool.value === 'eraser' || panel.value !== '',
+)
 
 function setTool(t) {
   tool.value = t
-  if (t === 'pen') selectedId.value = ''
+  if (t === 'pen' || t === 'eraser') selectedId.value = ''
+}
+
+// Pen rail sub-tools: eraser is its own tool mode; the rest set penStyle on the pen tool.
+// The eraser draws a destination-out stroke (committed like any line), so undo/redo just work.
+function onSelectPenTool(key) {
+  if (key === 'eraser') {
+    setTool('eraser')
+  } else {
+    penStyle.value = key
+    setTool('pen')
+  }
 }
 function togglePanel(p) {
   panel.value = panel.value === p ? '' : p
@@ -275,7 +289,7 @@ async function done() {
 
     <!-- stage row: tablet → [toolbar rail | canvas | detail menu]; mobile → stacked -->
     <div class="editor-stage flex-grow-1" style="min-height: 0">
-      <div class="toolbar-col d-none d-md-flex flex-shrink-0">
+      <div class="toolbar-col d-none d-md-flex justify-content-center align-items-center flex-shrink-0 ps-4 pe-2.5">
         <EditToolbar
           orientation="vertical"
           :tools="TOOLS"
@@ -324,6 +338,7 @@ async function done() {
         @add-photo="addPhoto"
         @add-stamp="addStamp"
         @set-bg="setBg"
+        @select-pen-tool="onSelectPenTool"
       />
     </div>
 
@@ -357,9 +372,7 @@ async function done() {
   display: flex;
   flex-direction: column;
 }
-.toolbar-col {
-  background: var(--bs-secondary-bg);
-}
+
 @media (min-width: 768px) {
   .editor-stage {
     flex-direction: row;
