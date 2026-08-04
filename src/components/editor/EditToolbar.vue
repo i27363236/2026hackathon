@@ -49,14 +49,6 @@ defineEmits(['select', 'action'])
 </template>
 
 <style scoped>
-.edit-toolbar {
-  display: flex;
-  gap: 4px;
-}
-.tool-group {
-  display: flex;
-  gap: 2px;
-}
 
 .toolbar-item {
   display: flex;
@@ -97,13 +89,14 @@ defineEmits(['select', 'action'])
   cursor: default;
 }
 
-/* Vertical — tablet left rail: flush, full height, secondary background, centered. */
+/* Vertical — tablet left rail: a floating pill that shrinks to its buttons. */
 .edit-toolbar.is-vertical {
   flex-direction: column;
-  justify-content: center;
-  height: 100%;
+  color: var(--bs-secondary-color);
   background: var(--bs-secondary-bg);
-  padding: 8px;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-xl);
+  padding: 12px 8px;
 }
 .edit-toolbar.is-vertical .tool-group {
   flex-direction: column;

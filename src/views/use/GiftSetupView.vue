@@ -275,7 +275,7 @@ async function done() {
 
     <!-- stage row: tablet → [toolbar rail | canvas | detail menu]; mobile → stacked -->
     <div class="editor-stage flex-grow-1" style="min-height: 0">
-      <div class="toolbar-col d-none d-md-flex flex-shrink-0">
+      <div class="toolbar-col d-none d-md-flex justify-content-center align-items-center flex-shrink-0 ps-4 pe-2.5">
         <EditToolbar
           orientation="vertical"
           :tools="TOOLS"
@@ -357,9 +357,7 @@ async function done() {
   display: flex;
   flex-direction: column;
 }
-.toolbar-col {
-  background: var(--bs-secondary-bg);
-}
+
 @media (min-width: 768px) {
   .editor-stage {
     flex-direction: row;
