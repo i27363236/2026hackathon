@@ -16,7 +16,7 @@ const props = defineProps({
   bg: { type: Object, required: true },
   bgImage: { type: Object, default: null }, // loaded HTMLImageElement when bg.type === 'image'
   items: { type: Array, required: true },
-  tool: { type: String, required: true }, // 'select' | 'pen'
+  tool: { type: String, required: true }, // 'select' | 'pen' | 'eraser'
   selectedId: { type: String, default: '' },
   penColor: { type: String, required: true },
   penWidth: { type: Number, required: true },
@@ -24,17 +24,20 @@ const props = defineProps({
 })
 
 // 螢光筆:半透明、方頭、加粗,並用 multiply 疊色 — 疊到一起會變深,像真的螢光筆。
+// 橡皮擦:畫在塗鴉層上、用 destination-out 只擦掉經過的像素(背景在另一層,不受影響)。
 function lineConfig(l) {
   const highlight = l.style === 'highlighter'
+  const eraser = l.style === 'eraser'
+  const strokeWidth = highlight ? l.strokeWidth * 3 : eraser ? l.strokeWidth * 2 : l.strokeWidth
   return {
     points: l.points,
     stroke: l.stroke,
-    strokeWidth: highlight ? l.strokeWidth * 3 : l.strokeWidth,
+    strokeWidth,
     lineCap: highlight ? 'square' : 'round',
     lineJoin: 'round',
     tension: highlight ? 0 : 0.4,
     opacity: highlight ? 0.4 : 1,
-    globalCompositeOperation: highlight ? 'multiply' : 'source-over',
+    globalCompositeOperation: eraser ? 'destination-out' : highlight ? 'multiply' : 'source-over',
   }
 }
 const lines = defineModel('lines', { type: Array, required: true })
@@ -169,15 +172,18 @@ function persistTransform(it, e) {
 // ---- stage pointer (drawing + deselect) ----
 function onStageDown(e) {
   const stage = e.target.getStage()
-  if (props.tool === 'pen') {
+  // Pen and eraser both lay down a stroke; the eraser stroke uses destination-out
+  // (see lineConfig) to rub out only the drawing pixels it crosses.
+  if (props.tool === 'pen' || props.tool === 'eraser') {
     drawing = true
+    const eraser = props.tool === 'eraser'
     const pos = stage.getPointerPosition()
     lines.value.push({
       id: `line-${lineUid++}`,
       points: [pos.x, pos.y],
-      stroke: props.penColor,
+      stroke: eraser ? '#000' : props.penColor, // destination-out ignores colour
       strokeWidth: props.penWidth,
-      style: props.penStyle,
+      style: eraser ? 'eraser' : props.penStyle,
     })
     return
   }
@@ -224,12 +230,19 @@ defineExpose({ toDataURL })
       @mouseup="onStageUp"
       @touchend="onStageUp"
     >
-      <Layer>
+      <!-- background on its own layer so the eraser (destination-out) never punches through it -->
+      <Layer :config="{ listening: false }">
         <Image v-if="bg.type === 'image' && bgImage" :config="bgImageConfig()" />
         <Rect v-else :config="bgConfig()" />
+      </Layer>
 
+      <!-- drawing layer: pen strokes + eraser strokes rub each other out here only -->
+      <Layer :config="{ listening: false }">
         <Line v-for="l in lines" :key="l.id" :config="lineConfig(l)" />
+      </Layer>
 
+      <!-- items + transformer on top -->
+      <Layer>
         <template v-for="it in items" :key="it.id">
           <Text
             v-if="it.type === 'sticker'"
