@@ -6,6 +6,7 @@
 // (GiftSetupView) turns into a Konva group.
 import { ref, computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import ColorPaletteButton from '@/components/editor/ColorPaletteButton.vue'
 import { STAMP_SHAPES } from './stampShapes.js'
 import { stampIcons } from '@/data/stampIcons.js'
 
@@ -74,7 +75,7 @@ function add() {
 
     <!-- colour + shape row -->
     <div class="d-flex align-items-center gap-2 overflow-auto flex-nowrap pb-1 mb-2 shape-row">
-      <input v-model="color" type="color" class="color-swatch flex-shrink-0" aria-label="印章顏色" />
+      <ColorPaletteButton v-model="color" :size="36" class="flex-shrink-0" aria-label="印章顏色" />
       <button
         v-for="s in STAMP_SHAPES"
         :key="s.key"
@@ -170,15 +171,6 @@ function add() {
   max-width: 100%;
 }
 
-.color-swatch {
-  width: 40px;
-  height: 36px;
-  padding: 2px;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
-  background: none;
-  cursor: pointer;
-}
 .shape-row {
   scrollbar-width: none;
 }
