@@ -69,8 +69,4 @@ const model = defineModel({ type: String, required: true })
   min-width: 0;
   cursor: pointer;
 }
-.form-check-input:checked {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-}
 </style>

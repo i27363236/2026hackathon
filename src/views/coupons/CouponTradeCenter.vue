@@ -1,24 +1,44 @@
 <script setup>
+// 優惠券兌換中心。
+//
+// 兩種模式:
+//   瀏覽模式(沒有啟用任何篩選)= banner + 分類圖示 + 三條精選橫列,維持原本的逛街感。
+//   結果模式(有啟用篩選)      = 收起橫列,改用單一清單 + 筆數,避免同一張券在多條列重複出現。
+//
+// 分類圖示與區塊 › 箭頭都是「導覽」,會進到該分類自己的列表頁(coupon-category);
+// 就地收斂請用篩選面板 —— 和送禮中心同一套規則。
+//
+// 分類語彙只有一份,來自 data/coupons.js 的 getCouponCategories(),
+// 圖示、分類頁、篩選面板三邊共用,不要在這裡另外再寫一組標籤陣列。
+import { computed, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import ContentCard from '@/components/cards/ContentCard.vue'
-import { getCoupons } from '@/data/coupons.js'
+import PointsAmount from '@/components/points/PointsAmount.vue'
+import BottomSheet from '@/components/common/BottomSheet.vue'
+import FilterButton from '@/components/filter/FilterButton.vue'
+import FilterPanel from '@/components/filter/FilterPanel.vue'
+import { getCoupons, getCouponCategories } from '@/data/coupons.js'
+import { useProductFilter } from '@/composables/useProductFilter.js'
 
 const coupons = getCoupons()
+const categories = getCouponCategories()
 
-const categoryItems = [
-  { icon: 'ph:ticket-light',            label: '折價券' },
-  { icon: 'ph:hamburger-light',         label: '速食券' },
-  { icon: 'ph:coffee-light',            label: '咖啡券' },
-  { icon: 'ph:palette-light',           label: '活動券' },
-  { icon: 'ph:shopping-cart-light',     label: '購物券' },
-  { icon: 'ph:suitcase-rolling-light',  label: '旅遊券' },
-]
+// 首頁精選的三條橫列 — 各自列出自己分類的券,不再三條都渲染同一批。
+const featuredSections = ['fast-food', 'discount', 'travel'].map((key) => ({
+  ...categories.find((c) => c.key === key),
+  coupons: coupons.filter((c) => c.category === key),
+}))
 
-const sections = [
-  { id: 'fast-food', label: '速食券' },
-  { id: 'discount',  label: '折價券' },
-  { id: 'travel',    label: '旅遊券' },
-]
+const sections = ['category']
+const { selectedCategories, filtered, activeCount, resultCount, reset, toggleCategory } =
+  useProductFilter(coupons, {
+    sections,
+    categories,
+    getPrice: (c) => c.point,
+  })
+
+const sheetOpen = ref(false)
+const isFiltering = computed(() => activeCount.value > 0)
 </script>
 
 <template>
@@ -50,42 +70,96 @@ const sections = [
       </div>
     </div>
 
-    <!-- Category icon grid -->
+    <!-- Category icon grid — 每顆圖示導向該分類的列表頁 -->
     <div class="py-4">
-      <div class="d-flex justify-content-center">
-        <div v-for="item in categoryItems.slice(0, 3)" :key="item.label" class="cat-item">
+      <div v-for="row in [categories.slice(0, 3), categories.slice(3)]" :key="row[0].key" class="d-flex justify-content-center">
+        <RouterLink
+          v-for="item in row"
+          :key="item.key"
+          :to="{ name: 'coupon-category', query: { key: item.key } }"
+          class="cat-item text-decoration-none"
+        >
           <Icon :icon="item.icon" width="32" height="32" />
           <span class="cat-label">{{ item.label }}</span>
-        </div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <div v-for="item in categoryItems.slice(3)" :key="item.label" class="cat-item">
-          <Icon :icon="item.icon" width="32" height="32" />
-          <span class="cat-label">{{ item.label }}</span>
-        </div>
+        </RouterLink>
       </div>
     </div>
 
-    <!-- Category sections -->
-    <section v-for="section in sections" :key="section.id" class="mb-2">
-      <div class="d-flex align-items-center justify-content-between px-default mb-3">
-        <h2 class="section-heading mb-0">{{ section.label }}</h2>
-        <button class="btn icon-circle-btn">
-          <Icon icon="ph:arrow-right-light" width="24" height="24" />
+    <!-- 篩選列 -->
+    <div class="px-default d-flex align-items-center justify-content-between gap-4 mb-4">
+      <FilterButton :count="activeCount" @click="sheetOpen = true" />
+      <span v-if="isFiltering" class="caption-2 text-body-secondary">共 {{ resultCount }} 張</span>
+    </div>
+
+    <!-- 結果模式:單一清單 -->
+    <section v-if="isFiltering" class="px-default pb-4">
+      <ContentCard
+        v-for="c in filtered"
+        :key="c.id"
+        variant="row-horizontal"
+        class="mb-3"
+        :img="c.img"
+        :subtitle="c.sub"
+        :color-key="c.colorKey"
+        :title="c.title"
+      >
+        <template #detail>
+          <div class="d-flex align-items-center text-secondary small">
+            <PointsAmount :value="c.point" tone="muted" size="caption" />
+            <span class="ms-1">兌換</span>
+          </div>
+        </template>
+        <template #trailing>
+          <Icon icon="ph:caret-right-light" class="text-secondary opacity-50" width="24" height="24" />
+        </template>
+      </ContentCard>
+
+      <div v-if="filtered.length === 0" class="text-center py-8">
+        <p class="text-body-secondary mb-4">找不到符合的優惠券</p>
+        <button type="button" class="btn btn-light rounded-pill px-5" @click="reset()">
+          重設篩選
         </button>
       </div>
-      <div class="card-row d-flex gap-4 px-default pb-2">
-        <ContentCard
-          v-for="c in coupons"
-          :key="c.id"
-          :subtitle="c.point + ' 捷運點'"
-          :title="c.title"
-          :detail="c.sub"
-          :img="c.img"
-          :color-key="c.colorKey"
-        />
-      </div>
     </section>
+
+    <!-- 瀏覽模式:精選橫列 -->
+    <template v-else>
+      <section v-for="section in featuredSections" :key="section.key" class="mb-2">
+        <div class="d-flex align-items-center justify-content-between px-default mb-3">
+          <h2 class="section-heading mb-0">{{ section.label }}</h2>
+          <RouterLink
+            :to="{ name: 'coupon-category', query: { key: section.key } }"
+            class="btn icon-circle-btn"
+            :aria-label="`查看全部${section.label}`"
+          >
+            <Icon icon="ph:arrow-right-light" width="24" height="24" />
+          </RouterLink>
+        </div>
+        <div class="card-row d-flex gap-4 px-default pb-2">
+          <ContentCard
+            v-for="c in section.coupons"
+            :key="c.id"
+            :subtitle="c.point + ' 捷運點'"
+            :title="c.title"
+            :detail="c.sub"
+            :img="c.img"
+            :color-key="c.colorKey"
+          />
+        </div>
+      </section>
+    </template>
+
+    <BottomSheet :open="sheetOpen" title="篩選" @close="sheetOpen = false">
+      <FilterPanel
+        :sections="sections"
+        :categories="categories"
+        :selected-categories="selectedCategories"
+        :result-count="resultCount"
+        :active-count="activeCount"
+        @toggle-category="toggleCategory($event)"
+        @reset="reset()"
+      />
+    </BottomSheet>
 
   </div>
 </template>

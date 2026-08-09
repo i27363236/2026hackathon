@@ -12,8 +12,11 @@ import CouponTradeCenter from '@/views/coupons/CouponTradeCenter.vue'
 import GetPointEventsView from '@/views/points/GetPointEventsView.vue'
 import InDevelopmentView from '@/views/InDevelopmentView.vue'
 
+import CouponCategoryView from '@/views/coupons/CouponCategoryView.vue'
+
 import ProductView from '@/views/use/ProductView.vue'
 import GiftHomeView from '@/views/use/GiftHomeView.vue'
+import GiftShelfView from '@/views/use/GiftShelfView.vue'
 // GiftSetupView is the Konva canvas editor — lazy-loaded so Konva stays out of the Home bundle.
 import GiftPreviewView from '@/views/use/GiftPreviewView.vue'
 import GiftReceivedView from '@/views/use/GiftReceivedView.vue'
@@ -23,6 +26,10 @@ import PurchaseSuccessView from '@/views/use/PurchaseSuccessView.vue'
 
 import ProfileView from '@/views/profile/ProfileView.vue'
 import GiftsHistoryView from '@/views/profile/GiftsHistoryView.vue'
+
+import { getShelves } from '@/data/catalog.js'
+import { getCouponCategoryByKey } from '@/data/coupons.js'
+import { resolveTitle } from './title.js'
 
 const routes = [
   {
@@ -36,6 +43,7 @@ const routes = [
 
       { path: 'coupons', name: 'coupons', component: CouponsView, meta: { title: '優惠券', back: true } },
       { path: 'coupons/trade', name: 'coupon-trade', component: CouponTradeCenter, meta: { title: '優惠券', back: true, showCouponActions: true } },
+      { path: 'coupons/category', name: 'coupon-category', component: CouponCategoryView, meta: { title: (r) => getCouponCategoryByKey(r.query.key)?.label ?? '優惠券', back: true } },
 
       { path: 'points/events', name: 'earn-events', component: GetPointEventsView, meta: { title: '累點活動', back: true, showEventActions: true } },
 
@@ -43,6 +51,7 @@ const routes = [
 
       { path: 'use/product', name: 'use-product', component: ProductView, meta: { title: '商品詳情', back: true } },
       { path: 'use/gift', name: 'gift-home', component: GiftHomeView, meta: { title: '送禮中心', back: true } },
+      { path: 'use/gift/shelf', name: 'gift-shelf', component: GiftShelfView, meta: { title: (r) => getShelves().find((s) => s.key === r.query.key)?.title ?? '送禮中心', back: true } },
       { path: 'use/gift/setup', name: 'use-gift-setup', component: () => import('../views/use/GiftSetupView.vue'), meta: { title: '編輯卡片', hideTitle: true, back: true } },
       { path: 'use/gift/preview', name: 'use-gift-preview', component: GiftPreviewView, meta: { title: '禮物預覽', back: true } },
       { path: 'use/gift/received', name: 'use-gift-received', component: GiftReceivedView, meta: { title: '收到禮物', back: true } },
@@ -65,7 +74,7 @@ const SITE_NAME = '捷點大集合'
 const router = createRouter({ history: createWebHashHistory(), routes })
 
 router.afterEach((to) => {
-  const pageTitle = to.meta?.title
+  const pageTitle = resolveTitle(to)
   document.title = pageTitle ? `${pageTitle}｜${SITE_NAME}` : SITE_NAME
 })
 
