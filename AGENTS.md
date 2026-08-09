@@ -28,6 +28,22 @@ Do this proactively rather than asking the user to re-explain what's already doc
 
 ---
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in the **任務** database on the project's Notion home page — via the Notion MCP tools, not GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical roles, used verbatim (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), stored in the 任務 `標籤` multi-select. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root (neither created yet). See `docs/agents/domain.md`.
+
+---
+
 ## Project Context
 
 Design tokens flow from Figma → SCSS primitives → Bootstrap overrides → components.
