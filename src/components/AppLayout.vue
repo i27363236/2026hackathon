@@ -5,6 +5,7 @@ import TopToolbar from './TopToolbar.vue'
 import AppSidebar from './AppSidebar.vue'
 import FloatingNavPill from './FloatingNavPill.vue'
 import ToolbarButton from './ToolbarButton.vue'
+import { resolveTitle } from '@/router/title.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,7 +24,7 @@ const sidebarOpen = ref(true)
 
     <div class="right-col flex-grow-1 d-flex flex-column overflow-hidden position-relative" style="min-width: 0">
       <TopToolbar
-        :title="meta.hideTitle ? '' : meta.title"
+        :title="meta.hideTitle ? '' : resolveTitle(route)"
         :show-back="!!meta.back"
         :show-profile="!!meta.showProfile"
         :hero="!!meta.heroTop"

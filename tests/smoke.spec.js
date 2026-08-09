@@ -45,6 +45,50 @@ test('送禮中心列出禮物並可導向商品頁', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
+test('送禮中心:篩選面板收斂結果並寫進網址,分類籤導向貨架頁', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/use/gift')
+  await expect(page.getByText('共 87 件')).toBeVisible()
+
+  await page.getByRole('button', { name: /篩選/ }).click()
+  const sheet = page.getByRole('dialog')
+  // 分類名稱同時是頁面上的導覽籤,所以要限定在面板內點選
+  await sheet.getByText('捷客，早安！', { exact: true }).click()
+  await expect(sheet.getByText('共 12 件')).toBeVisible()
+
+  // 條件寫進網址 → 重新整理後仍在
+  await expect(page).toHaveURL(/cat=morning/)
+  await page.reload()
+  await expect(page.getByRole('button', { name: /篩選/ })).toContainText('1')
+
+  // 分類籤是連結,不是就地篩選
+  await page.getByRole('link', { name: /捷客，早安！/ }).click()
+  await expect(page).toHaveURL(/use\/gift\/shelf\?key=morning/)
+  await expect(page).toHaveTitle(/捷客，早安！/)
+  expect(errors).toEqual([])
+})
+
+test('兌換中心:篩選後改用單一結果清單,分類圖示導向分類頁', async ({ page }) => {
+  const errors = trackErrors(page)
+  await page.goto('/#/coupons/trade')
+  await expect(page.getByRole('heading', { name: '速食券' })).toBeVisible()
+
+  await page.getByRole('button', { name: /篩選/ }).click()
+  await page.getByRole('dialog').getByText('咖啡券', { exact: true }).click()
+  await page.getByRole('button', { name: '關閉' }).click()
+
+  // 結果模式:精選橫列收起,改成單一清單
+  await expect(page.getByText('共 4 張')).toBeVisible()
+  await expect(page.getByRole('heading', { name: '速食券' })).toBeHidden()
+
+  await page.goto('/#/coupons/trade')
+  // 圖示與區塊 › 箭頭都導向同一頁,這裡指定圖示那顆(箭頭的 aria-label 是「查看全部…」)
+  await page.getByRole('link', { name: '旅遊券', exact: true }).click()
+  await expect(page).toHaveURL(/coupons\/category\?key=travel/)
+  await expect(page).toHaveTitle(/旅遊券/)
+  expect(errors).toEqual([])
+})
+
 test('禮物卡片編輯器載入 Konva 畫布(lazy chunk)', async ({ page }) => {
   const errors = trackErrors(page)
   await page.goto('/#/use/gift/setup')
@@ -154,7 +198,7 @@ test('收禮頁:瀏覽器封鎖通知時,到期提醒顯示封鎖狀態且不可
   expect(errors).toEqual([])
 })
 
-test('收禮頁附近店家 bottom sheet', async ({ page }) => {
+test('收禮頁最近地點卡 → 可使用地點 sheet → 規劃路線說明', async ({ page }) => {
   const errors = trackErrors(page)
   // 先送出一份禮物,收禮頁動作才可用(無禮物時按鈕 disabled)
   await page.goto('/#/use/product?id=cat-007')
@@ -167,9 +211,15 @@ test('收禮頁附近店家 bottom sheet', async ({ page }) => {
   await page.getByRole('button', { name: '完成' }).click()
   await page.getByRole('button', { name: '送出禮物' }).click()
   await page.getByRole('button', { name: '預覽收禮頁面' }).click()
-  await page.getByRole('button', { name: '搜尋附近可使用店家' }).click()
-  await expect(page.getByRole('heading', { name: '附近可使用店家' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '查看完整使用地點' })).toBeVisible()
+  // 不用點任何東西,最近的可使用地點就在畫面上
+  await expect(page.getByRole('heading', { name: '中山站 5號出口' })).toBeVisible()
+  // 要看別站才展開清單
+  await page.getByRole('button', { name: '其他地點' }).click()
+  await expect(page.getByRole('heading', { name: '可使用地點' })).toBeVisible()
+  await expect(page.getByText('誠品復興館・2號出口')).toBeVisible()
+  // 規劃路線在 Demo 只說明意圖,不假裝成功
+  await page.getByRole('button', { name: '規劃路線' }).first().click()
+  await expect(page.getByText('將開啟「台北捷運Go」為你規劃路線（Demo 未串接）')).toBeVisible()
   expect(errors).toEqual([])
 })
 

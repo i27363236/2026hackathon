@@ -239,8 +239,4 @@ function confirm() {
   background: var(--bs-border-color);
   margin: 4px 0 12px;
 }
-.form-check-input:checked {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-}
 </style>

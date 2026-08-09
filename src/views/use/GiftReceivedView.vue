@@ -1,6 +1,6 @@
 <script setup>
 // 收禮頁 — 送禮閉環的終點。動作對應訪談痛點:
-//  • 附近可使用店家 bottom sheet:收禮者不用自己研究哪裡能用(嵌入既有動線)
+//  • 最近可使用地點卡:一打開就看得到去哪裡用,不用自己研究(搜尋壓縮成一瞥)
 //  • 到期提醒:LINE 禮物「提醒被淹沒→過期退回」的解法
 //  • 使用禮物 → 已兌換章,之後不可再操作(設計文件:「已兌換,無法做其他操作」)
 import { computed, ref } from 'vue'
@@ -9,9 +9,13 @@ import { Icon } from '@iconify/vue'
 import FlipCard from '@/components/gift/FlipCard.vue'
 import QrFace from '@/components/gift/QrFace.vue'
 import ProductFace from '@/components/gift/ProductFace.vue'
+import BottomSheet from '@/components/common/BottomSheet.vue'
+import MetroLineBadge from '@/components/common/MetroLineBadge.vue'
+import LocationHintCard from '@/components/location/LocationHintCard.vue'
+import RoutePlanButton from '@/components/location/RoutePlanButton.vue'
 import { useGiftsStore } from '@/stores/gifts.js'
 import { getProfile } from '@/data/profile.js'
-import { stationPhotos } from '@/data/stationPhotos.js'
+import { getNearestLocation, getUsableLocations } from '@/data/usableLocations.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,9 +50,10 @@ async function toggleReminder() {
   gifts.toggleReminder(gift.value.id)
 }
 
-// 附近可使用店家 bottom sheet(資料先用捷運站示意)
+// 可使用地點:卡片顯示最近一處,sheet 列出其餘(Demo 假資料,見 data/usableLocations.js)
 const sheetOpen = ref(false)
-const nearbyStations = stationPhotos.slice(0, 4)
+const nearestLocation = getNearestLocation()
+const usableLocations = getUsableLocations()
 
 const addedToGo = ref(false)
 const addedToCalendar = ref(false)
@@ -56,8 +61,8 @@ const addedToCalendar = ref(false)
 
 <template>
   <!-- 內容垂直置中(內容過長時 my-auto 會退讓,仍可正常捲動) -->
-  <div class="gift-received overflow-auto h-100 p-5 d-flex flex-column">
-    <div class="row g-6 justify-content-center mx-auto my-auto w-100" style="max-width: 920px">
+  <div class="gift-received overflow-auto h-100 p-5 bg-body-secondary d-flex flex-column">
+    <div class="g-6 justify-content-center mx-auto my-auto w-100" style="max-width: 920px">
       <!-- Card -->
       <div class="col-12 col-md-6">
         <div class="card-wrap mx-auto w-100 position-relative">
@@ -118,19 +123,16 @@ const addedToCalendar = ref(false)
           {{ redeemed ? '已兌換' : '使用禮物' }}
         </button>
 
+        <!-- 已兌換後「去哪裡用」已無意義,整張卡收起 -->
+        <LocationHintCard
+          v-if="!redeemed"
+          :location="nearestLocation"
+          class="my-6"
+          @show-all="sheetOpen = true"
+        />
+
         <div class="action-list" :class="{ 'redeemed-lock': redeemed }">
           <div class="list-group list-group-flush">
-            <button
-              type="button"
-              class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
-              :disabled="redeemed"
-              @click="sheetOpen = true"
-            >
-              <Icon icon="ph:magnifying-glass-light" class="text-body-secondary" width="24" height="24" />
-              <span class="flex-grow-1 text-start">搜尋附近可使用店家</span>
-              <Icon icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24" />
-            </button>
-
             <button
               type="button"
               class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
@@ -216,42 +218,27 @@ const addedToCalendar = ref(false)
       </div>
     </div>
 
-    <!-- 附近可使用店家 bottom sheet -->
-    <Transition name="fade">
-      <div v-if="sheetOpen" class="sheet-overlay" @click="sheetOpen = false" />
-    </Transition>
-    <Transition name="slide-up">
-      <div v-if="sheetOpen" class="nearby-sheet bg-body rounded-top-4 shadow-lg">
-        <div class="d-flex justify-content-between align-items-center px-5 pt-5 pb-4">
-          <h3 class="h6 fw-bold mb-0">附近可使用店家</h3>
-          <button type="button" class="btn btn-link p-0 text-body-secondary" @click="sheetOpen = false">
-            <Icon icon="ph:x-light" width="24" height="24" />
-          </button>
-        </div>
-        <div class="list-group list-group-flush px-5 pb-4">
-          <div
-            v-for="st in nearbyStations"
-            :key="st.id"
-            class="list-group-item d-flex align-items-center gap-4 py-4 px-0"
-          >
-            <img :src="st.src" class="station-thumb rounded-3 flex-shrink-0" :alt="st.name" />
-            <div class="flex-grow-1 min-w-0">
-              <div class="fw-bold text-truncate">{{ st.name }}</div>
-              <div class="caption-2 text-body-secondary">出站即可使用 · 出示 QR code 兌換</div>
+    <!-- 可使用地點清單 -->
+    <BottomSheet :open="sheetOpen" title="可使用地點" @close="sheetOpen = false">
+      <div class="list-group list-group-flush">
+        <div
+          v-for="loc in usableLocations"
+          :key="loc.id"
+          class="list-group-item d-flex align-items-center gap-4 py-4 px-0"
+        >
+          <div class="flex-grow-1 min-w-0">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <MetroLineBadge v-for="line in loc.lines" :key="line" :code="line" />
+              <span class="fw-bold ms-1">{{ loc.station }}</span>
             </div>
-            <Icon icon="ph:map-pin-light" class="text-body-tertiary flex-shrink-0" width="24" height="24" />
+            <div class="caption-2 text-body-secondary text-truncate">
+              {{ loc.store }}・{{ loc.exit }}
+            </div>
           </div>
-        </div>
-        <div class="px-5 pb-6">
-          <RouterLink
-            :to="{ name: 'use-coupons' }"
-            class="btn btn-outline-primary rounded-pill w-100 py-3 fw-bold"
-          >
-            查看完整使用地點
-          </RouterLink>
+          <RoutePlanButton />
         </div>
       </div>
-    </Transition>
+    </BottomSheet>
   </div>
 </template>
 
@@ -288,47 +275,8 @@ const addedToCalendar = ref(false)
   pointer-events: none;
 }
 
-/* bottom sheet */
-.sheet-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay, rgba(0, 0, 0, 0.4));
-  z-index: 1040;
-}
-.nearby-sheet {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1050;
-  max-width: 560px;
-  margin-inline: auto;
-  max-height: 75dvh;
-  overflow-y: auto;
-}
-.station-thumb {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-}
+/* sheet 的 overlay/轉場/容器樣式已移入 components/common/BottomSheet.vue */
 .min-w-0 {
   min-width: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: transform 0.3s ease;
-}
-.slide-up-enter-from,
-.slide-up-leave-to {
-  transform: translateY(100%);
 }
 </style>
