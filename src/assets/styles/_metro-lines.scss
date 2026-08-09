@@ -1,0 +1,25 @@
+/* 台北捷運路線識別色 — 原本以字面色碼內嵌在 _card-colors.scss，抽成具名 token。
+   色值一字未改，兩邊同源:$card-colors 直接引用這裡的變數，卡片副標與路線徽章不會再各走各的。
+   來源 Figma node 2433-5925。 */
+$metro-line-g: #018659; // 松山新店線 綠
+$metro-line-r: #c80000; // 淡水信義線 紅
+$metro-line-y: #f8b51c; // 環狀線 黃
+$metro-line-bl: #0070bc; // 板南線 藍
+$metro-line-br: #c38c31; // 文湖線 棕
+$metro-line-neutral: #675e55; // 灰 — 非路線色，供 text-emphasis 用
+
+$metro-lines: (
+  "G": $metro-line-g,
+  "R": $metro-line-r,
+  "Y": $metro-line-y,
+  "BL": $metro-line-bl,
+  "BR": $metro-line-br,
+);
+
+/* 路線色塊底色 — 全域 class，因為 scoped SFC 樣式讀不到 SCSS 變數(見 _variables.scss 註解)。
+   由 MetroLineBadge.vue 套用，尺寸/字級留在該元件。 */
+@each $key, $val in $metro-lines {
+  .metro-line--#{$key} {
+    background-color: $val;
+  }
+}

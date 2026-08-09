@@ -78,6 +78,8 @@ Repeated concepts have **one** canonical implementation. Reach for it — don't 
 | Content / list / gift card | `ContentCard` (`src/components/cards/ContentCard.vue`) — variants `row`/`large`/`gift`/`row-horizontal`. |
 | White info card | Bootstrap `.card rounded-4 shadow-sm`. Don't hardcode `border-radius: 16/24px` or bespoke shadows. |
 | Rotated red badge | `<StampBadge>` (`src/components/common/StampBadge.vue`). |
+| Bottom sheet | `<BottomSheet>` (`src/components/common/BottomSheet.vue`) — owns the overlay, `slide-up` transition, grab handle, close button and the phone-vs-tablet container. Don't hand-roll another `position: fixed` sheet. Exempt: `ProductView`'s 選擇數量 bar, which is an expanding sticky footer, not a sheet. |
+| 捷運路線識別色 | `<MetroLineBadge>` (`src/components/common/MetroLineBadge.vue`) for the R/G/Y/BL/BR chips; the colors themselves live in `$metro-lines` (`_metro-lines.scss`) and `$card-colors` is derived from them. Never re-type `#018659` / `#0070bc` etc. |
 | Brand blue | `$primary` / `text-primary` = `#0079A9`. `#007bbd` / `#1e70a4` are wrong. |
 | Danger red | `$danger` / `text-danger` = `#C80000`. `#dc3545` / `#e64980` are wrong. |
 

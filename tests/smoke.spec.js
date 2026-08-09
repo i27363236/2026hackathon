@@ -154,7 +154,7 @@ test('收禮頁:瀏覽器封鎖通知時,到期提醒顯示封鎖狀態且不可
   expect(errors).toEqual([])
 })
 
-test('收禮頁附近店家 bottom sheet', async ({ page }) => {
+test('收禮頁最近地點卡 → 可使用地點 sheet → 規劃路線說明', async ({ page }) => {
   const errors = trackErrors(page)
   // 先送出一份禮物,收禮頁動作才可用(無禮物時按鈕 disabled)
   await page.goto('/#/use/product?id=cat-007')
@@ -167,9 +167,15 @@ test('收禮頁附近店家 bottom sheet', async ({ page }) => {
   await page.getByRole('button', { name: '完成' }).click()
   await page.getByRole('button', { name: '送出禮物' }).click()
   await page.getByRole('button', { name: '預覽收禮頁面' }).click()
-  await page.getByRole('button', { name: '搜尋附近可使用店家' }).click()
-  await expect(page.getByRole('heading', { name: '附近可使用店家' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '查看完整使用地點' })).toBeVisible()
+  // 不用點任何東西,最近的可使用地點就在畫面上
+  await expect(page.getByRole('heading', { name: '中山站 5號出口' })).toBeVisible()
+  // 要看別站才展開清單
+  await page.getByRole('button', { name: '其他地點' }).click()
+  await expect(page.getByRole('heading', { name: '可使用地點' })).toBeVisible()
+  await expect(page.getByText('誠品復興館・2號出口')).toBeVisible()
+  // 規劃路線在 Demo 只說明意圖,不假裝成功
+  await page.getByRole('button', { name: '規劃路線' }).first().click()
+  await expect(page.getByText('將開啟「台北捷運Go」為你規劃路線（Demo 未串接）')).toBeVisible()
   expect(errors).toEqual([])
 })
 

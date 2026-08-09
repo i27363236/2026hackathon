@@ -1,12 +1,12 @@
-/* card subtitle colors — Taipei MRT line palette, pulled from Figma node 2433-5925.
+/* card subtitle colors — 台北捷運路線色，色值定義在 _metro-lines.scss(同一組 token)。
    Stable keys variant-1 … variant-6; data carries the key, never the raw hex. */
 $card-colors: (
-  "variant-1": #018659, // 松山新店線 綠 (Songshan)
-  "variant-2": #c80000, // 淡水信義線 紅 (danger)
-  "variant-3": #f8b51c, // 環狀線 黃
-  "variant-4": #0070bc, // 板南線 藍
-  "variant-5": #c38c31, // 文湖線 棕
-  "variant-6": #675e55, // 灰 (text-emphasis)
+  "variant-1": $metro-line-g,
+  "variant-2": $metro-line-r,
+  "variant-3": $metro-line-y,
+  "variant-4": $metro-line-bl,
+  "variant-5": $metro-line-br,
+  "variant-6": $metro-line-neutral,
 );
 
 @each $key, $val in $card-colors {
