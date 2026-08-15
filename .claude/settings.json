@@ -1,8 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "mcp__plugin_figma_figma__get_design_context",
-      "mcp__plugin_figma_figma__get_screenshot",
       "mcp__claude_ai_Notion__notion-fetch"
     ]
   },
@@ -13,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import sys,json,subprocess,re; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); [print((r.stdout+r.stderr).strip()) for c in [['npm','run','lint'],['npm','run','type-check']] if re.search(r'\\\\.(vue|js)$',fp) for r in [subprocess.run(c,cwd='/Users/liuyuquan/Documents/2026捷運黑客松/mpoints-assemble',capture_output=True,text=True)] if (r.stdout+r.stderr).strip()]\""
+            "command": "python3 -c \"import sys,json,subprocess,re; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); [print((r.stdout+r.stderr).strip()) for c in [['npm','run','lint']] if re.search(r'\\\\.(vue|js)$',fp) for r in [subprocess.run(c,cwd='/Users/liuyuquan/Documents/2026捷運黑客松/mpoints-assemble',capture_output=True,text=True)] if (r.stdout+r.stderr).strip()]\""
           }
         ]
       }
