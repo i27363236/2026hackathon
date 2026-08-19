@@ -1,355 +1,220 @@
 <script setup>
-// 單純靜態畫面，不寫任何資料庫邏輯
+// 單純靜態畫面,不寫任何資料庫邏輯。
+// 版型:單欄 + .container-form(630px,與商品頁同寬),平板不分欄;間距/排列一律走 Bootstrap utility。
+import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import MedalSection from '@/components/profile/MedalSection.vue'
-import { getAchievements, getSentGifts } from '@/data/profile.js'
+import MetroLineBadge from '@/components/common/MetroLineBadge.vue'
+import GiftGrid from '@/components/cards/GiftGrid.vue'
+import { getProfile, getAchievements, getStamps, getSentGifts } from '@/data/profile.js'
 import { useSettingsStore } from '@/stores/settings.js'
+import pointIcon from '@/img/metro-point.png'
 
+const profile = getProfile()
 const achievements = getAchievements()
+const stamps = getStamps()
 const sentGifts = getSentGifts()
 const settings = useSettingsStore()
+
+// 防偽底紋的格數 — 底紋整層是斜的,要多鋪幾排才蓋得滿最寬卡片(630px)旋轉後的外框。
+const PATTERN_ROWS = 9
+const PATTERN_COLS = 16
+
+// 個人資料卡的拖曳 3D 傾斜 — 像拿著一張實體卡片轉動,放開回正。
+const MAX_TILT = 8 // deg
+const rotateX = ref(0)
+const rotateY = ref(0)
+const dragging = ref(false)
+let startX = 0
+let startY = 0
+
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const clamp = (v) => Math.max(-MAX_TILT, Math.min(MAX_TILT, v))
+
+function onPointerDown(e) {
+  if (reduceMotion()) return
+  dragging.value = true
+  startX = e.clientX
+  startY = e.clientY
+  e.currentTarget.setPointerCapture?.(e.pointerId)
+}
+
+function onPointerMove(e) {
+  if (!dragging.value) return
+  rotateY.value = clamp((e.clientX - startX) / 12)
+  rotateX.value = clamp((startY - e.clientY) / 12)
+}
+
+function onPointerUp() {
+  dragging.value = false
+  rotateX.value = 0
+  rotateY.value = 0
+}
 </script>
 
 <template>
-  <div class="tablet-bg">
-    <div class="main-content-container">
+  <div class="profile-view h-100 overflow-auto bg-body-secondary px-default py-6">
+    <div class="profile-container d-flex flex-column gap-6">
 
-      <div class="left-column">
-        
-        <div class="card profile-card">
-          <div class="profile-avatar-block">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="小捷的頭像" class="profile-avatar" />
-            <div class="profile-name">小捷</div>
+      <!-- 個人資料卡 — 全頁唯一保留陰影的主角卡,可拖曳微傾斜 -->
+      <div
+        class="card profile-card position-relative overflow-hidden border rounded-4 d-flex flex-row justify-content-center align-items-center p-8"
+        :class="{ 'is-dragging': dragging }"
+        :style="{ transform: `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)` }"
+        @pointerdown="onPointerDown"
+        @pointermove="onPointerMove"
+        @pointerup="onPointerUp"
+        @pointercancel="onPointerUp"
+      >
+        <!-- 捷運點底紋(防偽網紋感):整層斜放,偶數排錯開半格,隨傾斜方向微幅位移做視差 -->
+        <div
+          class="pc-pattern position-absolute overflow-hidden pe-none"
+          aria-hidden="true"
+          :style="{ transform: `translate3d(${rotateY * -1.5}px, ${rotateX * 1.5}px, 0) rotate(-12deg)` }"
+        >
+          <div
+            v-for="r in PATTERN_ROWS"
+            :key="r"
+            class="d-flex flex-nowrap gap-7 mb-5"
+            :class="{ 'pc-row-offset': r % 2 === 0 }"
+          >
+            <img v-for="c in PATTERN_COLS" :key="c" :src="pointIcon" alt="" class="pc-coin" />
           </div>
-          
-          <div class="profile-stats-block">
-            <div class="stat-item">
-              <div class="label">里程數</div>
-              <div class="value">968 <span class="unit">km</span></div>
+        </div>
+
+        <div class="position-relative d-flex flex-column align-items-center gap-3 flex-shrink-0">
+          <img :src="profile.avatar" :alt="`${profile.name}的頭像`" class="profile-avatar rounded-circle object-fit-cover" />
+          <div class="h3 fw-bold text-black mb-0">{{ profile.name }}</div>
+        </div>
+
+        <div class="position-relative d-flex flex-column align-items-start gap-4 ms-7 ps-7">
+          <div class="d-flex flex-column">
+            <div class="caption-1">里程數</div>
+            <div class="stat-value fw-bold">
+              968 <span class="caption-1 fw-medium text-body-secondary ms-2">km</span>
             </div>
-            <div class="stat-item">
-              <div class="label">減碳數 🌱</div>
-              <div class="value">17.6 <span class="unit">kg</span></div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="caption-1">減碳數 🌱</div>
+            <div class="stat-value fw-bold">
+              17.6 <span class="caption-1 fw-medium text-body-secondary ms-2">kg</span>
             </div>
-            <div class="stat-item">
-              <div class="label">最愛車站</div>
-              <div class="station-info">
-                <div class="station-badges">
-                  <span class="tag tag-r">R 11</span>
-                  <span class="tag tag-g">G 14</span>
-                </div>
-                <div class="station-name">中山</div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="caption-1">最愛車站</div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="d-flex gap-2">
+                <MetroLineBadge code="R" />
+                <MetroLineBadge code="G" />
               </div>
-            </div>
-          </div>
-        </div>
-
-        <MedalSection title="我的成就" :items="achievements" />
-
-        <div class="section-title-bar">
-          <h2>最近參加的活動</h2>
-          <div class="circle-arrow-btn">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23868e96' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'></polyline></svg>" alt="更多" class="arrow-icon" />
-          </div>
-        </div>
-
-        <div class="card activity-card">
-          <div class="activity-text-left">
-            <p class="sub-title">獲得10點捷運點</p>
-            <h3>聲聲流動 捷運心動</h3>
-            <p class="date">2026-04-24 參加</p>
-          </div>
-          <img src="../../img/mynaui_music-square.png" alt="琴聲流動紀念章" class="stamp-img-right" />
-        </div>
-      </div>
-
-      <div class="right-column">
-        <MedalSection title="我的禮物" :items="sentGifts" />
-
-        <div class="section-title-bar setting-margin">
-          <h2>設定</h2>
-        </div>
-
-        <div class="button-group">
-          <button class="action-button">修改支付密碼</button>
-          <button class="action-button">設定綁定帳號</button>
-          <div class="action-button setting-switch-row">
-            <span>情境推薦</span>
-            <div class="form-check form-switch p-0 m-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                v-model="settings.contextualRecs"
-                style="width: 2.5em; height: 1.25em; cursor: pointer"
-              />
+              <div class="stat-value fw-bold text-black">中山</div>
             </div>
           </div>
         </div>
       </div>
+
+      <MedalSection title="我的成就" :items="achievements" />
+
+      <MedalSection title="我的紀念章" :items="stamps" hide-text />
+
+      <section>
+        <h2 class="mb-4">我的禮物</h2>
+        <GiftGrid :products="sentGifts" />
+      </section>
+
+      <section>
+        <h2 class="mb-4">設定</h2>
+        <div class="action-list bg-white">
+          <div class="list-group list-group-flush">
+            <button
+              type="button"
+              class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
+            >
+              <span class="flex-grow-1 text-start">修改支付密碼</span>
+              <Icon icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24" />
+            </button>
+
+            <button
+              type="button"
+              class="list-group-item list-group-item-action d-flex align-items-center gap-4 py-5 px-4"
+            >
+              <span class="flex-grow-1 text-start">設定綁定帳號</span>
+              <Icon icon="ph:caret-right-light" class="text-body-tertiary" width="24" height="24" />
+            </button>
+
+            <label class="list-group-item d-flex align-items-center gap-4 py-5 px-4">
+              <span class="flex-grow-1">情境推薦</span>
+              <span class="form-check form-switch m-0 p-0">
+                <input
+                  v-model="settings.contextualRecs"
+                  class="form-check-input m-0"
+                  type="checkbox"
+                  role="switch"
+                />
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
 
     </div>
   </div>
 </template>
 
 <style scoped>
-/* 平板背景 */
-.tablet-bg {
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
+.profile-container {
+  max-width: 480px;
+  margin-inline: auto;
 }
 
-/* 佈局總容器：窄螢幕單欄堆疊，寬螢幕可換行並排 */
-.main-content-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-/* 左側欄位 */
-.left-column {
-  flex: 1 1 320px;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 右側欄位 */
-.right-column {
-  flex: 1 1 280px;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* 標題與帶圓底箭頭列 */
-.section-title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 14px;
-  margin-bottom: 6px;
-}
-
-.section-title-bar h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--bs-body-color);
-  margin: 0;
-}
-
-/* 🌟 修正後的圓底座：完美置中包覆開源箭頭 */
-.circle-arrow-btn {
-  width: 32px;
-  height: 32px;
-  background-color: var(--bs-gray-100); 
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.15s;
-}
-
-.circle-arrow-btn:hover {
-  background-color: var(--bs-gray-200);
-}
-
-/* 🌟 開源內聯 SVG 箭頭圖標樣式 */
-.arrow-icon {
-  width: 16px;
-  height: 16px;
-  display: block;
-}
-
-.setting-margin {
-  margin-top: 24px;
-}
-
-/* 🌟 統一卡片底座：換上與設計圖一致的高質感輕柔陰影 (Shadow) */
-.card {
-  background-color: var(--bs-white);
-  border-radius: var(--bs-border-radius-xl); /* 20px,對齊 rounded-4 卡片圓角 */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 輕柔且深邃的摩登陰影 */
-  box-sizing: border-box;
-  border: none;
-}
-
-/* ================= 🌟 1. 個人資料卡片 (整體內容置中修正) ================= */
+/* 個人資料卡 — 邊框/圓角/排列走 utility,這裡只留沒有對應 utility 的部分 */
 .profile-card {
-  display: flex;
-  flex-direction: row;          
-  justify-content: center;     /* 關鍵：讓大頭貼和數據區整體在卡片中居中 */
-  align-items: center;           
-  padding: 32px 40px;            
   min-height: 180px;
+  /* 上緣內光 + 落地陰影,做出一點厚度(雙層陰影無對應 utility) */
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 70%),
+    0 10px 30px rgb(0 0 0 / 12%);
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+  touch-action: none;
+  user-select: none; /* 拖曳時不要選取到卡片文字 */
+  cursor: grab;
 }
 
-.profile-avatar-block {
-  display: flex;
-  flex-direction: column;        
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  width: 110px;                  
+.profile-card.is-dragging,
+.profile-card.is-dragging .pc-pattern {
+  transition: none;
+}
+
+.profile-card.is-dragging {
+  cursor: grabbing;
+}
+
+/* 底紋層:大幅超出卡片邊界,斜放與視差位移時四角才不會露出來 */
+.pc-pattern {
+  inset: -60px;
+  opacity: 0.06;
+  transition: transform 0.35s ease;
+}
+
+.pc-row-offset {
+  margin-left: 26px; /* 半格(圖 28 + 間距 24 的一半),讓上下排交錯 */
+}
+
+.pc-coin {
+  width: 28px;
+  height: 28px;
 }
 
 .profile-avatar {
   width: 85px;
   height: 85px;
-  border-radius: 50%;
-  object-fit: cover;
+  pointer-events: none;
 }
 
-.profile-name {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--bs-black);
-}
-
-/* 數據欄位包覆區 */
-.profile-stats-block {
-  display: flex;
-  flex-direction: column;  
-  gap: 12px;              
-  align-items: flex-start;
-  margin-left: 24px;
-  padding-left: 24px;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;     
-  align-items: right;
-}
-
-.stat-item .label {
-  font-size: 12px;
-}
-
-.stat-item .value {
+/* 18px 介於 fs-4(20px) 與內文之間,沒有對應 utility */
+.stat-value {
   font-size: 18px;
-  font-weight: 700;
   color: var(--bs-body-color);
-}
-
-.stat-item .unit {
-  font-size: 13px;
-  color: var(--bs-gray-700);
-  font-weight: 500;
-  margin-left: 4px;
-}
-
-/* 車站專用左右排布 */
-.station-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.station-badges {
-  display: flex;
-  gap: 4px;
-}
-
-.tag {
-  color: var(--bs-white);
-  padding: 2px 6px;
-  border-radius: var(--bs-border-radius-sm);
-  font-weight: 700;
-  font-size: 10px;
-}
-
-/* 捷運路線識別色(站點徽章)— 刻意保留品牌色字面值,非設計 token */
-/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
-.tag-r { background-color: #e64980; }
-/* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
-.tag-g { background-color: #12b886; }
-
-.station-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--bs-black);
-}
-
-/* ================= 2. 活動成就卡片 ================= */
-.activity-card {
-  display: flex;
-  flex-direction: row;          
-  justify-content: space-between;
-  align-items: center;          
-  padding: 24px;
-  min-height: 115px;
-}
-
-.activity-text-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;       
-  gap: 4px;
-}
-
-.activity-text-left .sub-title {
-  font-size: 12px;
-  margin: 0;
-}
-
-
-.activity-text-left h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--bs-body-color);
-  margin: 2px 0;
-}
-
-.activity-text-left .date {
-  font-size: 12px;
-  margin: 0;
-}
-
-.stamp-img-right {
-  width: 72px;
-  object-fit: cover;
-  flex-shrink: 0;
-  margin-left: 12px;
-}
-
-/* 右側按鈕組 */
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* 🌟 按鈕同步換上高規格陰影與圓角 */
-.action-button {
-  background-color: var(--bs-white);
-  border: none;
-  border-radius: var(--bs-border-radius-lg); /* 12px */
-  padding: 16px 20px;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--bs-body-color);
-  text-align: left;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* 與卡片一致的陰影 */
-  transition: all 0.15s;
-  width: 100%;
-}
-
-.action-button:hover {
-  background-color: var(--bs-gray-100);
-}
-
-.setting-switch-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: default;
 }
 </style>

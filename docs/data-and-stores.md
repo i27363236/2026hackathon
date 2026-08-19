@@ -10,7 +10,7 @@
 | `coupons.js`          | `getCoupons()`;優惠券兌換品                                       |
 | `events.js`           | `getEvents()`;累點活動卡                                          |
 | `recommendations.js`  | `getRecommendations()`;首頁智慧推薦                              |
-| `profile.js`          | `getProfile()` / `getAchievements()` / `getSentGifts()`           |
+| `profile.js`          | `getProfile()` / `getAchievements()`(含 `locked`)/ `getStamps()` / `getSentGifts()`(回傳 catalog 商品) |
 | `pointsHistory.js`    | `getPointsHistory()`;近 45 天點數交易種子(以今天為基準決定性產生)|
 | `stationPhotos.js`    | `stationPhotos`;捷運回憶照片                                     |
 | `giftEditorPresets.js`| `STICKERS` / `BG_PRESETS` / `TOOLS`;編輯器預設                    |

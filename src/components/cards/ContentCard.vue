@@ -2,15 +2,18 @@
 // 通用內容卡片 — 合併原 home/RowCard、home/EventLargeCard、home/GiftRowCard 三種卡片。
 // variant: 'row'  = 160px,圖上(120px 高)文下 — 活動/優惠券橫列
 //          'large'= 300px,文上圖下(300/169) — 大型活動卡
-//          'gift' = 165px,圖上 + 名稱/徽章/價格列 — 商品卡
+//          'gift' = 165px,圖上 + 名稱/價格列 — 商品卡
 //          'row-horizontal' = 滿版清單列,縮圖左 + 文字中 + 尾端(#trailing slot:箭頭或戳印)
 //            — 取代 CouponsView / GiftsHistoryView 各自複製的 .coupon-card 列。
 //            detail 線可用 detail prop(純文字)或 #detail slot(如放 <PointsAmount>)。
 // colorKey: variant-1…variant-6 → .card-subtitle--N(見 _card-colors.scss;
-//           row/large 上色 subtitle,gift 上色價格)
+//           row/large/row-horizontal 上色 subtitle)
+// price/purchaseType: gift 專用 — 'points'(預設)用 <PointsAmount tone="cost">,
+//           'money' 顯示 NT$ 純文字(見 catalog.js 的 purchaseType 說明)
 // img: CSS background 簡寫(url(...) center/cover),直接綁到 :style
 // to:  有值時整張卡是 RouterLink,否則是 div — 目的路由由呼叫端決定
 import { computed } from 'vue'
+import PointsAmount from '@/components/points/PointsAmount.vue'
 
 const props = defineProps({
   variant: { type: String, default: 'row' }, // 'row' | 'large' | 'gift'
@@ -20,7 +23,7 @@ const props = defineProps({
   img: { type: String, default: '' },
   colorKey: { type: String, default: '' },
   price: { type: [String, Number], default: '' }, // gift 專用
-  sizeLabel: { type: String, default: 'M' }, // gift 專用
+  purchaseType: { type: String, default: 'points' }, // gift 專用:'points' | 'money'(NT$,見 catalog.js)
   to: { type: [String, Object], default: null },
 })
 
@@ -67,19 +70,17 @@ const rootClass = computed(() =>
       <div class="card-img--large rounded-5 bg-body-tertiary" :style="img ? { background: img } : {}" />
     </template>
 
-    <!-- gift:圖上、名稱 + 尺寸徽章 + 價格列在下 -->
+    <!-- gift:圖上、名稱 + 價格列在下 -->
     <template v-else-if="variant === 'gift'">
       <div class="card-img--gift rounded-4" :style="img ? { background: img } : {}" />
       <div class="d-flex align-items-end justify-content-between gap-2 pt-3">
         <div class="gift-text">
-          <p class="gift-title fw-bold mb-1 text-truncate">{{ title }}</p>
-          <p class="gift-detail text-body-secondary mb-0 text-truncate">{{ detail }}</p>
+          <h5 class="mb-1 lh-1 text-truncate">{{ title }}</h5>
+          <p class="caption-1 text-body-secondary mb-0 text-truncate">{{ detail }}</p>
         </div>
-        <div class="d-flex align-items-center gap-1 flex-shrink-0">
-          <span class="gift-size rounded-circle d-flex align-items-center justify-content-center fw-bold">
-            {{ sizeLabel }}
-          </span>
-          <span class="gift-price fw-bold" :class="subtitleClass">{{ price }}</span>
+        <div class="flex-shrink-0">
+          <span v-if="purchaseType === 'money'" class="fw-bold text-warning">NT$ {{ price }}</span>
+          <PointsAmount v-else :value="price" tone="cost" size="caption" :show-label="false" />
         </div>
       </div>
     </template>
@@ -89,7 +90,7 @@ const rootClass = computed(() =>
       <div class="card-img--row rounded-4 bg-body-tertiary" :style="img ? { background: img } : {}" />
       <div class="pt-3 ps-2">
         <p v-if="subtitle" class="caption-1 mb-1 fw-bold" :class="subtitleClass">{{ subtitle }}</p>
-        <h5 class="mb-1" style="line-height: 1.1;">{{ title }}</h5>
+        <h5 class="mb-1 lh-1">{{ title }}</h5>
         <p v-if="detail" class="caption-1 text-body-secondary mb-0">{{ detail }}</p>
       </div>
     </template>
@@ -132,23 +133,5 @@ const rootClass = computed(() =>
 
 .gift-text {
   min-width: 0;
-}
-.gift-title {
-  font-size: 14px;
-  line-height: 18px;
-}
-.gift-detail {
-  font-size: 11px;
-  line-height: 14px;
-}
-.gift-size {
-  width: 22px;
-  height: 22px;
-  font-size: 12px;
-  background: var(--badge-size-bg);
-  color: var(--badge-size-color);
-}
-.gift-price {
-  font-size: 18px;
 }
 </style>

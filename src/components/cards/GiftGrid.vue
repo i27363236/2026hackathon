@@ -17,7 +17,7 @@ defineProps({
         :title="p.name"
         :detail="p.desc"
         :price="p.price"
-        :size-label="p.sizeLabel"
+        :purchase-type="p.purchaseType"
         :img="p.img"
         :color-key="p.colorKey"
         :to="{ name: 'use-product', query: { id: p.id } }"

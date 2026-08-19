@@ -1,5 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue'
+import { useRoute } from 'vue-router'
 import { mainNav, earnPointNav, usePointNav } from '@/nav.js'
 import metroPointImg from '@/img/metro-point.png'
 
@@ -9,7 +10,10 @@ defineProps({
 
 defineEmits(['close'])
 
+const route = useRoute()
 const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
+const isActive = (item) => !isDisabled(item) && route.name === item.to?.name
+const linkColorClass = (item) => (isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : (isActive(item) ? '' : 'text-body-secondary'))
 </script>
 
 <template>
@@ -30,7 +34,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
           :is="isDisabled(item) ? 'span' : 'RouterLink'"
           :to="isDisabled(item) ? undefined : item.to"
           class="nav-link d-flex align-items-center gap-4"
-          :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
+          :class="linkColorClass(item)"
         >
           <img v-if="item.metroIcon" :src="metroPointImg" width="24" height="24" />
           <Icon v-else :icon="item.icon" width="24"/>
@@ -48,7 +52,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
               :is="isDisabled(item) ? 'span' : 'RouterLink'"
               :to="isDisabled(item) ? undefined : item.to"
               class="nav-link d-flex align-items-center gap-4"
-              :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
+              :class="linkColorClass(item)"
             >
               <Icon :icon="item.icon" width="24"/>
               <span>{{ item.label }}</span>
@@ -63,7 +67,7 @@ const isDisabled = (item) => !item.to || item.to?.name === 'in-development'
             :is="isDisabled(item) ? 'span' : 'RouterLink'"
             :to="isDisabled(item) ? undefined : item.to"
             class="nav-link d-flex align-items-center gap-4"
-            :class="isDisabled(item) ? 'text-body-tertiary nav-link--disabled' : 'text-body-secondary'"
+            :class="linkColorClass(item)"
           >
             <Icon :icon="item.icon" width="24"/>
             <span>{{ item.label }}</span>

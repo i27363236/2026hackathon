@@ -77,7 +77,6 @@ const goal = getProductById(profile.goalProductId)
           :title="p.name"
           :detail="p.desc"
           :price="p.price"
-          :size-label="p.sizeLabel"
           :img="p.img"
           :color-key="p.colorKey"
           :to="{ name: 'use-product', query: { id: p.id } }"
